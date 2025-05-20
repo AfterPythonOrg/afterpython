@@ -1,0 +1,13 @@
+[project]
+name = "afterpython"
+version = "0.0.1.dev1"
+description = ""
+license = "Apache-2.0"
+authors = [
+    {name = "Stephen Yau", email = "softwareentrepreneer+afterpython@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "marimo[recommended]>=0.13.10",
+]
