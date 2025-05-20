@@ -172,3 +172,34 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+
+# local stuff
+**/.local/
+
+# vscode settings
+**/.vscode/
+
+# macOS
+.DS_Store
+
+# models
+*.joblib
+*.pt
+*.pth
+*.pkl
+
+# gzipped logs
+*.log.*.gz
+
+# gzip files
+*.gz
+
+# jupyter-book build
+docs/_build/*
+
+# MyST build outputs
+docs/_build/*
+
+# tests data
+tests/data/
