@@ -129,6 +129,7 @@ celerybeat.pid
 
 # Environments
 .env
+.envrc
 .venv
 env/
 venv/
@@ -203,3 +204,12 @@ docs/_build/*
 
 # tests data
 tests/data/
+
+# MyST build outputs
+_build
+
+**/__marimo__/
+
+# pixi environments
+.pixi
+*.egg-info
