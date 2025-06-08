@@ -12,6 +12,7 @@ classifiers = []
 requires-python = ">=3.10"
 dependencies = [
     "click>=8.2.1",
+    "trogon>=0.6.0",
     "mystmd>=1.3.28",
     "marimo[recommended]>=0.13.15",
 ]
@@ -21,14 +22,15 @@ homepage = "https://afterpython.org"
 repository = "https://github.com/AfterPythonOrg/afterpython"
 documentation = "https://docs.afterpython.org"
 
+[project.scripts]
+afterpython = "afterpython.main:run_cli"
+afpy = "afterpython.main:run_cli"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.11.12",
+]
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
-
-[tool.hatch.build.targets.wheel]
-packages = ["afterpython"]
-artifacts = []  # frontend assets
-# force-include = { "build_frontend.py" = "build_frontend.py" }
-
-# [tool.hatch.build.hooks.custom]
-# path = "build_frontend.py"

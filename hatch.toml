@@ -1,0 +1,21 @@
+[build.targets.sdist]
+include = ["/afterpython"]
+exclude = [
+    "afterpython/blog",
+    "afterpython/docs",
+    "afterpython/tutorials",
+    "afterpython/examples",
+    "afterpython/static",
+]
+artifacts = ["afterpython/_build/"]
+
+[build.targets.wheel]
+include = ["/afterpython"]
+exclude = [
+    "afterpython/blog",
+    "afterpython/docs",
+    "afterpython/tutorials",
+    "afterpython/examples",
+    "afterpython/static",
+]
+artifacts = ["afterpython/_build/"]

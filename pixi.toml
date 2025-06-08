@@ -5,6 +5,10 @@ name = "afterpython"
 platforms = ["osx-arm64", "linux-64"]
 
 [tasks]
+dev = "cd frontend && pnpm dev"
+clean = "rm -rf ./afterpython/_build"
+build-dev = { cmd = "cd frontend && pnpm build:dev", depends-on = ["clean"] }
+build = { cmd = "cd frontend && pnpm build && cd .. && uv build", depends-on = ["clean"] }
 
 [tasks.test-all]
 depends-on = [
@@ -24,6 +28,7 @@ pnpm = ">=10.11.1"
 click = ">=8.2.1"
 mystmd = ">=1.3.28"
 marimo = { version = ">=0.13.15", extras = ["recommended"] }
+trogon = ">=0.6.0"
 
 [environments]
 test-py310 = ["py310", "test"]
