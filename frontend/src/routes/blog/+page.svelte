@@ -1,33 +1,51 @@
 <script lang="ts">
-  import blogPosts from '$lib/blog_posts.json';
+  import { onMount } from 'svelte';
+  
+  let blogPosts = $state([]);
+  let loading = $state(true);
+  
+  onMount(async () => {
+    try {
+      const response = await fetch('/blog_posts.json');
+      blogPosts = await response.json();
+    } catch (error) {
+      console.error('Failed to load blog posts:', error);
+    } finally {
+      loading = false;
+    }
+  });
 </script>
 
 <div class="blog-container">
   <h1>Blog</h1>
   
-  <div class="blog-grid">
-    {#each blogPosts as post}
-      <article class="blog-card">
-        <div class="blog-card-content">
-          <h2 class="blog-title">{post.title}</h2>
-          <p class="blog-date">{new Date(post.date).toLocaleDateString()}</p>
-          {#if post.excerpt}
-            <p class="blog-excerpt">{post.excerpt}</p>
-          {/if}
-          {#if post.tags && post.tags.length > 0}
-            <div class="tags">
-              {#each post.tags as tag}
-                <span class="tag">{tag}</span>
-              {/each}
-            </div>
-          {/if}
-          <a href="/blog/{post.slug}" class="read-more">
-            Read More →
-          </a>
-        </div>
-      </article>
-    {/each}
-  </div>
+  {#if loading}
+    <div class="loading">Loading posts...</div>
+  {:else}
+    <div class="blog-grid">
+      {#each blogPosts as post}
+        <article class="blog-card">
+          <div class="blog-card-content">
+            <h2 class="blog-title">{post.title}</h2>
+            <p class="blog-date">{new Date(post.date).toLocaleDateString()}</p>
+            {#if post.excerpt}
+              <p class="blog-excerpt">{post.excerpt}</p>
+            {/if}
+            {#if post.tags && post.tags.length > 0}
+              <div class="tags">
+                {#each post.tags as tag}
+                  <span class="tag">{tag}</span>
+                {/each}
+              </div>
+            {/if}
+            <a href="/blog/{post.slug}" class="read-more">
+              Read More →
+            </a>
+          </div>
+        </article>
+      {/each}
+    </div>
+  {/if}
 </div>
 
 <style>

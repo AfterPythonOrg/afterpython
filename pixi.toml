@@ -11,8 +11,9 @@ remove = { cmd = "uv remove {{ lib }} && pixi remove --pypi {{ lib }}", args = [
 lock = "uv lock && pixi lock"
 install = "uv sync --all-extras --all-groups && pixi install"
 clean = "rm -rf ./afterpython/_build"
-build-dev = { cmd = "cd frontend && pnpm build:dev", depends-on = ["clean"] }
+build-watch = { cmd = "cd frontend && pnpm build:watch", depends-on = ["clean"] }
 build = { cmd = "cd frontend && pnpm build && cd .. && uv build", depends-on = ["clean"] }
+preview = "cd frontend && pnpm preview"
 publish = { cmd = "uv publish", depends-on = ["build"] }
 
 [tasks.test-all]

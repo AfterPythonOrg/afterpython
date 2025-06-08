@@ -1,8 +1,8 @@
 <script lang="ts">
     import { page } from '$app/state';
     import { onMount } from 'svelte';
-    import blogPosts from '$lib/blog_posts.json';
     
+    let blogPosts = $state([]);
     let htmlContent = $state('');
     let postMeta = $state(null);
     let loading = $state(true);
@@ -13,6 +13,8 @@
       
       try {
         // Find the post metadata from imported JSON
+        const response = await fetch('/blog_posts.json');
+        blogPosts = await response.json();
         postMeta = blogPosts.find(p => p.slug === slug);
         
         if (!postMeta) {
