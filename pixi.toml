@@ -6,9 +6,14 @@ platforms = ["osx-arm64", "linux-64"]
 
 [tasks]
 dev = "cd frontend && pnpm dev"
+add = { cmd = "uv add {{ lib }} && pixi add --pypi {{ lib }}", args = ["lib"] }
+remove = { cmd = "uv remove {{ lib }} && pixi remove --pypi {{ lib }}", args = ["lib"] }
+lock = "uv lock && pixi lock"
+install = "uv sync --all-extras --all-groups && pixi install"
 clean = "rm -rf ./afterpython/_build"
 build-dev = { cmd = "cd frontend && pnpm build:dev", depends-on = ["clean"] }
 build = { cmd = "cd frontend && pnpm build && cd .. && uv build", depends-on = ["clean"] }
+publish = { cmd = "uv publish", depends-on = ["build"] }
 
 [tasks.test-all]
 depends-on = [
@@ -26,9 +31,9 @@ pnpm = ">=10.11.1"
 
 [pypi-dependencies]
 click = ">=8.2.1"
-mystmd = ">=1.3.28"
-marimo = { version = ">=0.13.15", extras = ["recommended"] }
 trogon = ">=0.6.0"
+mystmd = { version = ">=1.3.28", extras = ["execute"] }
+marimo = { version = ">=0.13.15", extras = ["recommended"] }
 
 [environments]
 test-py310 = ["py310", "test"]

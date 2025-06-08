@@ -68,9 +68,6 @@ instance/
 # Scrapy stuff:
 .scrapy
 
-# Sphinx documentation
-docs/_build/
-
 # PyBuilder
 .pybuilder/
 target/
@@ -196,17 +193,10 @@ cython_debug/
 # gzip files
 *.gz
 
-# jupyter-book build
-docs/_build/*
-
-# MyST build outputs
-docs/_build/*
-
 # tests data
 tests/data/
 
-# MyST build outputs
-_build
+**/_build/
 
 **/__marimo__/
 
