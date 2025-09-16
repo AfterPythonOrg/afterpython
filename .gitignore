@@ -205,3 +205,7 @@ tests/data/
 *.egg-info
 
 .cursor/
+
+!frontend/src/lib/
+
+.python-version

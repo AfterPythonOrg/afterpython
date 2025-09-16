@@ -8,9 +8,9 @@ const isDev = process.env.NODE_ENV === "development";
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
 	build: {
-    minify: isDev ? false : "esbuild",
-    sourcemap: isDev,
-  },
+		minify: isDev ? false : "esbuild",
+		sourcemap: isDev,
+	},
 	test: {
 		workspace: [
 			{
