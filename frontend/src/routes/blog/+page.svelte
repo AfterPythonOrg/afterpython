@@ -6,7 +6,7 @@
   
   onMount(async () => {
     try {
-      const response = await fetch('/blog_posts.json');
+      const response = await fetch('./blog_posts.json');
       blogPosts = await response.json();
     } catch (error) {
       console.error('Failed to load blog posts:', error);
@@ -38,7 +38,7 @@
                 {/each}
               </div>
             {/if}
-            <a href="/blog/{post.slug}" class="read-more">
+            <a href="./blog/{post.slug}" class="read-more">
               Read More →
             </a>
           </div>

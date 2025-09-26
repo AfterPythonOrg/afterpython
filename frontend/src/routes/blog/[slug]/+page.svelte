@@ -13,7 +13,7 @@
       
       try {
         // Find the post metadata from imported JSON
-        const response = await fetch('/blog_posts.json');
+        const response = await fetch('./blog_posts.json');
         blogPosts = await response.json();
         postMeta = blogPosts.find(p => p.slug === slug);
         

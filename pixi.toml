@@ -35,7 +35,7 @@ pnpm = ">=10.11.1"
 click = ">=8.1.8"
 trogon = ">=0.6.0"
 mystmd = { version = ">=1.6.1", extras = ["execute"] }
-marimo = { version = ">=0.15.5", extras = ["recommended"] }
+marimo = { version = ">=0.16.2", extras = ["recommended"] }
 
 [environments]
 py311 = ["py311", "test"]
@@ -45,8 +45,8 @@ py313 = ["py313", "test"]
 
 [feature.test.dependencies]
 pytest = ">=8.4.1"
-pytest-cov = ">=6.2.1"
-pytest-mock = ">=3.14.1"
+pytest-cov = ">=7.0.0"
+pytest-mock = ">=3.15.1"
 pytest-xdist = ">=3.8.0"
 [feature.test.tasks]
 test = "pytest"
