@@ -40,6 +40,10 @@ dev = [
     "pdoc>=15.0.4",
 ]
 
+[tool.uv]
+# override the restrictive version constraints "platformdirs~=4.2.2", "nodeenv>=1.9.1" in mystmd
+override-dependencies = ["platformdirs>=4.3.8", "nodeenv>=1.9.1"]
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
