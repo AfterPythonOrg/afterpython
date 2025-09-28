@@ -15,8 +15,6 @@ const config = {
 			fallback: '200.html', // may differ from host to host
 			precompress: false,
 			strict: true,
-			// NOTE: otherwise, paths like /, /blog won't work in the static build
-			paths: { relative: false },
 		}),
 		alias: {
 			'$static': 'static/',
