@@ -1,7 +1,14 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from afterpython._typing import NodeEnv
+
 import shutil
+import subprocess
 
 import click
 
+from afterpython.utils.utils import find_node_env
 from afterpython.const.paths import AFTERPYTHON_PATH, WEBSITE_PATH, BUILD_PATH
 from afterpython.builders import (
     build_metadata,
@@ -49,10 +56,16 @@ def postbuild():
 
 
 @click.command()
-def build():
+@click.option('--only-contents', is_flag=True, help='if enabled, only build contents and skip building project website')
+def build(only_contents: bool):
     prebuild()
     
     click.echo("Building contents...")
     build_metadata()  # build metadata.json
+
+    if not only_contents:
+        click.echo("Building project website...")
+        node_env: NodeEnv = find_node_env()
+        subprocess.run(["pnpm", "build"], cwd=WEBSITE_PATH, env=node_env, check=True)
 
     postbuild()

@@ -1,8 +1,14 @@
 import type { PageServerLoad } from './$types';
-import blogPosts from '$static/blog/blog_posts.json';
 
-export const load: PageServerLoad = () => {
-  return {
-    blogPosts,
-  };
+export const load: PageServerLoad = async () => {
+  try {
+    const blogPosts = await import('$static/blog/blog_posts.json');
+    return {
+      blogPosts: blogPosts.default,
+    }
+  } catch {
+    return {
+      blogPosts: [],
+    };
+  }
 };
