@@ -15,7 +15,6 @@ downloads/
 eggs/
 .eggs/
 lib/
-!afterpython/_website/lib/
 lib64/
 parts/
 sdist/
@@ -208,6 +207,6 @@ tests/data/
 .cursor/
 .claude/
 
-!frontend/src/lib/
+!afterpython/_website/src/lib/
 
 .python-version

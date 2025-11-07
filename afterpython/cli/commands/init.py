@@ -32,7 +32,3 @@ def init(no_mystmd: bool):
     WEBSITE_PATH.mkdir(parents=True, exist_ok=True)
     subprocess.run(["pnpx", "degit", "AfterPythonOrg/project-website-template", str(WEBSITE_PATH)], env=node_env)
     subprocess.run(["pnpm", "install"], cwd=WEBSITE_PATH, env=node_env)
-    # Stage the .gitignore immediately
-    gitignore_path = WEBSITE_PATH / ".gitignore"
-    if gitignore_path.exists():
-        subprocess.run(["git", "add", str(gitignore_path)], check=False)
