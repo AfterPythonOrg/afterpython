@@ -1,0 +1,35 @@
+{
+  "metadata_version": "2.4",
+  "name": "afterpython",
+  "version": "0.0.1.dev2",
+  "summary": "CLI tool for AfterPython",
+  "author_email": "Stephen Yau <softwareentrepreneer+afterpython@gmail.com>",
+  "license_expression": "Apache-2.0",
+  "classifier": [
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14"
+  ],
+  "project_url": [
+    "homepage, https://afterpython.org",
+    "repository, https://github.com/AfterPythonOrg/afterpython",
+    "documentation, https://docs.afterpython.org"
+  ],
+  "requires_python": ">=3.11",
+  "requires_dist": [
+    "click>=8.1.8",
+    "trogon>=0.6.0",
+    "pyproject-metadata>=0.9.1",
+    "mystmd>=1.6.4",
+    "marimo[recommended]>=0.17.7; extra == \"marimo\"",
+    "notebook>=7.4.7; extra == \"jupyter\"",
+    "jupytext>=1.18.1; extra == \"jupyter\""
+  ],
+  "provides_extra": [
+    "marimo",
+    "jupyter"
+  ],
+  "description_content_type": "text/markdown",
+  "description": "[![afterpython](https://afterpython.org/shield.svg)](https://afterpython.org)\n<!-- ![PyPI downloads](https://img.shields.io/pypi/dm/afterpython) -->\n<!-- [![PyPI](https://img.shields.io/pypi/v/afterpython.svg)](https://pypi.org/project/afterpython) -->\n![PyPI - Support Python Versions](https://img.shields.io/pypi/pyversions/afterpython)\n![Discussions](https://img.shields.io/badge/Discussions-Let's%20Chat-green)\n[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/AfterPythonOrg/afterpython)\n\n\n- afterpython init          # Creates afterpython/ folder + afterpython.toml\n- afterpython build         # Builds static site\n- afterpython dev           # Dev server with hot reload\n- afterpython preview       # Preview built site locally"
+}
