@@ -4,6 +4,7 @@ from trogon import tui
 from afterpython.cli.commands.init import init
 from afterpython.cli.commands.build import build
 from afterpython.cli.commands.dev import dev
+from afterpython.cli.commands.update_template import update_template
 
 
 @tui(command='tui', help="Open terminal UI")
@@ -18,3 +19,4 @@ def afterpython_group(ctx):
 afterpython_group.add_command(init)
 afterpython_group.add_command(build)
 afterpython_group.add_command(dev)
+afterpython_group.add_command(update_template)

@@ -3,8 +3,9 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from afterpython._typing import NodeEnv
 
-import click
 import subprocess
+
+import click
 
 from afterpython.utils.utils import find_node_env
 from afterpython.const.paths import WEBSITE_PATH

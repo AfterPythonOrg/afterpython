@@ -7,7 +7,7 @@ import subprocess
 
 import click
 
-from afterpython.const.paths import AFTERPYTHON_PATH, DOCS_PATH, WEBSITE_PATH, STATIC_PATH
+from afterpython.const.paths import AFTERPYTHON_PATH, DOCS_PATH, STATIC_PATH
 from afterpython.utils.utils import find_node_env
 
 
@@ -29,6 +29,4 @@ def init(no_mystmd: bool):
         subprocess.run(["myst", "init"], cwd=DOCS_PATH, input="n\n", text=True, env=node_env)
     
     click.echo("Initializing project website template in afterpython/_website/...")
-    WEBSITE_PATH.mkdir(parents=True, exist_ok=True)
-    subprocess.run(["pnpx", "degit", "AfterPythonOrg/project-website-template", str(WEBSITE_PATH)], env=node_env)
-    subprocess.run(["pnpm", "install"], cwd=WEBSITE_PATH, env=node_env)
+    subprocess.run(["ap", "update-template"], check=True)
