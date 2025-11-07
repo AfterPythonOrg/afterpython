@@ -28,8 +28,8 @@ depends-on = [
 [dependencies]
 python = ">=3.11"
 uv = ">=0.9.7"
-nodejs = ">=22.14.0"
-pnpm = ">=10.15.0"
+# nodejs = ">=22.14.0"
+# pnpm = ">=10.15.0"
 
 [pypi-dependencies]
 click = ">=8.1.8"

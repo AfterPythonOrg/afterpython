@@ -15,6 +15,7 @@ downloads/
 eggs/
 .eggs/
 lib/
+!afterpython/_website/lib/
 lib64/
 parts/
 sdist/

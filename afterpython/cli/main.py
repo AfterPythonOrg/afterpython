@@ -1,7 +1,9 @@
 import click
 from trogon import tui
 
-from afterpython.cli.commands.test import test
+from afterpython.cli.commands.init import init
+from afterpython.cli.commands.build import build
+from afterpython.cli.commands.dev import dev
 
 
 @tui(command='tui', help="Open terminal UI")
@@ -13,4 +15,6 @@ def afterpython_group(ctx):
     ctx.ensure_object(dict)
 
 
-afterpython_group.add_command(test)
+afterpython_group.add_command(init)
+afterpython_group.add_command(build)
+afterpython_group.add_command(dev)

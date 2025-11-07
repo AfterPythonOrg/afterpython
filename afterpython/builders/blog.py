@@ -1,5 +1,4 @@
-# Your build script should do this:
-def build_blog_posts():
+def build_blog():
     blog_posts = []
     
     # Process user content from afterpython/blog/
