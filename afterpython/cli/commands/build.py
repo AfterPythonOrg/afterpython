@@ -24,6 +24,7 @@ def prebuild():
             )
     _check_initialized()
 
+
 def postbuild():
     destination = WEBSITE_PATH / 'static'
     destination.mkdir(parents=True, exist_ok=True)

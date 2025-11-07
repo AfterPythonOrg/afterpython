@@ -13,6 +13,9 @@ from afterpython.const.paths import WEBSITE_PATH
 @click.command()
 def dev():
     """Run the development server"""
+    # OPTIMIZE: should implement incremental build?
+    subprocess.run(['ap', 'build'], check=True)
+    
     click.echo("Running the development server...")
     node_env: NodeEnv = find_node_env()
     subprocess.run(["pnpm", "dev"], cwd=WEBSITE_PATH, env=node_env, check=True)
