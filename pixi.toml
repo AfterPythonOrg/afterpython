@@ -6,16 +6,8 @@ platforms = ["osx-arm64", "linux-64"]
 version = "0.0.1.dev2"
 
 [tasks]
-dev = "cd frontend && pnpm dev"
 add = { cmd = "uv add {{ lib }} && pixi add --pypi {{ lib }}", args = ["lib"] }
 remove = { cmd = "uv remove {{ lib }} && pixi remove --pypi {{ lib }}", args = ["lib"] }
-lock = "uv lock && pixi lock"
-install = "uv sync --all-extras --all-groups && pixi install"
-clean = "rm -rf ./afterpython/_build"
-build-watch = { cmd = "cd frontend && pnpm build:watch", depends-on = ["clean"] }
-build = { cmd = "cd frontend && pnpm build && cd .. && uv build", depends-on = ["clean"] }
-preview = "cd frontend && pnpm preview"
-publish = { cmd = "uv publish", depends-on = ["build"] }
 
 [tasks.test-all]
 depends-on = [
@@ -28,22 +20,31 @@ depends-on = [
 [dependencies]
 python = ">=3.11"
 uv = ">=0.9.7"
-# nodejs = ">=22.14.0"
-# pnpm = ">=10.15.0"
+# NOTE: install mystmd via pixi instead of uv to avoid the restrictive version constraints in pypi package `mystmd`
+# since pixi doesn't support override-dependencies
+mystmd = ">=1.6.4"
 
 [pypi-dependencies]
 click = ">=8.1.8"
 trogon = ">=0.6.0"
-mystmd = { version = ">=1.6.4", extras = ["execute"] }
-marimo = { version = ">=0.17.6", extras = ["recommended"] }
+pyproject-metadata = ">=0.9.1"
+pdoc = ">=16.0.0"
+ruff = ">=0.14.4"
+pre-commit = ">=4.3.0"
 
 [environments]
-py311 = ["py311", "test"]
-py312 = ["py312", "test"]
-py313 = ["py313", "test"]
-py314 = ["py314", "test"]
+default = ["py311", "optional"]
+py311 = ["py311", "test", "optional"]
+py312 = ["py312", "test", "optional"]
+py313 = ["py313", "test", "optional"]
+py314 = ["py314", "test", "optional"]
 
-[feature.test.dependencies]
+[feature.optional.pypi-dependencies]
+marimo = { version = ">=0.17.7", extras = ["recommended"] }
+notebook = ">=7.4.7"
+jupytext = ">=1.18.1"
+
+[feature.test.pypi-dependencies]
 pytest = ">=8.4.2"
 pytest-cov = ">=7.0.0"
 pytest-mock = ">=3.15.1"

@@ -6,6 +6,12 @@
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/AfterPythonOrg/afterpython)
 
 
+## Installation
+```bash
+# install afterpython as a dev dependency
+uv add --dev afterpython
+```
+
 - afterpython init          # Creates afterpython/ folder + afterpython.toml
 - afterpython build         # Builds static site
 - afterpython dev           # Dev server with hot reload

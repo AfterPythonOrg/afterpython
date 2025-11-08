@@ -36,8 +36,19 @@
 {:else}
   <!-- Normal state: metadata loaded successfully -->
   <section class="flex mt-[12vh] flex-col gap-6 items-center justify-center min-h-[60vh] text-center px-4">
-    <h1 class="text-6xl md:text-7xl font-bold tracking-tight text-tx50">
-      {metadataJson.name}
+    <h1 class="text-6xl md:text-7xl font-bold tracking-tight text-tx50 flex flex-wrap justify-center gap-x-2">
+      {#each metadataJson.name.split(' ') as word, wordIndex}
+        <span class="inline-flex">
+          {#each word.split('') as char, charIndex}
+            <span
+              class="inline-block animate-slide-in opacity-0"
+              style="animation-delay: {(wordIndex * word.length + charIndex) * 0.05}s; animation-fill-mode: forwards;"
+            >
+              {char}
+            </span>
+          {/each}
+        </span>
+      {/each}
     </h1>
     <p class="text-xl md:text-2xl text-tx300 max-w-2xl">
       {metadataJson.summary}
@@ -76,5 +87,20 @@
 
   :global(.star-blink) {
     animation: star-blink 1.5s ease-in-out infinite;
+  }
+
+  @keyframes slide-in {
+    0% {
+      opacity: 0;
+      transform: translateX(100px) rotate(90deg);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0) rotate(0deg);
+    }
+  }
+
+  .animate-slide-in {
+    animation: slide-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 </style>

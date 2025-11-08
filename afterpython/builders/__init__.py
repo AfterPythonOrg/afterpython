@@ -6,9 +6,9 @@ from afterpython.builders.docs import build_docs
 
 
 __all__ = (
-    'build_metadata',
-    'build_blog',
-    'build_tutorials',
-    'build_examples',
-    'build_docs',
+    "build_metadata",
+    "build_blog",
+    "build_tutorials",
+    "build_examples",
+    "build_docs",
 )

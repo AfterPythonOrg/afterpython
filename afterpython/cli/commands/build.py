@@ -1,7 +1,10 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from afterpython._typing import NodeEnv
+    from pathlib import Path
+    from afterpython._paths import Paths
 
 import shutil
 import subprocess
@@ -9,7 +12,6 @@ import subprocess
 import click
 
 from afterpython.utils.utils import find_node_env
-from afterpython.const.paths import AFTERPYTHON_PATH, WEBSITE_PATH, BUILD_PATH
 from afterpython.builders import (
     build_metadata,
     build_blog,
@@ -19,53 +21,60 @@ from afterpython.builders import (
 )
 
 
-def prebuild():
-    BUILD_PATH.mkdir(parents=True, exist_ok=True)
+def prebuild(paths: Paths):
     def _check_initialized():
         # Check if 'ap init' has been run
-        config_file = AFTERPYTHON_PATH / "afterpython.toml"
-        if not config_file.exists():
+        afterpython_toml = paths.afterpython_path / "afterpython.toml"
+        if not afterpython_toml.exists():
             raise click.ClickException(
                 "AfterPython is not initialized!\n"
                 "Run 'ap init' first to set up your project."
             )
+
+    def _clean_build_directory():
+        print("Cleaning up build directory...")
+        build_path = paths.build_path
+        if build_path.exists():
+            shutil.rmtree(build_path)
+        build_path.mkdir(parents=True, exist_ok=True)
+
     _check_initialized()
+    _clean_build_directory()
 
 
-def postbuild():
-    destination = WEBSITE_PATH / 'static'
+def postbuild(paths: Paths):
+    def _copy_files(source: Path, destination: Path):
+        if source.exists():
+            for file in source.iterdir():
+                if file.is_file():
+                    shutil.copy2(file, destination / file.name)
+                    print(f"Copied: {file.name} to {destination / file.name}")
+
+    destination = paths.website_path / "static"
     destination.mkdir(parents=True, exist_ok=True)
-    def _copy_static_files():
-        # Copy all static files from afterpython/static/ to afterpython/_website/static/
-        source_static = AFTERPYTHON_PATH / 'static'
-        if source_static.exists():
-            for file in source_static.iterdir():
-                if file.is_file():
-                    shutil.copy2(file, destination / file.name)
-                    print(f"Copied: {file.name} to {destination / file.name}")
-    def _copy_build_files():
-        # Copy all files from afterpython/_build to afterpython/_website/static/
-        source_build = BUILD_PATH
-        if source_build.exists():
-            for file in source_build.iterdir():
-                if file.is_file():
-                    shutil.copy2(file, destination / file.name)
-                    print(f"Copied: {file.name} to {destination / file.name}")
-    _copy_static_files()       
-    _copy_build_files()
+    # Copy all static files from afterpython/static/ to afterpython/_website/static/
+    _copy_files(paths.static_path, destination)
+    # Copy all files from afterpython/_build to afterpython/_website/static/
+    _copy_files(paths.build_path, destination)
 
 
 @click.command()
-@click.option('--only-contents', is_flag=True, help='if enabled, only build contents and skip building project website')
-def build(only_contents: bool):
-    prebuild()
-    
+@click.pass_context
+@click.option(
+    "--only-contents",
+    is_flag=True,
+    help="if enabled, only build contents and skip building project website",
+)
+def build(ctx, only_contents: bool):
+    paths = ctx.obj["paths"]
+    prebuild(paths)
+
     click.echo("Building contents...")
     build_metadata()  # build metadata.json
 
     if not only_contents:
         click.echo("Building project website...")
         node_env: NodeEnv = find_node_env()
-        subprocess.run(["pnpm", "build"], cwd=WEBSITE_PATH, env=node_env, check=True)
+        subprocess.run(["pnpm", "build"], cwd=paths.website_path, env=node_env, check=True)
 
-    postbuild()
+    postbuild(paths)

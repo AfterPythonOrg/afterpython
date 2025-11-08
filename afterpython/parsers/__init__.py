@@ -4,7 +4,7 @@ from afterpython.parsers.jupyter_notebook import parse_jupyter_notebook
 
 
 __all__ = (
-    'parse_markdown',
-    'parse_marimo_notebook',
-    'parse_jupyter_notebook',
+    "parse_markdown",
+    "parse_marimo_notebook",
+    "parse_jupyter_notebook",
 )

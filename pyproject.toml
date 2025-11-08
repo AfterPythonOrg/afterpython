@@ -20,6 +20,9 @@ dependencies = [
     "trogon>=0.6.0",
     "pyproject-metadata>=0.9.1",
     "mystmd>=1.6.4",
+    "pdoc>=16.0.0",
+    "ruff>=0.14.4",
+    "pre-commit>=4.3.0",
 ]
 
 [project.optional-dependencies]
@@ -33,15 +36,6 @@ documentation = "https://docs.afterpython.org"
 
 [project.scripts]
 ap = "afterpython.main:run_cli"
-
-[dependency-groups]
-dev = [
-    "ruff>=0.14.4",
-    "pre-commit>=4.3.0",
-    "commitizen>=4.9.1",
-    "python-semantic-release>=10.4.1",
-    "pdoc>=16.0.0",
-]
 
 [tool.uv]
 # override the restrictive version constraints "platformdirs~=4.2.2", "nodeenv~=1.9.1" in package `mystmd`
@@ -62,6 +56,8 @@ source-exclude = [
     "afterpython/static",
     "afterpython/_website",
     "afterpython/_build",
+    "afterpython/ruff.toml",
+    "afterpython/afterpython.toml",
 ]
 wheel-exclude = [
     "afterpython/blog",
@@ -71,4 +67,6 @@ wheel-exclude = [
     "afterpython/static",
     "afterpython/_website",
     "afterpython/_build",
+    "afterpython/ruff.toml",
+    "afterpython/afterpython.toml",
 ]
