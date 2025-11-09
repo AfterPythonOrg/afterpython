@@ -22,7 +22,7 @@ extend-select = [
     "UP",    # pyupgrade - upgrade syntax for newer Python
     "B",     # flake8-bugbear - find likely bugs
     "SIM",   # flake8-simplify - simplify code
-    "C90",   # mccabe - complexity checking
+    # "C90",   # mccabe - complexity checking
     "N",     # pep8-naming - enforce naming conventions
     "RUF",   # ruff-specific rules
 ]

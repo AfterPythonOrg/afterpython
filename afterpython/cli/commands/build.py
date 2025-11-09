@@ -70,7 +70,10 @@ def build(ctx, only_contents: bool):
     prebuild(paths)
 
     click.echo("Building contents...")
-    build_metadata()  # build metadata.json
+    build_metadata(
+        pyproject_path=paths.pyproject_path,
+        build_path=paths.build_path,
+    )  # build metadata.json
 
     if not only_contents:
         click.echo("Building project website...")

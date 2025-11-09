@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 @dataclass
 class Paths:
     user_path: Path = field(init=False)
+    pyproject_path: Path = field(init=False)
     afterpython_path: Path = field(init=False)
     website_path: Path = field(init=False)
     build_path: Path = field(init=False)
@@ -13,6 +14,7 @@ class Paths:
 
     def __post_init__(self):
         self.user_path = self._find_project_root()
+        self.pyproject_path = self.user_path / "pyproject.toml"
         self.afterpython_path = self.user_path / "afterpython"
         self.website_path = self.afterpython_path / "_website"
         self.build_path = self.afterpython_path / "_build"

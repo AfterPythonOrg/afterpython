@@ -24,25 +24,31 @@ def init(ctx, no_mystmd: bool):
     paths = ctx.obj["paths"]
     click.echo("Initializing afterpython...")
     afterpython_path = paths.afterpython_path
+    website_path = paths.website_path
+    docs_path = paths.docs_path
+    static_path = paths.static_path
 
     afterpython_path.mkdir(parents=True, exist_ok=True)
-    paths.static_path.mkdir(parents=True, exist_ok=True)
+    static_path.mkdir(parents=True, exist_ok=True)
     afterpython_path.joinpath("afterpython.toml").touch()
     # find any existing node.js version and use it, if no, install the Node.js version specified in NODEENV_VERSION
     node_env: NodeEnv = find_node_env()
 
     if not no_mystmd:
         click.echo(
-            "Initializing MyST Markdown (mystmd) for documentation in afterpython/docs/..."
+            f"Initializing MyST Markdown (mystmd) for documentation in {docs_path}..."
         )
-        docs_path = paths.docs_path
         docs_path.mkdir(parents=True, exist_ok=True)
         subprocess.run(
             ["myst", "init"], cwd=docs_path, input="n\n", text=True, env=node_env
         )
 
-    click.echo("Initializing project website template in afterpython/_website/...")
-    subprocess.run(["ap", "update-website"], check=True)
+    if click.confirm(
+        f"\nCreate project website in {website_path}?",
+        default=True
+    ):
+        click.echo(f"Initializing project website template in {website_path}...")
+        subprocess.run(["ap", "update", "website"])
 
     if click.confirm(
         f"\nCreate ruff.toml in {afterpython_path}?",

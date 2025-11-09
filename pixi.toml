@@ -25,12 +25,14 @@ uv = ">=0.9.7"
 mystmd = ">=1.6.4"
 
 [pypi-dependencies]
-click = ">=8.1.8"
+click = ">=8.3.0"
 trogon = ">=0.6.0"
+pyyaml = ">=6.0.3"
+tomlkit = ">=0.13.3"
 pyproject-metadata = ">=0.9.1"
 pdoc = ">=16.0.0"
 ruff = ">=0.14.4"
-pre-commit = ">=4.3.0"
+pre-commit = ">=4.4.0"
 
 [environments]
 default = ["py311", "optional"]

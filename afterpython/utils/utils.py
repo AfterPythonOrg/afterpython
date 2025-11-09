@@ -5,6 +5,7 @@ if TYPE_CHECKING:
     from afterpython._typing import NodeEnv
 
 import os
+import shutil
 import subprocess
 
 
@@ -25,3 +26,8 @@ def find_node_env() -> NodeEnv:
     node_env: NodeEnv = {**os.environ, "PATH": os_path}
     subprocess.run(["npm", "install", "-g", "pnpm"], env=node_env, check=True)
     return node_env
+
+
+def has_uv() -> bool:
+    """Check if uv is installed"""
+    return shutil.which("uv") is not None
