@@ -1,0 +1,6 @@
+[docs]
+title = "AfterPython"
+description = "AfterPython is a CLI tool for creating and managing AfterPython projects."
+keywords = ["afterpython", "cli", "tool", "documentation"]
+authors = ["Stephen Yau <softwareentrepreneer+afterpython@gmail.com>"]
+github = "https://github.com/AfterPythonOrg/afterpython"

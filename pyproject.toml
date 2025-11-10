@@ -18,24 +18,23 @@ requires-python = ">=3.11"
 dependencies = [
     "click>=8.3.0",
     "trogon>=0.6.0",
+    "httpx>=0.28.1",
     "pyyaml>=6.0.3",
     "tomlkit>=0.13.3",
+    "gitpython>=3.1.45",
+    "python-dotenv>=1.2.1",
     "pyproject-metadata>=0.9.1",
-    "httpx>=0.28.1",
     "mystmd>=1.6.4",
     "pdoc>=16.0.0",
     "ruff>=0.14.4",
     "pre-commit>=4.4.0",
+    # "commitizen>=4.9.1",
+    # "python-semantic-release>=10.5.2",
 ]
 
 [project.optional-dependencies]
 marimo = ["marimo[recommended]>=0.17.7"]
 jupyter = ["notebook>=7.4.7", "jupytext>=1.18.1"]
-
-[dependency-groups]
-dev = [
-    "commitizen>=4.9.1",
-]
 
 [project.urls]
 homepage = "https://afterpython.org"
@@ -50,7 +49,7 @@ ap = "afterpython.main:run_cli"
 override-dependencies = ["platformdirs>=4.5.0", "nodeenv>=1.9.1"]
 
 [build-system]
-requires = ["uv_build>=0.9.7,<0.10.0"]
+requires = ["uv_build>=0.9.8,<0.10.0"]
 build-backend = "uv_build"
 
 [tool.uv.build-backend]

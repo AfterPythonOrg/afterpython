@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from afterpython._typing import NodeEnv
-    from afterpython.pcu import NormalizedDependencies
+    from afterpython.pcu import Dependencies
     
 import subprocess
 import shutil
@@ -18,23 +18,24 @@ def update():
 
 
 @update.command()
-@click.pass_context
 @click.option(
     "-u", "--upgrade",
     is_flag=True,
     help="if enabled, the dependencies will be upgraded to the latest version",
 )
-def dependencies(ctx, upgrade: bool):
+def dependencies(upgrade: bool):
     """Update pyproject.toml dependencies to the latest version"""
     from afterpython.pcu import get_dependencies, update_dependencies
     from afterpython.utils.utils import has_uv
 
-    dependencies: NormalizedDependencies = get_dependencies(is_normalized=True)
+    dependencies: Dependencies = get_dependencies()
     for dep_type in dependencies:
-        # category = extras or group name
+        if not len(dependencies[dep_type]):
+            continue
         click.echo(f"- {dep_type} package(s):")
+        # category = extras or group name
         for category, deps in dependencies[dep_type].items():
-            if dep_type == 'dependencies':
+            if dep_type in ['dependencies', 'build-system']:
                 category_name = ''
             elif dep_type == 'optional-dependencies':
                 category_name = f"extras: {category}"

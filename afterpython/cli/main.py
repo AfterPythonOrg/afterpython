@@ -1,6 +1,8 @@
 import click
+from dotenv import load_dotenv
 from trogon import tui
 
+import afterpython as ap
 from afterpython import __version__
 from afterpython.cli.commands.init import init
 from afterpython.cli.commands.build import build
@@ -16,9 +18,9 @@ from afterpython.cli.commands.format import format
 @click.version_option(version=__version__)
 def afterpython_group(ctx):
     """afterpython's CLI"""
-    from afterpython._paths import Paths
+    load_dotenv()  # Load environment variables from .env file
     ctx.ensure_object(dict)
-    ctx.obj["paths"] = Paths()
+    ctx.obj["paths"] = ap.paths
 
 
 afterpython_group.add_command(init)

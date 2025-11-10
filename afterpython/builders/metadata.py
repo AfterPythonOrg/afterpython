@@ -1,11 +1,18 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from pyproject_metadata import StandardMetadata
+
 import json
-import tomllib
-from pathlib import Path
 
-from pyproject_metadata import StandardMetadata
+import afterpython as ap
 
 
-def convert_paths(build_path: Path):
+build_path = ap.paths.build_path
+
+
+def convert_paths():
     """
     Convert paths in "description" field (README.md) in metadata.json to use the new paths in the build output.
     e.g. convert ./afterpython/static/image.png to static/image.png
@@ -26,17 +33,15 @@ def convert_paths(build_path: Path):
     print("Completed path conversion in metadata.json")
 
 
-def build_metadata(pyproject_path: Path, build_path: Path):
+def build_metadata():
     """Build metadata.json using pyproject.toml"""
-    # Read and parse pyproject.toml
-    with open(pyproject_path, "rb") as f:
-        pyproject_data = tomllib.load(f)
+    from pyproject_metadata import StandardMetadata
+    from afterpython.utils.utils import read_pyproject
 
-    # Create metadata object
-    metadata = StandardMetadata.from_pyproject(pyproject_data)
+    metadata: StandardMetadata = StandardMetadata.from_pyproject(read_pyproject())
 
     # Write to metadata.json
     with open(build_path / "metadata.json", "w") as f:
         json.dump(metadata.as_json(), f, indent=2)
 
-    convert_paths(build_path)
+    convert_paths()
