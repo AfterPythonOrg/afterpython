@@ -13,7 +13,7 @@ import click
 
 @click.group()
 def update():
-    """Update pyproject.toml dependencies, website template etc."""
+    """Update website template, pyproject.toml dependencies, etc."""
     pass
 
 
@@ -29,6 +29,7 @@ def dependencies(upgrade: bool):
     from afterpython.utils.utils import has_uv
 
     dependencies: Dependencies = get_dependencies()
+    has_at_least_one_update = False
     for dep_type in dependencies:
         if not len(dependencies[dep_type]):
             continue
@@ -47,11 +48,15 @@ def dependencies(upgrade: bool):
                 msg = f"  {dep.requirement.name}: {dep.min_version}"
                 has_update = dep.min_version != dep.latest_version
                 if has_update:
+                    has_at_least_one_update = True
                     msg += f" → {click.style(dep.latest_version, fg='green', bold=True)}"
                 if category_name:
                     msg += f" ({category_name})"
                 click.echo(msg)
-    if upgrade:
+    if not has_at_least_one_update:
+        click.echo(f"\n{click.style('No dependencies to update.', bold=True)}")
+        return
+    if has_at_least_one_update and upgrade:
         update_dependencies(dependencies)  # write the latest versions to pyproject.toml
         if has_uv():
             click.echo("Upgrading dependencies with uv...")

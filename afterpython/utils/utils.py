@@ -3,16 +3,12 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from httpx import AsyncClient
-    from tomlkit.toml_document import TOMLDocument
     from afterpython._typing import NodeEnv
 
 import os
+import re
 import shutil
 import subprocess
-
-import tomlkit
-
-import afterpython as ap
 
 
 NODEENV_VERSION = "24.11.0"
@@ -37,18 +33,6 @@ def find_node_env() -> NodeEnv:
 def has_uv() -> bool:
     """Check if uv is installed"""
     return shutil.which("uv") is not None
-
-
-def read_pyproject() -> TOMLDocument:
-    '''Read pyproject.toml'''
-    with open(ap.paths.pyproject_path, "rb") as f:
-        data: TOMLDocument = tomlkit.parse(f.read())
-    return data
-
-
-def write_pyproject(data: TOMLDocument):
-    with open(ap.paths.pyproject_path, "w") as f:
-        f.write(tomlkit.dumps(data))
 
 
 async def fetch_pypi_json(client: AsyncClient, package_name: str) -> dict | None:
@@ -96,3 +80,57 @@ def get_github_url() -> str | None:
     except (ImportError, Exception):
         # GitPython not installed or not in a git repo
         return None
+    
+
+
+# REVIEW
+def detect_license_from_file(file_path: str) -> str:
+    """Extract license name from LICENSE file using regex."""
+    with open(file_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    # Common license patterns
+    patterns = {
+        'Apache-2.0': r'Apache License\s+Version 2\.0',
+        'MIT': r'MIT License|Permission is hereby granted, free of charge',
+        'GPL-3.0': r'GNU GENERAL PUBLIC LICENSE\s+Version 3',
+        'GPL-2.0': r'GNU GENERAL PUBLIC LICENSE\s+Version 2',
+        'BSD-3-Clause': r'BSD 3-Clause License|Redistribution and use in source and binary forms',
+        'BSD-2-Clause': r'BSD 2-Clause License',
+        'ISC': r'ISC License',
+        'LGPL-3.0': r'GNU LESSER GENERAL PUBLIC LICENSE\s+Version 3',
+        'MPL-2.0': r'Mozilla Public License Version 2\.0',
+    }
+    
+    # Check first 500 chars for license header
+    header = content[:500]
+    
+    for license_id, pattern in patterns.items():
+        if re.search(pattern, header, re.IGNORECASE):
+            return license_id
+    
+    return ''
+
+
+def deep_merge(base: dict, updates: dict) -> dict:
+    """Deep merge updates into base, preserving structure and metadata.
+    
+    Works with:
+    - Regular Python dicts
+    - tomlkit TOMLDocument/Table objects  
+    - ruamel.yaml CommentedMap objects
+    
+    Args:
+        base: The base dictionary to merge into (modified in-place)
+        updates: The updates to apply
+        
+    Returns:
+        The merged base dictionary (same object, modified in-place)
+    """
+    for key, value in updates.items():
+        if key in base and isinstance(base[key], dict) and isinstance(value, dict):
+            deep_merge(base[key], value)
+        else:
+            base[key] = value
+    
+    return base

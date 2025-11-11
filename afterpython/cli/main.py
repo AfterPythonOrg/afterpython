@@ -1,6 +1,9 @@
+import os
+import subprocess
+
 import click
-from dotenv import load_dotenv
 from trogon import tui
+from dotenv import load_dotenv, find_dotenv
 
 import afterpython as ap
 from afterpython import __version__
@@ -10,6 +13,7 @@ from afterpython.cli.commands.dev import dev
 from afterpython.cli.commands.update import update
 from afterpython.cli.commands.check import check
 from afterpython.cli.commands.format import format
+from afterpython.cli.commands.sync import sync
 
 
 @tui(command="tui", help="Open terminal UI")
@@ -18,9 +22,15 @@ from afterpython.cli.commands.format import format
 @click.version_option(version=__version__)
 def afterpython_group(ctx):
     """afterpython's CLI"""
-    load_dotenv()  # Load environment variables from .env file
+    load_dotenv(find_dotenv())  # Load environment variables from .env file
     ctx.ensure_object(dict)
     ctx.obj["paths"] = ap.paths
+
+    # Auto-sync before commands (except sync itself to avoid recursion)
+    if ctx.invoked_subcommand and ctx.invoked_subcommand not in ['sync', 'init']:
+        click.echo("Auto-syncing...")
+        if os.getenv("AP_AUTO_SYNC") == "1":
+            subprocess.run(["ap", "sync", "--all"])
 
 
 afterpython_group.add_command(init)
@@ -29,3 +39,4 @@ afterpython_group.add_command(dev)
 afterpython_group.add_command(update)
 afterpython_group.add_command(check)
 afterpython_group.add_command(format)
+afterpython_group.add_command(sync)

@@ -36,7 +36,7 @@ def convert_paths():
 def build_metadata():
     """Build metadata.json using pyproject.toml"""
     from pyproject_metadata import StandardMetadata
-    from afterpython.utils.utils import read_pyproject
+    from afterpython.utils.toml import read_pyproject
 
     metadata: StandardMetadata = StandardMetadata.from_pyproject(read_pyproject())
 
