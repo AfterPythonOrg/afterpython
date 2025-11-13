@@ -63,5 +63,6 @@ ap init
 - [uv]
 - [ruff]
 - [pagefind]
+- [WebLLM]
 <!-- - ty -->
 <!-- - [pixi] -->
