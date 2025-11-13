@@ -14,5 +14,11 @@ def run_cli() -> None:
     afterpython_group(obj={})
 
 
+def run_pcu() -> None:
+    """Entrypoint for 'pcu' command (alias for 'ap update deps')."""
+    from afterpython.cli.commands.update import dependencies
+    dependencies()
+
+
 if __name__ == "__main__":
     run_cli()
