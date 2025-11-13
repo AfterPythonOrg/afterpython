@@ -16,6 +16,7 @@ def check(ctx):
     paths = ctx.obj["paths"]
     ruff_toml = paths.afterpython_path / "ruff.toml"
     if ruff_toml.exists():
+        click.echo(f"Using ruff configuration from {ruff_toml}")
         subprocess.run(["ruff", "check", "--config", str(ruff_toml), *ctx.args])
     else:
         subprocess.run(["ruff", "check", *ctx.args])

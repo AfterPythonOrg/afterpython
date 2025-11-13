@@ -22,7 +22,7 @@ def find_node_env() -> NodeEnv:
     # from mystmd_py.main import ensure_valid_version
     # Use mystmd's own node-finding logic
     binary_path = os.environ.get("PATH", os.defpath)
-    node_path, os_path = find_any_node(binary_path, nodeenv_version=NODEENV_VERSION)
+    _node_path, os_path = find_any_node(binary_path, nodeenv_version=NODEENV_VERSION)
     node_env: NodeEnv = {**os.environ, "PATH": os_path}
     subprocess.run(["npm", "install", "-g", "pnpm"], env=node_env, check=True)
     return node_env
@@ -110,7 +110,7 @@ def get_github_url() -> str | None:
 # VIBE-CODED
 def detect_license_from_file(file_path: str) -> str:
     """Extract license name from LICENSE file using regex."""
-    with open(file_path, 'r', encoding='utf-8') as f:
+    with open(file_path, encoding='utf-8') as f:
         content = f.read()
     
     # Common license patterns

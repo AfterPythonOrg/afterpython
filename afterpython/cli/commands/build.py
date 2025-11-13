@@ -14,10 +14,6 @@ import afterpython as ap
 from afterpython.utils.utils import find_node_env
 from afterpython.builders import (
     build_metadata,
-    build_blog,
-    build_tutorials,
-    build_examples,
-    build_docs,
 )
 
 

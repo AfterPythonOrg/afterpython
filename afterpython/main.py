@@ -1,4 +1,4 @@
-import atexit
+# import atexit
 
 from afterpython.cli import afterpython_group
 

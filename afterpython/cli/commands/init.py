@@ -152,8 +152,8 @@ def init_authors_yml():
                     "name": str(author.get("name", "")),
                     "email": str(author.get("email", "")),
                 }
+                for author in data["project"]["authors"]
             ]
-            for author in data["project"]["authors"]
         },
     }
     write_yaml(authors_yml_path, yml_data)
