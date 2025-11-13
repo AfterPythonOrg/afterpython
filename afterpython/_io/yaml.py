@@ -33,7 +33,7 @@ def update_myst_yml(data_update: dict, path: Path):
         data_update: dict of data to update
         path: path to the myst.yml file, e.g. docs/, blog/, tutorials/, examples/, guides/
     """
-    from afterpython.utils.utils import deep_merge
+    from afterpython.utils import deep_merge
 
     file_path = path / "myst.yml"
 

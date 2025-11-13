@@ -12,7 +12,7 @@ import subprocess
 import click
 
 import afterpython as ap
-from afterpython.utils.utils import find_node_env, get_github_url
+from afterpython.utils import find_node_env, get_github_url
 
 
 def init_pyproject():
@@ -21,7 +21,7 @@ def init_pyproject():
     - add [project.urls] section with homepage, repository, and documentation URLs
     """
     import httpx
-    from afterpython.utils.utils import fetch_pypi_json, get_git_user_config
+    from afterpython.utils import fetch_pypi_json, get_git_user_config
     from afterpython._io.toml import read_pyproject, write_pyproject, _to_tomlkit
 
     build_backend = "uv_build"
@@ -83,25 +83,25 @@ def init_afterpython_toml():
 
 def init_mystmd():
     """
-    Initialize MyST Markdown (mystmd) for documentation
-    and update myst.yml files in docs, blog, tutorials, examples, and guides directories with sensible defaults
+    Initialize MyST Markdown (mystmd) and myst.yml files in 
+    docs, blogs, tutorials, examples, and guides directories with sensible defaults
     """
     from afterpython.const import CONTENT_TYPES
     from afterpython._io.yaml import update_myst_yml
 
     # find any existing node.js version and use it, if no, install the Node.js version specified in NODEENV_VERSION
     node_env: NodeEnv = find_node_env()
+    subprocess.run(["npm", "install", "-g", "pnpm"], env=node_env, check=True)
     for content_type in CONTENT_TYPES:
-        click.echo(f"Initializing MyST Markdown (mystmd) for {content_type}/ ...")
-        path = getattr(ap.paths, f"{content_type}_path")
+        path = getattr(ap.paths, f"{content_type}s_path")
+        click.echo(f"Initializing MyST Markdown (mystmd) in {path.name} directory ...")
         path.mkdir(parents=True, exist_ok=True)
         subprocess.run(["myst", "init"], cwd=path, input="n\n", text=True, env=node_env)
-        subject = content_type.capitalize()
         myst_yml_defaults = {
             "extends": "../authors.yml",
             "project": {
                 "license": "CC-BY-4.0",
-                "subject": subject,
+                "subject": content_type.capitalize() if content_type != "doc" else "Documentation",
             },
             "site": {
                 "options": {

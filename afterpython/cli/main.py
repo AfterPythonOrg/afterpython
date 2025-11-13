@@ -14,6 +14,7 @@ from afterpython.cli.commands.update import update
 from afterpython.cli.commands.check import check
 from afterpython.cli.commands.format import format
 from afterpython.cli.commands.sync import sync
+from afterpython.cli.commands.start import start, doc, blog, tutorial, example, guide
 
 
 @tui(command="tui", help="Open terminal UI")
@@ -39,3 +40,14 @@ afterpython_group.add_command(update)
 afterpython_group.add_command(check)
 afterpython_group.add_command(format)
 afterpython_group.add_command(sync)
+afterpython_group.add_command(start)
+afterpython_group.add_command(doc)
+afterpython_group.add_command(doc, name="docs")
+afterpython_group.add_command(blog)
+afterpython_group.add_command(blog, name="blogs")
+afterpython_group.add_command(tutorial)
+afterpython_group.add_command(tutorial, name="tutorials")
+afterpython_group.add_command(example)
+afterpython_group.add_command(example, name="examples")
+afterpython_group.add_command(guide)
+afterpython_group.add_command(guide, name="guides")

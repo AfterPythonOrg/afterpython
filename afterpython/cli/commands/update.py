@@ -26,7 +26,7 @@ def update():
 def dependencies(upgrade: bool):
     """Update pyproject.toml dependencies to the latest version"""
     from afterpython.pcu import get_dependencies, update_dependencies
-    from afterpython.utils.utils import has_uv
+    from afterpython.utils import has_uv
 
     dependencies: Dependencies = get_dependencies()
     has_at_least_one_update = False
@@ -77,7 +77,7 @@ update.add_command(dependencies, name="deps")  # alias for "dependencies"
 )
 def website(ctx, no_backup: bool):
     """Update the project website template to the latest version"""
-    from afterpython.utils.utils import find_node_env
+    from afterpython.utils import find_node_env
 
     website_template_repo = "AfterPythonOrg/project-website-template"
 

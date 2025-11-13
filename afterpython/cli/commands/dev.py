@@ -8,13 +8,13 @@ import subprocess
 
 import click
 
-from afterpython.utils.utils import find_node_env
+from afterpython.utils import find_node_env
 
 
 @click.command()
 @click.pass_context
 def dev(ctx):
-    """Run the development server"""
+    """Run the development server for the project website"""
     paths = ctx.obj["paths"]
     # OPTIMIZE: should implement incremental build?
     subprocess.run(["ap", "build", "--only-contents"], check=True)

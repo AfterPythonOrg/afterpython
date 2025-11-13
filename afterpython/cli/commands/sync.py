@@ -21,7 +21,7 @@ def sync():
     authors = [str(author[0]).lower().replace(" ", "_") for author in pyproject.authors]
     
     for content_type in CONTENT_TYPES:
-        path = getattr(ap.paths, f"{content_type}_path")
+        path = getattr(ap.paths, f"{content_type}s_path")
         title = str(pyproject.name) + f"'s {content_type.capitalize()}"
         data = {
             'project': {
@@ -49,4 +49,4 @@ def sync():
             }
         }
         update_myst_yml(data, path)
-        click.echo(f"✓ Synced myst.yml in {content_type}/ with pyproject.toml and afterpython.toml")
+        click.echo(f"✓ Synced myst.yml in {path.name}/ with pyproject.toml and afterpython.toml")

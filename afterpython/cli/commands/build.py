@@ -11,7 +11,7 @@ import subprocess
 import click
 
 import afterpython as ap
-from afterpython.utils.utils import find_node_env
+from afterpython.utils import find_node_env
 from afterpython.builders import (
     build_metadata,
 )

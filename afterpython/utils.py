@@ -8,7 +8,6 @@ if TYPE_CHECKING:
 import os
 import re
 import shutil
-import subprocess
 
 
 def find_node_env() -> NodeEnv:
@@ -24,7 +23,6 @@ def find_node_env() -> NodeEnv:
     binary_path = os.environ.get("PATH", os.defpath)
     _node_path, os_path = find_any_node(binary_path, nodeenv_version=NODEENV_VERSION)
     node_env: NodeEnv = {**os.environ, "PATH": os_path}
-    subprocess.run(["npm", "install", "-g", "pnpm"], env=node_env, check=True)
     return node_env
 
 

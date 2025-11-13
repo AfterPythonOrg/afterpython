@@ -55,7 +55,7 @@ def parse_min_max_versions_from_requirement(req: Requirement) -> dict[str, Versi
 async def get_latest_versions(requirements: list[Requirement]) -> dict[str, Version | None]:
     """Get latest versions for a list of dependencies from PyPI."""
     import httpx
-    from afterpython.utils.utils import fetch_pypi_json
+    from afterpython.utils import fetch_pypi_json
 
     async def fetch_version(client: httpx.AsyncClient, package_name: str) -> Version | None:
         """Fetch the latest version of a package from PyPI."""

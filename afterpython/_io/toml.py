@@ -125,7 +125,7 @@ def update_afterpython(data_update: dict):
     Args:
         data_update: dict of data to update
     """
-    from afterpython.utils.utils import deep_merge
+    from afterpython.utils import deep_merge
     afterpython_toml_path = ap.paths.afterpython_path / "afterpython.toml"
 
     # read existing data
