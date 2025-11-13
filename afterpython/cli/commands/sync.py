@@ -2,67 +2,51 @@ from datetime import datetime
 
 import click
 
-
-@click.group(invoke_without_command=True)
-@click.option('--all', is_flag=True, help='Sync both afterpython.toml and myst.yml')
-@click.pass_context
-def sync(ctx, all: bool):
-    """Sync configuration between pyproject.toml, afterpython.toml and myst.yml etc."""
-    # If no subcommand provided, default to 'afterpython'
-    if ctx.invoked_subcommand is None:
-        if all:
-            ctx.invoke(afterpython)
-            ctx.invoke(myst)
-        else:
-            ctx.invoke(afterpython)
+import afterpython as ap
 
 
-@sync.command()
-def afterpython():
-    """Sync afterpython.toml [docs] with pyproject.toml"""
-    from pyproject_metadata import StandardMetadata, License
-    from afterpython.utils.toml import read_pyproject, update_afterpython_toml
-    from afterpython.utils.utils import detect_license_from_file
+@click.command()
+def sync():
+    """Sync between pyproject.toml+afterpython.toml and myst.yml files"""
+    from pyproject_metadata import StandardMetadata
+    from afterpython.const import CONTENT_TYPES
+    from afterpython._io.toml import read_pyproject, read_afterpython, _from_tomlkit
+    from afterpython._io.yaml import update_myst_yml
     
-    metadata: StandardMetadata = StandardMetadata.from_pyproject(read_pyproject())
-    if isinstance(metadata.license, str):
-        metadata.license = License(text=metadata.license, file=None)
-    data = {
-        'docs': {
-            "title": metadata.name + "'s Documentation",
-            "description": metadata.description,
-            "keywords": metadata.keywords,
-            "authors": [{'name': author[0], 'email': author[-1]} for author in metadata.authors],
-            "github": metadata.urls['repository'],
-            "license": metadata.license.text if metadata.license.file is None else detect_license_from_file(metadata.license.file),
-            "copyright": f"© {metadata.name} {datetime.now().year}. All rights reserved."
+    pyproject: StandardMetadata = StandardMetadata.from_pyproject(read_pyproject())
+    afterpython = read_afterpython()
+    github_url = str(pyproject.urls.get('repository', ''))
+    company_name = str(_from_tomlkit(afterpython['company']).get('name', ''))
+    company_url = str(_from_tomlkit(afterpython['company']).get('url', ''))
+    authors = [str(author[0]).lower().replace(" ", "_") for author in pyproject.authors]
+    
+    for content_type in CONTENT_TYPES:
+        path = getattr(ap.paths, f"{content_type}_path")
+        title = str(pyproject.name) + f"'s {content_type.capitalize()}"
+        data = {
+            'project': {
+                # using author ids defined in authors.yml
+                "authors": authors,
+                "venue": {
+                    # NOTE: company's name is used as the venue title
+                    "title": company_name,
+                    "url": company_url,
+                },
+                "copyright": f"© {company_name or pyproject.name} {datetime.now().year}. All rights reserved.",
+                "title": title,
+                "description": str(pyproject.description),
+                "keywords": list(pyproject.keywords),
+                "github": github_url,
+            },
+            "site": {
+                "title": title,
+                "actions": [
+                    {
+                        "title": "⭐ Star",
+                        "url": github_url,
+                    }
+                ],
+            }
         }
-    }
-    update_afterpython_toml(data)
-    click.echo("✓ Synced afterpython.toml [docs] with pyproject.toml")
-    
-    
-@sync.command()
-def myst():
-    """Sync myst.yml [project] section with afterpython.toml [docs] section"""
-    from afterpython.utils.toml import read_afterpython_toml, _from_tomlkit
-    from afterpython.utils.yaml import read_myst_yml, update_myst_yml
-
-    afterpython_toml = read_afterpython_toml()
-    # convert tomlkit objects to plain Python data structures
-    docs = _from_tomlkit(afterpython_toml['docs'])
-    myst_yml = read_myst_yml()
-    data = {
-        'project': {
-            'id': myst_yml['project']['id'],
-            'title': docs['title'],
-            'description': docs['description'],
-            'keywords': docs['keywords'],
-            'authors': docs['authors'],
-            'github': docs['github'],
-            'license': docs['license'],
-            'copyright': docs['copyright'],
-        }
-    }
-    update_myst_yml(data)
-    click.echo("✓ Synced myst.yml with afterpython.toml [docs] section")
+        update_myst_yml(data, path)
+        click.echo(f"✓ Synced myst.yml in {content_type}/ with pyproject.toml and afterpython.toml")

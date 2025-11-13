@@ -70,7 +70,7 @@ async def get_latest_versions(requirements: list[Requirement]) -> dict[str, Vers
 
 def get_dependencies() -> Dependencies:
     """Get dependencies from pyproject.toml"""
-    from afterpython.utils.toml import read_pyproject
+    from afterpython._io.toml import read_pyproject
 
     doc: TOMLDocument = read_pyproject()
     dependencies = {
@@ -117,7 +117,7 @@ def get_dependencies() -> Dependencies:
 
 def update_dependencies(dependencies: Dependencies):
     """Update dependency versions in pyproject.toml"""
-    from afterpython.utils.toml import read_pyproject, write_pyproject
+    from afterpython._io.toml import read_pyproject, write_pyproject
 
     doc: TOMLDocument = read_pyproject()
     for dep_type in dependencies:

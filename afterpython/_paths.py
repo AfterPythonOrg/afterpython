@@ -1,9 +1,12 @@
 from pathlib import Path
 from dataclasses import dataclass, field
 
+from afterpython.const import CONTENT_TYPES
+
 
 @dataclass
 class Paths:
+    package_path: Path = field(init=False)
     user_path: Path = field(init=False)
     pyproject_path: Path = field(init=False)
     afterpython_path: Path = field(init=False)
@@ -13,13 +16,16 @@ class Paths:
     docs_path: Path = field(init=False)
 
     def __post_init__(self):
+        # package path is the path to the afterpython package in user's site-packages
+        self.package_path = Path(__file__).resolve().parents[0]
         self.user_path = self._find_project_root()
         self.pyproject_path = self.user_path / "pyproject.toml"
         self.afterpython_path = self.user_path / "afterpython"
         self.website_path = self.afterpython_path / "_website"
         self.build_path = self.afterpython_path / "_build"
         self.static_path = self.afterpython_path / "static"
-        self.docs_path = self.afterpython_path / "docs"
+        for content_type in CONTENT_TYPES:
+            setattr(self, f"{content_type}_path", self.afterpython_path / content_type)
 
     def _find_project_root(self) -> Path:
         """Find the project root by looking for pyproject.toml in current or parent directories."""

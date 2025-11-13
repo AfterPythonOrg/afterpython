@@ -21,8 +21,8 @@ def init_pyproject():
     - add [project.urls] section with homepage, repository, and documentation URLs
     """
     import httpx
-    from afterpython.utils.utils import fetch_pypi_json
-    from afterpython.utils.toml import read_pyproject, write_pyproject
+    from afterpython.utils.utils import fetch_pypi_json, get_git_user_config
+    from afterpython._io.toml import read_pyproject, write_pyproject, _to_tomlkit
 
     build_backend = "uv_build"
 
@@ -44,66 +44,78 @@ def init_pyproject():
             }
             is_updated = True
 
-    if "project" in data and "urls" not in data["project"]:
-        data["project"]["urls"] = {
-            "homepage": "",
-            "repository": get_github_url() or "",
-            "documentation": "",
-        }
-        is_updated = True
+    if "project" in data:
+        if "urls" not in data["project"]:
+            data["project"]["urls"] = {
+                "homepage": "",
+                "repository": get_github_url() or "",
+                "documentation": "",
+            }
+            is_updated = True
+        if "authors" not in data["project"]:
+            # convert git user config to tomlkit object
+            data["project"]["authors"] = _to_tomlkit([get_git_user_config()])
+            is_updated = True
 
     if is_updated:
         write_pyproject(data)
 
 
+def init_afterpython_toml():
+    """Initialize afterpython.toml"""
+    from afterpython._io.toml import update_afterpython
+
+    afterpython_toml_path = ap.paths.afterpython_path / "afterpython.toml"
+    if afterpython_toml_path.exists():
+        click.echo(f"afterpython.toml already exists at {afterpython_toml_path}")
+        return
+    afterpython_toml_path.touch()
+    update_afterpython(
+        {
+            "company": {
+                "name": "",
+                "url": "",
+            }
+        }
+    )
+    click.echo(f"Created {afterpython_toml_path}")
+
+
 def init_mystmd():
     """
     Initialize MyST Markdown (mystmd) for documentation
-    and update myst.yml file with sensible defaults
+    and update myst.yml files in docs, blog, tutorials, examples, and guides directories with sensible defaults
     """
-    from afterpython.utils.yaml import update_myst_yml
+    from afterpython.const import CONTENT_TYPES
+    from afterpython._io.yaml import update_myst_yml
 
-    docs_path = ap.paths.docs_path
     # find any existing node.js version and use it, if no, install the Node.js version specified in NODEENV_VERSION
     node_env: NodeEnv = find_node_env()
-    click.echo(
-        f"Initializing MyST Markdown (mystmd) for documentation in {docs_path}..."
-    )
-    docs_path.mkdir(parents=True, exist_ok=True)
-    subprocess.run(
-        ["myst", "init"], cwd=docs_path, input="n\n", text=True, env=node_env
-    )
-    myst_yml_defaults = {
-        "site": {
-            "options": {
-                "favicon": "../static/favicon.ico",
-                "logo": "../static/logo.svg",
-                "logo_dark": "../static/logo-dark.svg",
-                "logo_text": "",
-                "analytics_google": f"{{{'GOOGLE_ANALYTICS_ID'}}}",
-                "twitter": "",
+    for content_type in CONTENT_TYPES:
+        click.echo(f"Initializing MyST Markdown (mystmd) for {content_type}/ ...")
+        path = getattr(ap.paths, f"{content_type}_path")
+        path.mkdir(parents=True, exist_ok=True)
+        subprocess.run(["myst", "init"], cwd=path, input="n\n", text=True, env=node_env)
+        subject = content_type.capitalize()
+        myst_yml_defaults = {
+            "extends": "../authors.yml",
+            "project": {
+                "license": "CC-BY-4.0",
+                "subject": subject,
             },
-            "actions": [
-                {
-                    "title": "⭐ Star",
-                    "url": get_github_url() or "",
-                }
-            ],
-        },
-    }
-    update_myst_yml(myst_yml_defaults)
-    subprocess.run(["ap", "sync", "myst"])
-
-
-def init_afterpython_toml():
-    """Initialize afterpython.toml's [docs] section by syncing with pyproject.toml"""
-    click.echo("Initializing afterpython.toml...")
-    subprocess.run(["ap", "sync", "afterpython"])
-
-
-def init_website():
-    click.echo(f"Initializing project website template in {ap.paths.website_path}...")
-    subprocess.run(["ap", "update", "website"])
+            "site": {
+                "options": {
+                    "favicon": "../static/favicon.ico",
+                    "logo": "../static/logo.svg",
+                    "logo_dark": "../static/logo-dark.svg",
+                    "logo_text": "",
+                    "analytics_google": f"{{{'GOOGLE_ANALYTICS_ID'}}}",
+                    "twitter": "",
+                },
+            },
+        }
+        update_myst_yml(myst_yml_defaults, path)
+        subprocess.run(["ap", "sync", "myst"])
 
 
 def init_ruff_toml():
@@ -112,24 +124,60 @@ def init_ruff_toml():
     if ruff_toml_path.exists():
         click.echo(f"Ruff configuration file {ruff_toml_path} already exists")
         return
-    ruff_template_path = afterpython_path / "ruff-template.toml"
+    ruff_template_path = ap.paths.package_path / "ruff-template.toml"
     shutil.copy(ruff_template_path, ruff_toml_path)
     click.echo(f"Created {ruff_toml_path}")
 
 
+def init_authors_yml():
+    """Initialize authors.yml by using authors in pyproject.toml"""
+    from afterpython._io.toml import read_pyproject
+    from afterpython._io.yaml import write_yaml, read_yaml
+
+    data: TOMLDocument = read_pyproject()
+
+    authors_yml_path = ap.paths.afterpython_path / "authors.yml"
+    if authors_yml_path.exists():
+        click.echo(f"Authors configuration file {authors_yml_path} already exists")
+        return
+
+    # read myst.yml from docs path to get "version"
+    docs_myst_yml = read_yaml(ap.paths.docs_path / "myst.yml")
+    yml_data = {
+        "version": docs_myst_yml["version"],
+        "project": {
+            "contributors": [
+                {
+                    "id": str(author.get("name", "")).replace(" ", "_").lower(),
+                    "name": str(author.get("name", "")),
+                    "email": str(author.get("email", "")),
+                }
+            ]
+            for author in data["project"]["authors"]
+        },
+    }
+    write_yaml(authors_yml_path, yml_data)
+    yml_data = read_yaml(authors_yml_path)
+    yml_data["project"].yaml_set_comment_before_after_key(
+        "contributors",
+        after="See more at: https://mystmd.org/guide/frontmatter#frontmatter-authors",
+    )
+    write_yaml(authors_yml_path, yml_data)
+    click.echo(f"Created {authors_yml_path}")
+
+
+def init_website():
+    click.echo(f"Initializing project website template in {ap.paths.website_path}...")
+    subprocess.run(["ap", "update", "website"])
+
+
 @click.command()
 @click.pass_context
-@click.option(
-    "--no-mystmd",
-    is_flag=True,
-    help="if enabled, MyST Markdown will not be initialized",
-)
-def init(ctx, no_mystmd: bool):
+def init(ctx):
     """Initialize afterpython with MyST Markdown (by default) and project website template"""
     paths = ctx.obj["paths"]
     click.echo("Initializing afterpython...")
     afterpython_path = paths.afterpython_path
-    website_path = paths.website_path
     static_path = paths.static_path
 
     afterpython_path.mkdir(parents=True, exist_ok=True)
@@ -140,11 +188,14 @@ def init(ctx, no_mystmd: bool):
 
     init_afterpython_toml()
 
-    if not no_mystmd:
-        init_mystmd()
+    init_mystmd()
 
-    if click.confirm(f"\nCreate project website in {website_path}?", default=True):
-        init_website()
+    init_authors_yml()
+
+    # TODO: init faq.yml
+
+    init_website()
 
     if click.confirm(f"\nCreate ruff.toml in {afterpython_path}?", default=True):
         init_ruff_toml()
+

@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from tomlkit.toml_document import TOMLDocument
+    from pathlib import Path
     
 import tomlkit
 
@@ -93,27 +94,33 @@ def _to_tomlkit(value):
         return value
     
 
-def read_pyproject() -> TOMLDocument:
-    '''Read pyproject.toml'''
-    with open(ap.paths.pyproject_path, "rb") as f:
+def read_toml(file_path: Path) -> TOMLDocument:
+    with open(file_path, "rb") as f:
         data: TOMLDocument = tomlkit.parse(f.read())
     return data
 
 
-def write_pyproject(data: TOMLDocument):
-    with open(ap.paths.pyproject_path, "w") as f:
+def write_toml(file_path: Path, data: TOMLDocument | dict):
+    with open(file_path, "w") as f:
         f.write(tomlkit.dumps(data))
 
 
-def read_afterpython_toml() -> TOMLDocument:
+def read_pyproject() -> TOMLDocument:
+    '''Read pyproject.toml'''
+    return read_toml(ap.paths.pyproject_path)
+
+
+def write_pyproject(data: TOMLDocument):
+    write_toml(ap.paths.pyproject_path, data)
+
+
+def read_afterpython() -> TOMLDocument:
     '''Read afterpython.toml'''
-    with open(ap.paths.afterpython_path / "afterpython.toml", "rb") as f:
-        data: TOMLDocument = tomlkit.parse(f.read())
-    return data
+    return read_toml(ap.paths.afterpython_path / "afterpython.toml")
 
 
-def update_afterpython_toml(data_update: dict):
-    """Update afterpython.toml's [docs] section
+def update_afterpython(data_update: dict):
+    """Update afterpython.toml
 
     Args:
         data_update: dict of data to update
@@ -128,7 +135,9 @@ def update_afterpython_toml(data_update: dict):
     else:
         with open(afterpython_toml_path, "rb") as f:
             existing_data = tomlkit.parse(f.read())
-
+    if existing_data is None:
+        existing_data = tomlkit.document()
+        
     # convert and update existing data
     # Convert to tomlkit objects to use "array of inline tables" format
     # e.g. authors = [{name = "..."}] instead of [[docs.authors]] (array of tables)
@@ -137,5 +146,4 @@ def update_afterpython_toml(data_update: dict):
     existing_data = deep_merge(existing_data, converted_data)
 
     # write updated data
-    with open(afterpython_toml_path, "w") as f:
-        f.write(tomlkit.dumps(existing_data))
+    write_toml(afterpython_toml_path, existing_data)

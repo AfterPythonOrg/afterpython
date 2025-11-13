@@ -11,15 +11,13 @@ import shutil
 import subprocess
 
 
-NODEENV_VERSION = "24.11.0"
-
-
 def find_node_env() -> NodeEnv:
     """
     Find if there is an installed Node.js version, if yes, use it
     If no, install the Node.js version specified in NODEENV_VERSION
     """
     from mystmd_py.nodeenv import find_any_node
+    from afterpython.const import NODEENV_VERSION
 
     # from mystmd_py.main import ensure_valid_version
     # Use mystmd's own node-finding logic
@@ -45,6 +43,32 @@ async def fetch_pypi_json(client: AsyncClient, package_name: str) -> dict | None
     except Exception as e:
         # Return None if package doesn't exist or network fails
         print(f"Warning: Could not fetch PyPI JSON for {package_name}: {e}")
+        return None
+
+
+def get_git_user_config() -> dict | None:
+    """Get Git user configuration (name and email)."""
+    try:
+        from git import Repo
+        
+        # Get the repo
+        repo = Repo(search_parent_directories=True)
+        
+        # Access git config
+        reader = repo.config_reader()
+        
+        # Get user name and email
+        name = reader.get_value("user", "name", default=None)
+        email = reader.get_value("user", "email", default=None)
+        
+        if not name or not email:
+            return None
+            
+        return {
+            "name": name,
+            "email": email
+        }
+    except Exception:
         return None
 
 
@@ -83,7 +107,7 @@ def get_github_url() -> str | None:
     
 
 
-# REVIEW
+# VIBE-CODED
 def detect_license_from_file(file_path: str) -> str:
     """Extract license name from LICENSE file using regex."""
     with open(file_path, 'r', encoding='utf-8') as f:

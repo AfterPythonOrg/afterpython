@@ -1,8 +1,4 @@
-[docs]
-title = "afterpython's Documentation"
-description = "CLI tool for AfterPython"
-keywords = []
-authors = [{name = "Stephen Yau", email = "softwareentrepreneer+afterpython@gmail.com"}]
-github = "https://github.com/AfterPythonOrg/afterpython"
-license = "Apache-2.0"
-copyright = "© afterpython 2025. All rights reserved."
+# Extra information that pyproject.toml doesn't support should be stored in afterpython.toml
+[company]
+name = "AfterPython.Org"
+url = "https://afterpython.org"

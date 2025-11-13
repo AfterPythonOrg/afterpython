@@ -1,0 +1,7 @@
+version: 1
+project:
+  contributors:
+  # See more at: https://mystmd.org/guide/frontmatter#frontmatter-authors
+  - id: stephen_yau
+    name: Stephen Yau
+    email: softwareentrepreneer+afterpython@gmail.com

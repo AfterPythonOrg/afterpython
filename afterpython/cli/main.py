@@ -28,9 +28,9 @@ def afterpython_group(ctx):
 
     # Auto-sync before commands (except sync itself to avoid recursion)
     if ctx.invoked_subcommand and ctx.invoked_subcommand not in ['sync', 'init']:
-        click.echo("Auto-syncing...")
-        if os.getenv("AP_AUTO_SYNC") == "1":
-            subprocess.run(["ap", "sync", "--all"])
+        if os.getenv("AP_AUTO_SYNC", "0") == "1":
+            click.echo("Auto-syncing...")
+            subprocess.run(["ap", "sync"])
 
 
 afterpython_group.add_command(init)

@@ -1,8 +1,7 @@
 from pathlib import Path
 
-import afterpython as ap
-
 from ruamel.yaml import YAML
+from ruamel.yaml.comments import CommentedMap
 
 
 def _get_yaml() -> YAML:
@@ -14,41 +13,52 @@ def _get_yaml() -> YAML:
     return yaml
 
 
-def read_yaml(file_path: Path) -> dict:
+def read_yaml(file_path: Path) -> CommentedMap:
     yaml = _get_yaml()
     with open(file_path) as f:
         return yaml.load(f)
 
 
 def write_yaml(file_path: Path, data: dict):
+    """Write YAML data"""
     yaml = _get_yaml()
     with open(file_path, "w") as f:
         yaml.dump(data, f)
 
 
-def read_myst_yml() -> dict:
-    file_path = ap.paths.docs_path / "myst.yml"
-    return read_yaml(file_path)
-
-
-def update_myst_yml(data_update: dict):
-    """Update myst.yml project section while preserving order and formatting
+def update_myst_yml(data_update: dict, path: Path):
+    """Update myst.yml while preserving order and formatting
 
     Args:
         data_update: dict of data to update
+        path: path to the myst.yml file, e.g. docs/, blog/, tutorials/, examples/, guides/
     """
     from afterpython.utils.utils import deep_merge
 
-    file_path = ap.paths.docs_path / "myst.yml"
+    file_path = path / "myst.yml"
 
     if not file_path.exists():
         raise FileNotFoundError(
             f"myst.yml not found at {file_path}, did you forget to run `ap init` or `myst init`?"
         )
 
-    existing_data = read_yaml(file_path)
+    existing_data = read_yaml(file_path) or {}
     existing_data = deep_merge(existing_data, data_update)
 
+    # set comments for project section for convenience
+      # To autogenerate a Table of Contents, run "myst init --write-toc"
+    existing_data["project"].yaml_set_comment_before_after_key(
+        "id",
+        before="See how to create Table of Contents at: https://mystmd.org/guide/table-of-contents",
+    )
+    existing_data["project"].yaml_set_comment_before_after_key(
+        "authors",
+        before="See more authors' fields at: https://mystmd.org/guide/frontmatter#frontmatter-authors",
+    )
+    existing_data["project"].yaml_set_comment_before_after_key(
+        "venue",
+        before="See more venue's fields at: https://mystmd.org/guide/frontmatter#venue",
+    )
     existing_data["site"].yaml_set_comment_before_after_key(
         "options",
         before="See options at: https://mystmd.org/guide/website-templates#site-options",
