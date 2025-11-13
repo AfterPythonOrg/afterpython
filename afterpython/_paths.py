@@ -13,11 +13,11 @@ class Paths:
     website_path: Path = field(init=False)
     build_path: Path = field(init=False)
     static_path: Path = field(init=False)
-    docs_path: Path = field(init=False)
-    blogs_path: Path = field(init=False)
-    tutorials_path: Path = field(init=False)
-    examples_path: Path = field(init=False)
-    guides_path: Path = field(init=False)
+    doc_path: Path = field(init=False)
+    blog_path: Path = field(init=False)
+    tutorial_path: Path = field(init=False)
+    example_path: Path = field(init=False)
+    guide_path: Path = field(init=False)
 
     def __post_init__(self):
         # package path is the path to the afterpython package in user's site-packages
@@ -29,7 +29,7 @@ class Paths:
         self.build_path = self.afterpython_path / "_build"
         self.static_path = self.afterpython_path / "static"
         for content_type in CONTENT_TYPES:
-            setattr(self, f"{content_type}s_path", self.afterpython_path / (content_type + "s"))
+            setattr(self, f"{content_type}_path", self.afterpython_path / content_type)
 
     def _find_project_root(self) -> Path:
         """Find the project root by looking for pyproject.toml in current or parent directories."""

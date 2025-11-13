@@ -20,11 +20,11 @@ command_kwargs = {
 
 @click.command(**command_kwargs)
 @click.pass_context
-@click.option('--doc', is_flag=True, help='Start the development server for docs/ directory')
-@click.option('--blog', is_flag=True, help='Start the development server for blogs/ directory')
-@click.option('--tutorial', is_flag=True, help='Start the development server for tutorials/ directory')
-@click.option('--example', is_flag=True, help='Start the development server for examples/ directory')
-@click.option('--guide', is_flag=True, help='Start the development server for guides/ directory')
+@click.option('--doc', is_flag=True, help='Start the development server for doc/ directory')
+@click.option('--blog', is_flag=True, help='Start the development server for blog/ directory')
+@click.option('--tutorial', is_flag=True, help='Start the development server for tutorial/ directory')
+@click.option('--example', is_flag=True, help='Start the development server for example/ directory')
+@click.option('--guide', is_flag=True, help='Start the development server for guide/ directory')
 def start(ctx, doc: bool, blog: bool, tutorial: bool, example: bool, guide: bool):
     """Simple wrapper for `myst start` for convenience"""
     from afterpython.utils import find_node_env
@@ -52,7 +52,7 @@ def start(ctx, doc: bool, blog: bool, tutorial: bool, example: bool, guide: bool
     if sum([doc, blog, tutorial, example, guide]) != 1:
         raise click.ClickException("Only one content type can be specified")
     
-    path = getattr(paths, f"{content_type}s_path")
+    path = getattr(paths, f"{content_type}_path")
     subprocess.run(["myst", "start", *ctx.args], cwd=path, env=node_env, check=True)
 
 
@@ -70,33 +70,33 @@ def _run(ctx):
 @click.command(**command_kwargs)
 @click.pass_context
 def doc(ctx):
-    """Start the development server for docs/ directory (equivalent to: start --doc)"""
+    """Start the development server for doc/ directory (equivalent to: start --doc)"""
     _run(ctx)
 
 
 @click.command(**command_kwargs)
 @click.pass_context
 def blog(ctx):
-    """Start the development server for blogs/ directory (equivalent to: start --blog)"""
+    """Start the development server for blog/ directory (equivalent to: start --blog)"""
     _run(ctx)
 
 
 @click.command(**command_kwargs)
 @click.pass_context
 def tutorial(ctx):
-    """Start the development server for tutorials/ directory (equivalent to: start --tutorial)"""
+    """Start the development server for tutorial/ directory (equivalent to: start --tutorial)"""
     _run(ctx)
 
     
 @click.command(**command_kwargs)
 @click.pass_context
 def example(ctx):
-    """Start the development server for examples/ directory (equivalent to: start --example)"""
+    """Start the development server for example/ directory (equivalent to: start --example)"""
     _run(ctx)
 
 
 @click.command(**command_kwargs)
 @click.pass_context
 def guide(ctx):
-    """Start the development server for guides/ directory (equivalent to: start --guide)"""
+    """Start the development server for guide/ directory (equivalent to: start --guide)"""
     _run(ctx)

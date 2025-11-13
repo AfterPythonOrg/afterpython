@@ -55,10 +55,11 @@ build-backend = "uv_build"
 module-name = "afterpython"
 module-root = ""
 source-exclude = [
+    "afterpython/doc",
     "afterpython/blog",
-    "afterpython/docs",
-    "afterpython/tutorials",
-    "afterpython/examples",
+    "afterpython/tutorial",
+    "afterpython/example",
+    "afterpython/guide",
     "afterpython/static",
     "afterpython/_website",
     "afterpython/_build",
@@ -68,10 +69,11 @@ source-exclude = [
     "afterpython/faq.yml",
 ]
 wheel-exclude = [
+    "afterpython/doc",
     "afterpython/blog",
-    "afterpython/docs",
-    "afterpython/tutorials",
-    "afterpython/examples",
+    "afterpython/tutorial",
+    "afterpython/example",
+    "afterpython/guide",
     "afterpython/static",
     "afterpython/_website",
     "afterpython/_build",

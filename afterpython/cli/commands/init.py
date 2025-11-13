@@ -93,7 +93,7 @@ def init_mystmd():
     node_env: NodeEnv = find_node_env()
     subprocess.run(["npm", "install", "-g", "pnpm"], env=node_env, check=True)
     for content_type in CONTENT_TYPES:
-        path = getattr(ap.paths, f"{content_type}s_path")
+        path = getattr(ap.paths, f"{content_type}_path")
         click.echo(f"Initializing MyST Markdown (mystmd) in {path.name} directory ...")
         path.mkdir(parents=True, exist_ok=True)
         subprocess.run(["myst", "init"], cwd=path, input="n\n", text=True, env=node_env)

@@ -21,7 +21,7 @@ def sync():
     authors = [str(author[0]).lower().replace(" ", "_") for author in pyproject.authors]
     
     for content_type in CONTENT_TYPES:
-        path = getattr(ap.paths, f"{content_type}s_path")
+        path = getattr(ap.paths, f"{content_type}_path")
         title = str(pyproject.name) + f"'s {content_type.capitalize()}"
         data = {
             'project': {
