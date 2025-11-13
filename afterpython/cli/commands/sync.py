@@ -33,7 +33,7 @@ def sync():
                     "url": company_url,
                 },
                 "copyright": f"© {company_name or pyproject.name} {datetime.now().year}. All rights reserved.",
-                "title": title,
+                "title": "",
                 "description": str(pyproject.description),
                 "keywords": list(pyproject.keywords),
                 "github": github_url,

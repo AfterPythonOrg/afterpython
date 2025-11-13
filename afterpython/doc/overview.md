@@ -1,8 +1,46 @@
+[MyST]: https://mystmd.org
 [MyST Markdown]: https://mystmd.org/spec/
 [Jupyter Notebook]: https://jupyter.org
-[MyST Document Engine]: https://mystmd.org/guide/background#what-is-the-myst-document-engine-and-myst-markdown
-[template]: https://github.com/AfterPythonOrg/project-website-template
+[pre-commit]: https://pre-commit.com
+[pagefind]: https://pagefind.app
+[SemVer]: https://semver.org
+[pdoc]: https://pdoc.dev/
+[GitHub Actions]: https://github.com/features/actions
+[PyTorch]: https://pytorch.org
+[Scikit-Learn]: https://scikit-learn.org
+[WebLLM]: https://webllm.mlc.ai/
+[project-website-template]: https://github.com/AfterPythonOrg/project-website-template
+[uv]: https://docs.astral.sh/uv/
+[ruff]: https://docs.astral.sh/ruff/
 
-# How It Works
+# Overview
 
-`afterpython` uses [MyST Document Engine] under the hood so you can write content in [MyST Markdown] and [Jupyter Notebook], then builds a project website using a [template] to display all your content in an organized way.
+```{attention}
+This documentation briefly introduces the essential basics of tools like [MyST] and [pdoc] — just enough to get you started. For deeper exploration of each tool, refer to the **See Also** sections at the end of each page.
+```
+
+## What is `afterpython`
+`afterpython` is a CLI tool that **abstracts away the complexity** of **content writing, website deployment, and package release/maintenance** by providing an opinionated set of modern tools — so you don’t have to spend time selecting or learning anything beyond the basics.
+
+---
+## Why use `afterpython`
+- Write content directly in [MyST Markdown] or [Jupyter Notebook]
+- Go from writing to website deployment in minutes — no need to learn any of the underlying tools
+- Centralize all your content in a modern, unified project website — from documentation to blog posts
+- Export content as PDF — for example, combine all blog posts into a single PDF file
+- **⚡ Full-text search** across **ALL** your content in your website — docs, blogs, tutorials, everything
+- **🤖 Embedded AI Chatbot** that answers questions directly using an in-browser LLM — at no cost
+
+---
+## Tech Stack
+- [MyST]
+- [project-website-template]
+- [pre-commit]
+- [GitHub Actions]
+- [pdoc]
+- [uv]
+- [ruff]
+- [pagefind]
+- [WebLLM]
+<!-- - ty -->
+<!-- - [pixi] -->

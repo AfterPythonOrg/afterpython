@@ -107,10 +107,11 @@ def init_mystmd():
                 "options": {
                     "favicon": "../static/favicon.ico",
                     "logo": "../static/logo.svg",
-                    "logo_dark": "../static/logo-dark.svg",
+                    "logo_dark": "../static/logo.svg",
                     "logo_text": "",
+                    "logo_url": "",
                     "analytics_google": f"{{{'GOOGLE_ANALYTICS_ID'}}}",
-                    "twitter": "",
+                    # "twitter": "",
                 },
             },
         }

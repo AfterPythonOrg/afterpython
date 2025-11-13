@@ -2,3 +2,6 @@
 [company]
 name = "AfterPython.Org"
 url = "https://afterpython.org"
+
+[website]
+url = "https://ap.afterpython.org"

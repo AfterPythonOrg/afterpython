@@ -1,10 +1,11 @@
 # AfterPython: Python Package Maintenance Toolkit and Project Website Generator
 
 [![afterpython](https://afterpython.org/shield.svg)](https://afterpython.org)
-<!-- ![PyPI downloads](https://img.shields.io/pypi/dm/afterpython) -->
-<!-- [![PyPI](https://img.shields.io/pypi/v/afterpython.svg)](https://pypi.org/project/afterpython) -->
+[![Pixi Badge](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json)](https://pixi.sh)
+![PyPI downloads](https://img.shields.io/pypi/dm/afterpython)
+[![PyPI](https://img.shields.io/pypi/v/afterpython.svg)](https://pypi.org/project/afterpython)
 ![PyPI - Support Python Versions](https://img.shields.io/pypi/pyversions/afterpython)
-![Discussions](https://img.shields.io/badge/Discussions-Let's%20Chat-green)
+[![Discussions](https://img.shields.io/badge/Discussions-Let's%20Chat-green)](https://github.com/AfterPythonOrg/afterpython/discussions)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/AfterPythonOrg/afterpython)
 
 
@@ -26,7 +27,7 @@
 
 ## Problem
 Going from **writing Python code to publishing and maintaining a package** is **time-consuming**.
-Maintainers must learn multiple tools and concepts, e.g. [MyST], [SemVer], CI/CD ([pre-commit] hooks, GitHub workflows). First-time maintainers often spend hours just to deploy a documentation site whereas well-resourced projects like [PyTorch] and [Scikit-Learn] have **dedicated websites** that serve as their project hubs.
+First-time maintainers must learn multiple tools and concepts, e.g. [MyST], [SemVer], CI/CD ([pre-commit] hooks, GitHub workflows), and they often spending hours just to deploy a documentation site whereas well-resourced projects like [PyTorch] and [Scikit-Learn] have **dedicated websites** that serve as their project hubs.
 
 
 ## Solution

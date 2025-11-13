@@ -16,15 +16,38 @@ project:
     url: https://afterpython.org
   # To autogenerate a Table of Contents, run "myst init --write-toc"
   copyright: © AfterPython.Org 2025. All rights reserved.
-  title: afterpython's Docs
+  # title: 
   description: CLI tool for AfterPython
   keywords: []
+  toc:
+    - file: overview.md
+    - file: quickstart.md
+    - file: concepts.md
+    - file: myst.md
+    - file: project_website.md
+    - title: Package Maintenance
+      children:
+        - file: package_maintenance/package_management.md
+        - file: package_maintenance/ci_cd.md
+    - title: References
+      children:
+      - file: references/cli_commands.md
+      - file: references/environment_variables.md
+      - file: references/roadmap.md
+    - file: CONTRIBUTING.md
 site:
   template: book-theme
-  title: afterpython's Docs
-  # options:
-  #   favicon: favicon.ico
-  #   logo: site_logo.png
+  nav:
+    - title: AfterPython.Org
+      url: https://afterpython.org
+  title: afterpython`'s Doc
+  options:
+    favicon: ../static/favicon.ico
+    logo: ../static/logo.svg
+    logo_dark: ../static/logo.svg
+    logo_text: "AfterPython"
+    logo_url: ""
+    analytics_google: {{ GOOGLE_ANALYTICS_ID }}
 # See web layout at: https://mystmd.org/guide/website-navigation
   actions:
   - title: ⭐ Star

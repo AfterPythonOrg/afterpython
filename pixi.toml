@@ -23,6 +23,7 @@ uv = ">=0.9.7"
 # NOTE: install mystmd via pixi instead of uv to avoid the restrictive version constraints in pypi package `mystmd`
 # since pixi doesn't support override-dependencies
 mystmd = ">=1.6.4"
+act = ">=0.2.82"
 
 [pypi-dependencies]
 click = ">=8.3.0"
