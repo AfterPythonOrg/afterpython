@@ -12,6 +12,10 @@ its conceptually the `homepage` in pyproject.toml
 ### Compatibility
 support sphinx, mkdocs
 
+## Update
+`ap update website`
+Caveat: This will overwrite the existing project website template.
+
 ## Blog/Tutorials/Examples
 
 ## API Reference

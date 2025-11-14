@@ -31,6 +31,11 @@ def has_uv() -> bool:
     return shutil.which("uv") is not None
 
 
+def has_gh() -> bool:
+    """Check if gh is installed"""
+    return shutil.which("gh") is not None
+
+
 async def fetch_pypi_json(client: AsyncClient, package_name: str) -> dict | None:
     url = f"https://pypi.org/pypi/{package_name}/json"
     try:
@@ -42,67 +47,6 @@ async def fetch_pypi_json(client: AsyncClient, package_name: str) -> dict | None
         # Return None if package doesn't exist or network fails
         print(f"Warning: Could not fetch PyPI JSON for {package_name}: {e}")
         return None
-
-
-def get_git_user_config() -> dict | None:
-    """Get Git user configuration (name and email)."""
-    try:
-        from git import Repo
-        
-        # Get the repo
-        repo = Repo(search_parent_directories=True)
-        
-        # Access git config
-        reader = repo.config_reader()
-        
-        # Get user name and email
-        name = reader.get_value("user", "name", default=None)
-        email = reader.get_value("user", "email", default=None)
-        
-        if not name or not email:
-            return None
-            
-        return {
-            "name": name,
-            "email": email
-        }
-    except Exception:
-        return None
-
-
-def get_github_url() -> str | None:
-    """Get GitHub repository URL from git remote origin."""
-    import re
-    
-    try:
-        from git import Repo
-        
-        # Get the repo
-        repo = Repo(search_parent_directories=True)
-        
-        # Get origin remote URL
-        if 'origin' not in repo.remotes:
-            return None
-            
-        remote_url = repo.remotes.origin.url
-        # Verify it's a GitHub URL
-        if 'github.com' not in remote_url:
-            return None
-        
-        # Convert SSH format to HTTPS format
-        # git@github.com:user/repo.git -> https://github.com/user/repo
-        if remote_url.startswith("git@github.com:"):
-            remote_url = remote_url.replace("git@github.com:", "https://github.com/")
-        
-        # Remove .git suffix if present
-        remote_url = re.sub(r'\.git$', '', remote_url)
-        
-        return remote_url
-        
-    except (ImportError, Exception):
-        # GitPython not installed or not in a git repo
-        return None
-    
 
 
 # VIBE-CODED
@@ -156,3 +100,20 @@ def deep_merge(base: dict, updates: dict) -> dict:
             base[key] = value
     
     return base
+
+
+def convert_author_name_to_id(name: str) -> str:
+    """Convert author name to ID
+    
+    Args:
+        name: The author name
+        
+    Returns:
+        The author ID
+        
+    Examples:
+        - "Stephen Yau" -> "stephen_yau"
+        - "John Doe" -> "john_doe"
+        - "Jane Smith" -> "jane_smith"
+    """
+    return name.replace(" ", "_").lower()

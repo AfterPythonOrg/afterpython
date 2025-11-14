@@ -12,7 +12,7 @@ import subprocess
 import click
 
 import afterpython as ap
-from afterpython.utils import find_node_env, get_github_url
+from afterpython.utils import find_node_env
 
 
 def init_pyproject():
@@ -21,7 +21,8 @@ def init_pyproject():
     - add [project.urls] section with homepage, repository, and documentation URLs
     """
     import httpx
-    from afterpython.utils import fetch_pypi_json, get_git_user_config
+    from afterpython.utils import fetch_pypi_json
+    from afterpython._io._git import get_git_user_config, get_github_url
     from afterpython._io.toml import read_pyproject, write_pyproject, _to_tomlkit
 
     build_backend = "uv_build"
@@ -84,7 +85,7 @@ def init_afterpython_toml():
 def init_mystmd():
     """
     Initialize MyST Markdown (mystmd) and myst.yml files in 
-    docs, blogs, tutorials, examples, and guides directories with sensible defaults
+    doc/, blog/, tutorial/, example/, guide/ directories with sensible defaults
     """
     from afterpython.const import CONTENT_TYPES
     from afterpython._io.yaml import update_myst_yml
@@ -114,7 +115,7 @@ def init_mystmd():
             },
         }
         update_myst_yml(myst_yml_defaults, path)
-        subprocess.run(["ap", "sync", "myst"])
+        subprocess.run(["ap", "sync"])
 
 
 def init_ruff_toml():
@@ -126,43 +127,6 @@ def init_ruff_toml():
     ruff_template_path = ap.paths.package_path / "ruff-template.toml"
     shutil.copy(ruff_template_path, ruff_toml_path)
     click.echo(f"Created {ruff_toml_path}")
-
-
-def init_authors_yml():
-    """Initialize authors.yml by using authors in pyproject.toml"""
-    from afterpython._io.toml import read_pyproject
-    from afterpython._io.yaml import write_yaml, read_yaml
-
-    data: TOMLDocument = read_pyproject()
-
-    authors_yml_path = ap.paths.afterpython_path / "authors.yml"
-    if authors_yml_path.exists():
-        click.echo(f"Authors configuration file {authors_yml_path} already exists")
-        return
-
-    # read myst.yml from docs path to get "version"
-    docs_myst_yml = read_yaml(ap.paths.docs_path / "myst.yml")
-    yml_data = {
-        "version": docs_myst_yml["version"],
-        "project": {
-            "contributors": [
-                {
-                    "id": str(author.get("name", "")).replace(" ", "_").lower(),
-                    "name": str(author.get("name", "")),
-                    "email": str(author.get("email", "")),
-                }
-                for author in data["project"]["authors"]
-            ]
-        },
-    }
-    write_yaml(authors_yml_path, yml_data)
-    yml_data = read_yaml(authors_yml_path)
-    yml_data["project"].yaml_set_comment_before_after_key(
-        "contributors",
-        after="See more at: https://mystmd.org/guide/frontmatter#frontmatter-authors",
-    )
-    write_yaml(authors_yml_path, yml_data)
-    click.echo(f"Created {authors_yml_path}")
 
 
 def init_website():
@@ -188,8 +152,6 @@ def init(ctx):
     init_afterpython_toml()
 
     init_mystmd()
-
-    init_authors_yml()
 
     # TODO: init faq.yml
 

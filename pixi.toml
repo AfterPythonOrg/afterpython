@@ -24,6 +24,7 @@ uv = ">=0.9.7"
 # since pixi doesn't support override-dependencies
 mystmd = ">=1.6.4"
 act = ">=0.2.82"
+gh = ">=2.83.1"
 
 [pypi-dependencies]
 click = ">=8.3.0"

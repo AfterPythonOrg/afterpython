@@ -52,6 +52,11 @@ override-dependencies = ["platformdirs>=4.5.0", "nodeenv>=1.9.1"]
 requires = ["uv_build>=0.9.9,<0.10.0"]
 build-backend = "uv_build"
 
+[dependency-groups]
+dev = [
+    "notebook>=7.4.7",
+]
+
 [tool.uv.build-backend]
 module-name = "afterpython"
 module-root = ""

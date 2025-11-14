@@ -1,14 +1,40 @@
 from datetime import datetime
 
 import click
+from pyproject_metadata import StandardMetadata
 
 import afterpython as ap
+from afterpython.utils import convert_author_name_to_id
+
+
+def _sync_authors_yml(authors: list[tuple[str, str | None]]):
+    """Sync authors.yml with authors in pyproject.toml"""
+    from afterpython._io.yaml import update_authors_yml, read_yaml
+
+    # read myst.yml from docs path to get "version"
+    doc_myst_yml = read_yaml(ap.paths.afterpython_path / "doc" / "myst.yml")
+    data = {
+        "version": doc_myst_yml["version"],
+        "project": {
+            "contributors": [
+                # NOTE: author is a tuple of (name, email), so author[0] is the name and author[1] is the email
+                {
+                    "id": convert_author_name_to_id(str(author[0])),
+                    "name": str(author[0]),
+                    "email": str(author[1]),
+                    # "github": ...
+                }
+                for author in authors
+            ]
+        },
+    }
+    update_authors_yml(data)
+    click.echo("✓ Synced authors.yml with pyproject.toml")
 
 
 @click.command()
 def sync():
-    """Sync between pyproject.toml+afterpython.toml and myst.yml files"""
-    from pyproject_metadata import StandardMetadata
+    """Sync between pyproject.toml+afterpython.toml and authors.yml+myst.yml files"""
     from afterpython.const import CONTENT_TYPES
     from afterpython._io.toml import read_pyproject, read_afterpython, _from_tomlkit
     from afterpython._io.yaml import update_myst_yml
@@ -20,19 +46,28 @@ def sync():
     company_name = str(_from_tomlkit(afterpython["company"]).get("name", ""))
     company_url = str(_from_tomlkit(afterpython["company"]).get("url", ""))
     website_url = str(_from_tomlkit(afterpython["website"]).get("url", ""))
-    authors = [str(author[0]).lower().replace(" ", "_") for author in pyproject.authors]
-    nav_bar = [{"title": company_name, "url": company_url}] + [
+    authors = pyproject.authors
+    nav_bar = [
         {"title": content_type.capitalize(), "url": f"{website_url}/{content_type}"}
         for content_type in CONTENT_TYPES
     ]
 
+    _sync_authors_yml(authors)
+
+    # update myst.yml files for each content type (e.g. doc/, blog/, tutorial/, example/, guide/)
+    # based on the current values in pyproject.toml and afterpython.toml
     for content_type in CONTENT_TYPES:
         path = ap.paths.afterpython_path / content_type
+        nav_bar_per_content_type = [
+            item for item in nav_bar if item["title"] != content_type.capitalize()
+        ]
         title = project_name + f"'s {content_type.capitalize()}"
         data = {
             "project": {
                 # using author ids defined in authors.yml
-                "authors": authors,
+                "authors": [
+                    convert_author_name_to_id(str(author[0])) for author in authors
+                ],
                 "venue": {
                     # NOTE: company's name is used as the venue title
                     "title": company_name,
@@ -50,7 +85,7 @@ def sync():
                     "logo_text": project_name,
                     "logo_url": website_url,
                 },
-                "nav": nav_bar,
+                "nav": nav_bar_per_content_type,
                 "actions": [
                     {
                         "title": "⭐ Star",
