@@ -52,7 +52,7 @@ def start(ctx, doc: bool, blog: bool, tutorial: bool, example: bool, guide: bool
     if sum([doc, blog, tutorial, example, guide]) != 1:
         raise click.ClickException("Only one content type can be specified")
     
-    path = getattr(paths, f"{content_type}_path")
+    path = paths.afterpython_path / content_type
     subprocess.run(["myst", "start", *ctx.args], cwd=path, env=node_env, check=True)
 
 

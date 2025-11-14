@@ -27,7 +27,7 @@ def sync():
     ]
 
     for content_type in CONTENT_TYPES:
-        path = getattr(ap.paths, f"{content_type}_path")
+        path = ap.paths.afterpython_path / content_type
         title = project_name + f"'s {content_type.capitalize()}"
         data = {
             "project": {
