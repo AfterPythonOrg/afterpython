@@ -15,10 +15,6 @@
 
 # Overview
 
-```{attention}
-This documentation briefly introduces the essential basics of tools like [MyST] and [pdoc] — just enough to get you started. For deeper exploration of each tool, refer to the **See Also** sections at the end of each page.
-```
-
 ## What is `afterpython`
 `afterpython` is a CLI tool that **abstracts away the complexity** of **content writing, website deployment, and package release/maintenance** by providing an opinionated set of modern tools — so you don’t have to spend time selecting or learning anything beyond the basics.
 

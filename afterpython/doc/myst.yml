@@ -45,7 +45,7 @@ site:
     favicon: ../static/favicon.ico
     logo: ../static/logo.svg
     logo_dark: ../static/logo.svg
-    logo_text: "AfterPython"
+    logo_text: AfterPython
     logo_url: ""
     analytics_google: {{ GOOGLE_ANALYTICS_ID }}
 # See web layout at: https://mystmd.org/guide/website-navigation
