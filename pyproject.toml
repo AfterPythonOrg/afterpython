@@ -4,11 +4,26 @@ version = "0.0.1.dev2"
 description = "CLI tool for AfterPython"
 license = "Apache-2.0"
 authors = [
-    {name = "Stephen Yau", email = "softwareentrepreneer+afterpython@gmail.com"}
+    { name = "Stephen Yau", email = "softwareentrepreneer+afterpython@gmail.com" },
 ]
 readme = "README.md"
-keywords = []
+keywords = [
+    "package-maintenance",
+    "project-website",
+    "static-site-generator",
+    "developer-tools",
+    "documentation",
+    "cli-tool",
+    "ci/cd",
+    "mystmd",
+    "semantic-release",
+    "python-packaging",
+]
 classifiers = [
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Software Development :: Documentation",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -53,9 +68,7 @@ requires = ["uv_build>=0.9.9,<0.10.0"]
 build-backend = "uv_build"
 
 [dependency-groups]
-dev = [
-    "notebook>=7.4.7",
-]
+dev = ["notebook>=7.4.7"]
 
 [tool.uv.build-backend]
 module-name = "afterpython"
