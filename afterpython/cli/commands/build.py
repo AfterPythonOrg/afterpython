@@ -5,6 +5,7 @@ if TYPE_CHECKING:
     from afterpython._typing import NodeEnv
     from pathlib import Path
 
+import os
 import shutil
 import subprocess
 
@@ -12,8 +13,10 @@ import click
 
 import afterpython as ap
 from afterpython.utils import find_node_env
+from afterpython.const import CONTENT_TYPES
 from afterpython.builders import (
     build_metadata,
+    add_molab_badge_to_jupyter_notebooks,
 )
 
 
@@ -36,6 +39,10 @@ def prebuild():
 
     _check_initialized()
     _clean_build_directory()
+    
+    if os.getenv("AP_MOLAB_BADGE", "0") == "1":
+        for content_type in CONTENT_TYPES:
+            add_molab_badge_to_jupyter_notebooks(content_type)
 
 
 def postbuild():

@@ -19,6 +19,10 @@ def dev(ctx):
     # OPTIMIZE: should implement incremental build?
     subprocess.run(["ap", "build", "--only-contents"], check=True)
 
+    # TEMP:
+    # content_type = 'doc'
+    # subprocess.run(["ap", "start", f"--{content_type}"], check=True)
+
     click.echo("Running the development server...")
     node_env: NodeEnv = find_node_env()
     subprocess.run(["pnpm", "dev"], cwd=paths.website_path, env=node_env, check=True)
