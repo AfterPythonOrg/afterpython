@@ -1,3 +1,9 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from afterpython._typing import tContentType
+
 import json
 from pathlib import Path
 
@@ -22,13 +28,12 @@ def _create_molab_url(github_url: str, content_path: Path):
     return f"https://molab.marimo.io/{github_url}/blob/main/afterpython/{content_path.as_posix()}"
 
 
-def add_molab_badge_to_jupyter_notebooks(content_type: str):
+def add_molab_badge_to_jupyter_notebooks(content_type: tContentType):
     """Add a badge markdown cell to the top of Jupyter notebooks in the given content type directory, e.g. tutorial/, blog/, etc.
     # NOTE
     Note that the jupyter notebooks need to exist in the github repository first.
     If you have renamed a notebook, you need to push the changes to the github repository first for the badge to work.
     """
-    
     assert content_type.lower() in CONTENT_TYPES, f"Invalid content type: {content_type}"
     metadata: StandardMetadata = StandardMetadata.from_pyproject(read_pyproject())
     if "repository" not in metadata.urls:

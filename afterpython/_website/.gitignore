@@ -30,3 +30,10 @@ vite.config.ts.timestamp-*
 
 .cursor/
 .claude/
+
+static/doc
+static/blog
+static/tutorial
+static/example
+static/guide
+static/metadata.json

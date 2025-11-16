@@ -76,7 +76,7 @@ def sync():
                 "copyright": f"© {company_name or project_name} {datetime.now().year}. All rights reserved.",
                 "title": "",
                 "description": str(pyproject.description),
-                "keywords": list(pyproject.keywords),
+                "keywords": list(map(str, pyproject.keywords)),
                 "github": github_url,
             },
             "site": {

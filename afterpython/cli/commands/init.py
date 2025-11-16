@@ -76,6 +76,9 @@ def init_afterpython_toml():
             "company": {
                 "name": "",
                 "url": "",
+            },
+            "website": {
+                "url": ""
             }
         }
     )
@@ -95,7 +98,7 @@ def init_mystmd():
     subprocess.run(["npm", "install", "-g", "pnpm"], env=node_env, check=True)
     for content_type in CONTENT_TYPES:
         path = ap.paths.afterpython_path / content_type
-        click.echo(f"Initializing MyST Markdown (mystmd) in {path.name} directory ...")
+        click.echo(f"Initializing MyST Markdown (mystmd) in {path.name}/ directory ...")
         path.mkdir(parents=True, exist_ok=True)
         subprocess.run(["myst", "init"], cwd=path, input="n\n", text=True, env=node_env)
         myst_yml_defaults = {
@@ -109,13 +112,13 @@ def init_mystmd():
                     "favicon": "../static/favicon.ico",
                     "logo": "../static/logo.svg",
                     "logo_dark": "../static/logo.svg",
-                    "analytics_google": f"{{{'GOOGLE_ANALYTICS_ID'}}}",
+                    "analytics_google": f"{{{{ GOOGLE_ANALYTICS_ID }}}}",
                     # "twitter": "",
                 },
             },
         }
         update_myst_yml(myst_yml_defaults, path)
-        subprocess.run(["ap", "sync"])
+    subprocess.run(["ap", "sync"])
 
 
 def init_ruff_toml():
@@ -159,4 +162,3 @@ def init(ctx):
 
     if click.confirm(f"\nCreate ruff.toml in {afterpython_path}?", default=True):
         init_ruff_toml()
-

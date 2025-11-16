@@ -4,13 +4,10 @@
 	import ThemeToggle from '$components/ThemeToggle.svelte';
 	import Logo from '$components/Logo.svelte';
 	import Footer from '$components/Footer.svelte';
+	import { dev } from '$app/environment';
+	import { env } from '$env/dynamic/public';
 
 	let { data: metadataJson, children }: LayoutProps = $props();
-
-	// Extract documentation URL safely
-	const docsUrl = metadataJson.project_url?.find((url: string) =>
-		url.startsWith('documentation,')
-	)?.split(', ')[1];
 
 	// Extract repository URL safely
 	const repositoryUrl = metadataJson.project_url?.find((url: string) =>
@@ -18,7 +15,7 @@
 	)?.split(', ')[1];
 
 	// Dynamic title from metadata
-	const siteTitle = metadataJson.name || 'AfterPython Project Website';
+	const siteTitle = metadataJson.name + "'s Website" || 'AfterPython Project Website';
 </script>
 
 <svelte:head>
@@ -30,22 +27,23 @@
 		<div class="flex items-center">
 			<Logo size="md" />
 			<ul class="flex gap-18 justify-center flex-1">
-				{#if docsUrl}
-					<li>
-						<a href={docsUrl} target="_blank" rel="noopener noreferrer">
-							Documentation
-						</a>
-					</li>
-				{/if}
 				<li>
-					<a href={'/tutorials'}>Tutorials</a>
+					<a href={dev ? env.PUBLIC_DOC_URL : "/doc"} target="_blank" rel="external noopener noreferrer">
+						Documentation
+					</a>
+				</li>
+				<!-- <li>
+					<a href={'/tutorial'}>Tutorials</a>
 				</li>
 				<li>
-					<a href={'/examples'}>Examples</a>
+					<a href={'/example'}>Examples</a>
+				</li>
+				<li>
+					<a href={'/guide'}>Guides</a>
 				</li>
 				<li>
 					<a href={'/blog'}>Blog</a>
-				</li>
+				</li> -->
 				<!-- <li>
 					<a href={'/exercises'}>Exercises</a>
 				</li>
@@ -62,5 +60,5 @@
 
 	{@render children()}
 
-	<Footer projectName={metadataJson.name} projectSummary={metadataJson.summary} {repositoryUrl} {docsUrl}/>
+	<Footer projectName={metadataJson.name} projectSummary={metadataJson.summary} {repositoryUrl} />
 </div>

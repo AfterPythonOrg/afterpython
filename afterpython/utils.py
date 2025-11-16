@@ -104,16 +104,44 @@ def deep_merge(base: dict, updates: dict) -> dict:
 
 def convert_author_name_to_id(name: str) -> str:
     """Convert author name to ID
-    
+
     Args:
         name: The author name
-        
+
     Returns:
         The author ID
-        
+
     Examples:
         - "Stephen Yau" -> "stephen_yau"
         - "John Doe" -> "john_doe"
         - "Jane Smith" -> "jane_smith"
     """
     return name.replace(" ", "_").lower()
+
+
+def find_available_port(start_port: int = 3000, max_port: int = 3100, host: str = "localhost") -> int:
+    """
+    Find a TCP port with no listener on `host`, starting from start_port.
+    """
+    import socket
+    def is_port_in_use(port: int, host: str = "localhost", timeout: float = 0.2) -> bool:
+        """
+        Return True if *any* TCP listener is active on the given host:port.
+        This works across IPv4/IPv6 by using getaddrinfo().
+        """
+        try:
+            for family, socktype, proto, canonname, sockaddr in socket.getaddrinfo(
+                host, port, type=socket.SOCK_STREAM
+            ):
+                with socket.socket(family, socktype, proto) as s:
+                    s.settimeout(timeout)
+                    if s.connect_ex(sockaddr) == 0:
+                        return True
+        except socket.gaierror:
+            # host couldn't be resolved; treat as no listener
+            return False
+        return False
+    for port in range(start_port, max_port + 1):
+        if not is_port_in_use(port, host=host):
+            return port
+    raise RuntimeError(f"No free ports available in range {start_port}-{max_port} for host={host!r}")

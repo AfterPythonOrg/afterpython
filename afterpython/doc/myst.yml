@@ -18,7 +18,17 @@ project:
   copyright: © AfterPython.Org 2025. All rights reserved.
   # title: 
   description: CLI tool for AfterPython
-  keywords: []
+  keywords:
+    - package-maintenance
+    - project-website
+    - static-site-generator
+    - developer-tools
+    - documentation
+    - cli-tool
+    - ci/cd
+    - mystmd
+    - semantic-release
+    - python-packaging
   toc:
     - file: overview.md
     - file: quickstart.md
@@ -37,10 +47,6 @@ project:
     - file: CONTRIBUTING.md
 site:
   template: book-theme
-  nav:
-    - title: AfterPython.Org
-      url: https://afterpython.org
-  title: afterpython`'s Doc
   options:
     favicon: ../static/favicon.ico
     logo: ../static/logo.svg
@@ -48,6 +54,16 @@ site:
     logo_text: AfterPython
     logo_url: ""
     analytics_google: {{ GOOGLE_ANALYTICS_ID }}
+  title: afterpython's Doc
+  nav:
+  - title: Blog
+    url: https://ap.afterpython.org/blog
+  - title: Tutorial
+    url: https://ap.afterpython.org/tutorial
+  - title: Example
+    url: https://ap.afterpython.org/example
+  - title: Guide
+    url: https://ap.afterpython.org/guide
 # See web layout at: https://mystmd.org/guide/website-navigation
   actions:
   - title: ⭐ Star

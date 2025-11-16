@@ -1,7 +1,7 @@
 # Extra information that pyproject.toml doesn't support should be stored in afterpython.toml
 [company]
-name = "AfterPython.Org"
-url = "https://afterpython.org"
+name = "AfterPython.Org"  # used in myst.yml's venue.title
+url = "https://afterpython.org"  # used in myst.yml's venue.url
 
 [website]
 url = "https://ap.afterpython.org"
