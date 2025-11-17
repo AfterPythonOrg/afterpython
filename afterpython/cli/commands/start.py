@@ -47,13 +47,26 @@ def start(ctx, doc: bool, blog: bool, tutorial: bool, example: bool, guide: bool
         raise click.ClickException("No content type specified")
     
     assert content_type in CONTENT_TYPES, f"Invalid content type: {content_type}"
+
     
     # assert only one of the options is True
     if sum([doc, blog, tutorial, example, guide]) != 1:
         raise click.ClickException("Only one content type can be specified")
     
-    path = paths.afterpython_path / content_type
-    subprocess.run(["myst", "start", *ctx.args], cwd=path, env=node_env, check=True)
+    content_path = paths.afterpython_path / content_type
+
+    # Check if directory has any content files
+    has_content = any(
+        content_path.glob('*.md') or
+        content_path.glob('*.ipynb') or
+        content_path.glob('*.tex')
+    )
+
+    if not has_content:
+        click.echo(f"Skipping {content_type}/ (no content files found)")
+        return
+
+    subprocess.run(["myst", "start", *ctx.args], cwd=content_path, env=node_env, check=True)
 
 
 def _run(ctx):

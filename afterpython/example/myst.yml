@@ -11,6 +11,7 @@ project:
   license: CC-BY-4.0
   subject: Example
 # See more authors' fields at: https://mystmd.org/guide/frontmatter#frontmatter-authors
+# See more authors' fields at: https://mystmd.org/guide/frontmatter#frontmatter-authors
   authors:
   - stephen_yau
 # See more venue's fields at: https://mystmd.org/guide/frontmatter#venue
@@ -38,6 +39,7 @@ site:
   #   logo: site_logo.png
 # See options at: https://mystmd.org/guide/website-templates#site-options
 # See options at: https://mystmd.org/guide/website-templates#site-options
+# See options at: https://mystmd.org/guide/website-templates#site-options
   options:
     favicon: ../static/favicon.ico
     logo: ../static/logo.svg
@@ -47,13 +49,15 @@ site:
     logo_url: https://ap.afterpython.org
   title: afterpython's Example
   nav:
-  - title: Doc
+  - title: Docs
     url: https://ap.afterpython.org/doc
-  - title: Blog
+  - title: Blogs
     url: https://ap.afterpython.org/blog
-  - title: Tutorial
+  - title: Tutorials
     url: https://ap.afterpython.org/tutorial
-  - title: Guide
+  - title: Examples
+    url: https://ap.afterpython.org/example
+  - title: Guides
     url: https://ap.afterpython.org/guide
 # See web layout at: https://mystmd.org/guide/website-navigation
   actions:

@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from afterpython._typing import NodeEnv
 
+import time
 import subprocess
 
 import click
@@ -14,8 +15,11 @@ from afterpython.const import CONTENT_TYPES
 
 @click.command()
 @click.pass_context
-def dev(ctx):
-    """Run the development server for the project website"""
+@click.option('--all', is_flag=True, help='Start the development server for all content types and the project website')
+def dev(ctx, all: bool):
+    """Run the development server for the project website
+    if --all is enabled, start the development server for all content types and the project website
+    """
     paths = ctx.obj["paths"]
     # OPTIMIZE: should implement incremental build?
     subprocess.run(["ap", "build", "--only-contents"], check=True)
@@ -40,35 +44,30 @@ def dev(ctx):
                 pass
 
     try:
-        for content_type in CONTENT_TYPES:
-            content_path = paths.afterpython_path / content_type
+        if all:
+            next_port = 3000
+            for content_type in CONTENT_TYPES:
+                # Find available port for MyST server
+                myst_port = find_available_port(start_port=next_port)
+                next_port = myst_port + 1
+                click.echo(click.style(f"Starting MyST {content_type} server on port {myst_port}...", fg="green"))
 
-            # Check if directory has any content files
-            has_content = any(
-                content_path.glob('*.md') or
-                content_path.glob('*.ipynb') or
-                content_path.glob('*.tex')
-            )
+                # Append port to .env.development for SvelteKit
+                with open(env_file, 'a') as f:
+                    f.write(f"PUBLIC_{content_type.upper()}_URL=http://localhost:{myst_port}\n")
 
-            if not has_content:
-                click.echo(f"Skipping {content_type}/ (no content files found)")
-                continue
+                myst_process = subprocess.Popen(
+                    ["ap", f"{content_type}", "--port", str(myst_port)],
+                    # stdout=subprocess.DEVNULL,  # Suppress output (optional)
+                    # stderr=subprocess.DEVNULL,  # Suppress errors (optional)
+                )
+                myst_processes.append(myst_process)
 
-            # Find available port for MyST server
-            myst_port = find_available_port(start_port=3000)
-            click.echo(f"Starting MyST {content_type} server on port {myst_port}...")
-
-            # Append port to .env.development for SvelteKit
-            with open(env_file, 'a') as f:
-                f.write(f"PUBLIC_{content_type.upper()}_URL=http://localhost:{myst_port}\n")
-
-            myst_process = subprocess.Popen(
-                ["ap", f"{content_type}", "--port", str(myst_port)],
-                # stdout=subprocess.DEVNULL,  # Suppress output (optional)
-                # stderr=subprocess.DEVNULL,  # Suppress errors (optional)
-            )
-            myst_processes.append(myst_process)
-
+                # NOTE: MyST internally uses additional ports beyond the one specified by --port.
+                # Without this delay, multiple MyST servers may attempt to bind to the same internal port,
+                # causing "address already in use" errors.
+                time.sleep(3)
+        
         node_env: NodeEnv = find_node_env()
         click.echo("Running the web dev server...")
         subprocess.run(["pnpm", "dev"], cwd=paths.website_path, env=node_env, check=True)

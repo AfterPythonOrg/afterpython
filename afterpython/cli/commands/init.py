@@ -148,7 +148,7 @@ def init_mystmd():
         }
         update_myst_yml(myst_yml_defaults, path)
         _write_welcome_file(content_type)
-    # subprocess.run(["ap", "sync"])
+    subprocess.run(["ap", "sync"])
 
 
 def init_ruff_toml():

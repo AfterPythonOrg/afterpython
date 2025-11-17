@@ -3,14 +3,17 @@ version: 1
 extends: ../authors.yml
 project:
 # See how to create Table of Contents at: https://mystmd.org/guide/table-of-contents
+# See how to create Table of Contents at: https://mystmd.org/guide/table-of-contents
   id: ab504471-5b67-4cfa-8689-7282f3ba254d
   license: CC-BY-4.0
 # See more at: https://mystmd.org/guide/frontmatter#frontmatter-authors
+# See more authors' fields at: https://mystmd.org/guide/frontmatter#frontmatter-authors
   authors:
   - stephen_yau
   github: https://github.com/AfterPythonOrg/afterpython
   subject: Documentation
 # See more at: https://mystmd.org/guide/frontmatter#venue
+# See more venue's fields at: https://mystmd.org/guide/frontmatter#venue
   venue:
     title: 'AfterPython.Org'
     url: https://afterpython.org
@@ -19,43 +22,47 @@ project:
   # title: 
   description: CLI tool for AfterPython
   keywords:
-    - package-maintenance
-    - project-website
-    - static-site-generator
-    - developer-tools
-    - documentation
-    - cli-tool
-    - ci/cd
-    - mystmd
-    - semantic-release
-    - python-packaging
+  - package-maintenance
+  - project-website
+  - static-site-generator
+  - developer-tools
+  - documentation
+  - cli-tool
+  - ci/cd
+  - mystmd
+  - semantic-release
+  - python-packaging
   toc:
-    - file: overview.md
-    - file: quickstart.md
-    - file: concepts.md
-    - file: myst.md
-    - file: project_website.md
-    - title: Package Maintenance
-      children:
-        - file: package_maintenance/package_management.md
-        - file: package_maintenance/ci_cd.md
-    - title: References
-      children:
-      - file: references/cli_commands.md
-      - file: references/environment_variables.md
-      - file: references/roadmap.md
-    - file: CONTRIBUTING.md
+  - file: overview.md
+  - file: quickstart.md
+  - file: concepts.md
+  - file: myst.md
+  - file: project_website.md
+  - title: Package Maintenance
+    children:
+    - file: package_maintenance/package_management.md
+    - file: package_maintenance/ci_cd.md
+  - title: References
+    children:
+    - file: references/cli_commands.md
+    - file: references/environment_variables.md
+    - file: references/roadmap.md
+  - file: CONTRIBUTING.md
+  title: ''
 site:
   template: book-theme
+# See options at: https://mystmd.org/guide/website-templates#site-options
   options:
     favicon: ../static/favicon.ico
     logo: ../static/logo.svg
     logo_dark: ../static/logo.svg
-    logo_text: AfterPython
+    logo_text: afterpython
     logo_url: https://ap.afterpython.org
-    analytics_google: {{ GOOGLE_ANALYTICS_ID }}
+    analytics_google: {{GOOGLE_ANALYTICS_ID: null}: null}
   title: afterpython's Doc
   nav:
+  - title: Docs
+    url: https://ap.afterpython.org/doc
   - title: Blogs
     url: https://ap.afterpython.org/blog
   - title: Tutorials
