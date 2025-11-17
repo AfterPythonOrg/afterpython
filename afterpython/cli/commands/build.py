@@ -104,7 +104,13 @@ def postbuild():
     _move_files(ap.paths.static_path, website_static, is_copy=True)
 
 
-@click.command()
+@click.command(
+    add_help_option=False,  # disable click's --help option so that ap build --help can work
+    context_settings=dict(
+        ignore_unknown_options=True,
+        allow_extra_args=True,
+    )
+)
 @click.pass_context
 @click.option(
     "--dev",
@@ -112,8 +118,17 @@ def postbuild():
     hidden=True,  # Internal flag used by `ap dev`, not exposed to users
     help="Development build - only build metadata for the landing page, skip content and production builds",
 )
-def build(ctx, dev: bool):
-    """Build the project website and all contents for production."""
+@click.option('--execute', is_flag=True, help='Execute Jupyter notebooks for all content types')
+def build(ctx, dev: bool, execute: bool):
+    """Build the project website and all contents for production.
+
+    This command builds MyST content (doc/blog/tutorial/example/guide) and the SvelteKit website.
+
+    Any extra arguments are passed to the 'myst build --html' command for each content type.
+    See "myst build --help" for more details.
+
+    Use --execute to execute Jupyter notebooks for all content types.
+    """
     from afterpython.utils import has_content_for_myst
     
     paths = ctx.obj["paths"]
@@ -135,7 +150,7 @@ def build(ctx, dev: bool):
             # NOTE: needs to set BASE_URL so that the project website can link to the content pages correctly at e.g. localhost:5173/doc
             build_env = {**node_env, "BASE_URL": f"/{content_type}"}
             subprocess.run(
-                ["myst", "build", "--html"], cwd=content_path, env=build_env, check=True
+                ["myst", "build", "--html", *(["--execute"] if execute else []), *ctx.args], cwd=content_path, env=build_env, check=True
             )
 
     postbuild()

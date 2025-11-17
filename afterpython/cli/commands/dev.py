@@ -13,13 +13,40 @@ from afterpython.utils import find_node_env, find_available_port
 from afterpython.const import CONTENT_TYPES
 
 
-@click.command()
+@click.command(
+    add_help_option=False,  # disable click's --help option so that ap dev --help can work
+    context_settings=dict(
+        ignore_unknown_options=True,
+        allow_extra_args=True,
+    )
+)
 @click.pass_context
 @click.option('--all', is_flag=True, help='Start the development server for all content types and the project website')
-def dev(ctx, all: bool):
-    """Run the development server for the project website
-    if --all is enabled, start the development server for all content types and the project website
+@click.option('--execute', is_flag=True, help='Execute Jupyter notebooks for all content types')
+@click.option('--no-website', is_flag=True, help='Skip running the website dev server (pnpm dev). Useful when you want to run pnpm dev manually with custom options.')
+def dev(ctx, all: bool, execute: bool, no_website: bool):
+    """Run the development server for the project website.
+
+    If --all is enabled, starts MyST dev servers for all content types (doc/blog/tutorial/example/guide)
+    and the project website.
+
+    Any extra arguments are passed to the MyST servers (via 'ap doc/blog/tutorial/example/guide' commands).
+    See "myst start --help" for more details.
+
+    Use --execute to execute Jupyter notebooks for all content types.
+
+    Use --no-website to skip the automatic 'pnpm dev' command, allowing you to run it manually
+    with custom Vite options in the afterpython/_website directory.
     """
+    
+    # Track all MyST processes for cleanup
+    myst_processes = []
+    
+    paths = ctx.obj["paths"]
+
+    # OPTIMIZE: should implement incremental build?
+    subprocess.run(["ap", "build", "--dev"], check=True)
+    
     def cleanup_processes():
         """Clean up all MyST server processes"""
         click.echo("\nShutting down MyST servers...")
@@ -33,18 +60,10 @@ def dev(ctx, all: bool):
                 pass
 
     try:
-        paths = ctx.obj["paths"]
-
-        # OPTIMIZE: should implement incremental build?
-        subprocess.run(["ap", "build", "--dev"], check=True)
-        
         if all:
             # Clear .env.development before writing new ports
             env_file = paths.website_path / ".env.development"
             env_file.write_text("")  # Clear existing content
-
-            # Track all MyST processes for cleanup
-            myst_processes = []
 
             next_port = 3000
             for content_type in CONTENT_TYPES:
@@ -58,7 +77,7 @@ def dev(ctx, all: bool):
                     f.write(f"PUBLIC_{content_type.upper()}_URL=http://localhost:{myst_port}\n")
 
                 myst_process = subprocess.Popen(
-                    ["ap", f"{content_type}", "--port", str(myst_port)],
+                    ["ap", f"{content_type}", "--port", str(myst_port), *(["--execute"] if execute else []), *ctx.args],
                     # stdout=subprocess.DEVNULL,  # Suppress output (optional)
                     # stderr=subprocess.DEVNULL,  # Suppress errors (optional)
                 )
@@ -69,9 +88,17 @@ def dev(ctx, all: bool):
                 # causing "address already in use" errors.
                 time.sleep(3)
         
-        node_env: NodeEnv = find_node_env()
-        click.echo("Running the web dev server...")
-        subprocess.run(["pnpm", "dev"], cwd=paths.website_path, env=node_env, check=True)
+        if not no_website:
+            node_env: NodeEnv = find_node_env()
+            click.echo("Running the web dev server...")
+            subprocess.run(["pnpm", "dev"], cwd=paths.website_path, env=node_env, check=True)
+        else:
+            click.echo("Skipping website dev server (--no-website flag). Run 'pnpm dev' manually in afterpython/_website/ with your custom options.")
+            if all:
+                # Keep the process running to maintain MyST servers
+                click.echo("Press Ctrl+C to stop MyST servers...")
+                while True:
+                    time.sleep(1)
     except KeyboardInterrupt:
         # Handle Ctrl+C during subprocess.run
         pass
