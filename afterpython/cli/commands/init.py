@@ -2,8 +2,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from afterpython._typing import NodeEnv
     from tomlkit.toml_document import TOMLDocument
+    from afterpython._typing import NodeEnv
+    from afterpython._typing import tContentType
 
 import shutil
 import asyncio
@@ -13,6 +14,34 @@ import click
 
 import afterpython as ap
 from afterpython.utils import find_node_env
+
+
+def _write_welcome_file(content_type: tContentType):
+    welcome_file = ap.paths.afterpython_path / content_type / "index.md"
+    if welcome_file.exists():
+        return
+    welcome_content = f"""# Welcome to AfterPython
+
+Welcome to your project's {content_type}! This is a starter page to help you get started.
+
+## Getting Started
+
+Replace this placeholder content with your own. Here's what you can do:
+
+- Creating new `.md` or `.ipynb` files in the `afterpython/{content_type}/` directory
+- Writing in MyST Markdown format
+- Adding images to the `afterpython/static/` directory and referencing them
+
+## Resources
+
+- [AfterPython's Project Website](https://ap.afterpython.org)
+- [MyST Markdown Guide](https://mystmd.org)
+
+Start building your amazing project! 🚀
+"""
+    welcome_file.write_text(welcome_content)
+    click.echo(f"Created {welcome_file}")
+    return welcome_file
 
 
 def init_pyproject():
@@ -118,7 +147,8 @@ def init_mystmd():
             },
         }
         update_myst_yml(myst_yml_defaults, path)
-    subprocess.run(["ap", "sync"])
+        _write_welcome_file(content_type)
+    # subprocess.run(["ap", "sync"])
 
 
 def init_ruff_toml():

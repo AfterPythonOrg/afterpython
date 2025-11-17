@@ -52,17 +52,17 @@ site:
     logo: ../static/logo.svg
     logo_dark: ../static/logo.svg
     logo_text: AfterPython
-    logo_url: ""
+    logo_url: https://ap.afterpython.org
     analytics_google: {{ GOOGLE_ANALYTICS_ID }}
   title: afterpython's Doc
   nav:
-  - title: Blog
+  - title: Blogs
     url: https://ap.afterpython.org/blog
-  - title: Tutorial
+  - title: Tutorials
     url: https://ap.afterpython.org/tutorial
-  - title: Example
+  - title: Examples
     url: https://ap.afterpython.org/example
-  - title: Guide
+  - title: Guides
     url: https://ap.afterpython.org/guide
 # See web layout at: https://mystmd.org/guide/website-navigation
   actions:
