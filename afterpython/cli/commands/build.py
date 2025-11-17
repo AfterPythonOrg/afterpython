@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
+from collections.abc import Callable
 
 if TYPE_CHECKING:
     from afterpython._typing import NodeEnv
@@ -39,45 +40,107 @@ def prebuild():
 
     _check_initialized()
     _clean_build_directory()
-    
+
     if os.getenv("AP_MOLAB_BADGE", "0") == "1":
         for content_type in CONTENT_TYPES:
             add_molab_badge_to_jupyter_notebooks(content_type)
 
 
 def postbuild():
-    def _copy_files(source: Path, destination: Path):
-        if source.exists():
-            for file in source.iterdir():
-                if file.is_file():
-                    shutil.copy2(file, destination / file.name)
-                    print(f"Copied: {file.name} to {destination / file.name}")
+    def _move_files(
+        source: Path,
+        destination: Path,
+        is_copy: bool = True,
+        ignore_copy: Callable[[str, list[str]], set[str]] | None = None,
+    ):
+        """
+        Move or copy files from source to destination.
 
-    destination = ap.paths.website_path / "static"
-    destination.mkdir(parents=True, exist_ok=True)
-    # Copy all static files from afterpython/static/ to afterpython/_website/static/
-    _copy_files(ap.paths.static_path, destination)
+        Args:
+            source: Source path
+            destination: Destination path
+            is_copy: If True, copy files (merge with existing). If False, move files (replace destination)
+            ignore_copy: Optional ignore function for copytree, takes (directory, contents) and returns set of names to ignore
+        """
+        if not source.exists():
+            return
+        if is_copy:
+            shutil.copytree(source, destination, dirs_exist_ok=True, ignore=ignore_copy)
+            print(f"Copied: {source} to {destination}")
+        else:
+            # Remove destination if it exists (move will fail otherwise)
+            if destination.exists():
+                shutil.rmtree(destination)
+            shutil.move(str(source), str(destination))
+            print(f"Moved: {source} to {destination}")
+
+    website_static = ap.paths.website_path / "static"
+    website_static.mkdir(parents=True, exist_ok=True)
+
+    for content_type in CONTENT_TYPES:
+        myst_build = ap.paths.afterpython_path / content_type / "_build"
+        afterpython_content_build = ap.paths.build_path / content_type
+        # Move myst builds from afterpython/{content_type}/_build to afterpython/_build/{content_type}
+        _move_files(myst_build, afterpython_content_build, is_copy=False)
+        # Copy afterpython/_build/{content_type}/html to afterpython/_website/static/{content_type}
+        _move_files(
+            afterpython_content_build / "html",
+            website_static / content_type,
+            is_copy=True,
+        )
+
     # Copy all files from afterpython/_build to afterpython/_website/static/
-    _copy_files(ap.paths.build_path, destination)
+    _move_files(
+        ap.paths.build_path,
+        website_static,
+        is_copy=True,
+        # ignore all content builds e.g. doc/, blog/, only their html/ files will be copied
+        ignore_copy=lambda dir, contents: [
+            name for name in contents if name in CONTENT_TYPES
+        ],
+    )
+
+    # Copy all static files from afterpython/static/ to afterpython/_website/static/
+    _move_files(ap.paths.static_path, website_static, is_copy=True)
 
 
 @click.command()
 @click.pass_context
 @click.option(
-    "--only-contents",
+    "--dev",
     is_flag=True,
-    help="if enabled, only build contents and skip building project website",
+    hidden=True,  # Internal flag used by `ap dev`, not exposed to users
+    help="Development build - only build metadata for the landing page, skip content and production builds",
 )
-def build(ctx, only_contents: bool):
+def build(ctx, dev: bool):
+    """Build the project website and all contents for production."""
+    from afterpython.utils import has_content_for_myst
+    
     paths = ctx.obj["paths"]
     prebuild()
 
-    click.echo("Building contents...")
-    build_metadata()  # build metadata.json
+    click.echo("Building metadata.json...")
+    build_metadata()
 
-    if not only_contents:
-        click.echo("Building project website...")
+    # myst's production build
+    if not dev:
         node_env: NodeEnv = find_node_env()
-        subprocess.run(["pnpm", "build"], cwd=paths.website_path, env=node_env, check=True)
+        for content_type in CONTENT_TYPES:
+            content_path = paths.afterpython_path / content_type
+            if not has_content_for_myst(content_path):
+                click.echo(f"Skipping {content_type}/ (no content files found)")
+                return
+            
+            click.echo(f"Building {content_type}/...")
+            # NOTE: needs to set BASE_URL so that the project website can link to the content pages correctly at e.g. localhost:5173/doc
+            build_env = {**node_env, "BASE_URL": f"/{content_type}"}
+            subprocess.run(
+                ["myst", "build", "--html"], cwd=content_path, env=build_env, check=True
+            )
 
     postbuild()
+
+    # website's production build
+    if not dev:
+        click.echo("Building project website...")
+        subprocess.run(["pnpm", "build"], cwd=paths.website_path, env=node_env, check=True)

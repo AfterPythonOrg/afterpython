@@ -20,17 +20,6 @@ def dev(ctx, all: bool):
     """Run the development server for the project website
     if --all is enabled, start the development server for all content types and the project website
     """
-    paths = ctx.obj["paths"]
-    # OPTIMIZE: should implement incremental build?
-    subprocess.run(["ap", "build", "--only-contents"], check=True)
-
-    # Clear .env.development before writing new ports
-    env_file = paths.website_path / ".env.development"
-    env_file.write_text("")  # Clear existing content
-
-    # Track all MyST processes for cleanup
-    myst_processes = []
-
     def cleanup_processes():
         """Clean up all MyST server processes"""
         click.echo("\nShutting down MyST servers...")
@@ -44,7 +33,19 @@ def dev(ctx, all: bool):
                 pass
 
     try:
+        paths = ctx.obj["paths"]
+
+        # OPTIMIZE: should implement incremental build?
+        subprocess.run(["ap", "build", "--dev"], check=True)
+        
         if all:
+            # Clear .env.development before writing new ports
+            env_file = paths.website_path / ".env.development"
+            env_file.write_text("")  # Clear existing content
+
+            # Track all MyST processes for cleanup
+            myst_processes = []
+
             next_port = 3000
             for content_type in CONTENT_TYPES:
                 # Find available port for MyST server

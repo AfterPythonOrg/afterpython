@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from pathlib import Path
     from httpx import AsyncClient
     from afterpython._typing import NodeEnv
 
@@ -145,3 +146,12 @@ def find_available_port(start_port: int = 3000, max_port: int = 3100, host: str 
         if not is_port_in_use(port, host=host):
             return port
     raise RuntimeError(f"No free ports available in range {start_port}-{max_port} for host={host!r}")
+
+
+def has_content_for_myst(content_path: Path) -> bool:
+    """Check if a content directory has any content files"""
+    return any(
+        content_path.glob('*.md') or
+        content_path.glob('*.ipynb') or
+        content_path.glob('*.tex')
+    )

@@ -27,7 +27,7 @@ command_kwargs = {
 @click.option('--guide', is_flag=True, help='Start the development server for guide/ directory')
 def start(ctx, doc: bool, blog: bool, tutorial: bool, example: bool, guide: bool):
     """Simple wrapper for `myst start` for convenience"""
-    from afterpython.utils import find_node_env
+    from afterpython.utils import find_node_env, has_content_for_myst
     from afterpython.const import CONTENT_TYPES
     
     node_env: NodeEnv = find_node_env()
@@ -47,7 +47,6 @@ def start(ctx, doc: bool, blog: bool, tutorial: bool, example: bool, guide: bool
         raise click.ClickException("No content type specified")
     
     assert content_type in CONTENT_TYPES, f"Invalid content type: {content_type}"
-
     
     # assert only one of the options is True
     if sum([doc, blog, tutorial, example, guide]) != 1:
@@ -56,13 +55,7 @@ def start(ctx, doc: bool, blog: bool, tutorial: bool, example: bool, guide: bool
     content_path = paths.afterpython_path / content_type
 
     # Check if directory has any content files
-    has_content = any(
-        content_path.glob('*.md') or
-        content_path.glob('*.ipynb') or
-        content_path.glob('*.tex')
-    )
-
-    if not has_content:
+    if not has_content_for_myst(content_path):
         click.echo(f"Skipping {content_type}/ (no content files found)")
         return
 

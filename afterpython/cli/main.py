@@ -15,6 +15,7 @@ from afterpython.cli.commands.check import check
 from afterpython.cli.commands.format import format
 from afterpython.cli.commands.sync import sync
 from afterpython.cli.commands.start import start, doc, blog, tutorial, example, guide
+from afterpython.cli.commands.preview import preview
 
 
 @tui(command="tui", help="Open terminal UI")
@@ -46,3 +47,4 @@ afterpython_group.add_command(blog)
 afterpython_group.add_command(tutorial)
 afterpython_group.add_command(example)
 afterpython_group.add_command(guide)
+afterpython_group.add_command(preview)
