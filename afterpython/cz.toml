@@ -1,0 +1,27 @@
+[tool.commitizen]
+name = "cz_conventional_commits"
+# name = "cz_customize"
+tag_format = "$version"
+version_scheme = "pep440"
+version_provider = "uv"
+update_changelog_on_bump = false
+major_version_zero = true
+
+# FIXME: commitizen can't even add a few custom types like "chore" and "wip", skip it for now
+# [[tool.commitizen.customize.questions]]
+# type = "list"
+# name = "change_type"
+# choices = [
+#     {value = "fix", name = "fix: A bug fix. Correlates with PATCH in SemVer"},
+#     {value = "feat", name = "feat: A new feature. Correlates with MINOR in SemVer"},
+#     {value = "docs", name = "docs: Documentation only changes"},
+#     {value = "style", name = "style: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)"},
+#     {value = "refactor", name = "refactor: A code change that neither fixes a bug nor adds a feature"},
+#     {value = "perf", name = "perf: A code change that improves performance"},
+#     {value = "test", name = "test: Adding missing or correcting existing tests"},
+#     {value = "build", name = "build: Changes that affect the build system or external dependencies (example scopes: pip, docker, npm)"},
+#     {value = "ci", name = "ci: Changes to CI configuration files and scripts (example scopes: GitLabCI)"},
+#     {value = "chore", name = "chore: Other changes that don't modify src or test files"},
+#     {value = "wip", name = "wip: Work in progress"}
+# ]
+# message = "Select the type of change you are committing"

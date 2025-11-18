@@ -87,6 +87,11 @@ def deep_merge(base: dict, updates: dict) -> dict:
     - tomlkit TOMLDocument/Table objects
     - ruamel.yaml CommentedMap objects
 
+    Behavior:
+    - Dicts are merged recursively
+    - Lists are extended (concatenated)
+    - Other types are overwritten
+
     Args:
         base: The base dictionary to merge into (modified in-place)
         updates: The updates to apply
@@ -95,8 +100,18 @@ def deep_merge(base: dict, updates: dict) -> dict:
         The merged base dictionary (same object, modified in-place)
     """
     for key, value in updates.items():
-        if key in base and isinstance(base[key], dict) and isinstance(value, dict):
-            deep_merge(base[key], value)
+        if key in base:
+            if isinstance(base[key], dict) and isinstance(value, dict):
+                # Recursively merge dicts
+                deep_merge(base[key], value)
+            elif isinstance(base[key], list) and isinstance(value, list):
+                # Extend lists, but only add items that don't already exist
+                for item in value:
+                    if item not in base[key]:
+                        base[key].append(item)
+            else:
+                # Overwrite for other types
+                base[key] = value
         else:
             base[key] = value
 

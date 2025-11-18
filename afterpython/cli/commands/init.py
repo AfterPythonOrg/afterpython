@@ -7,6 +7,8 @@ import afterpython as ap
 
 
 def init_ruff_toml():
+    from afterpython.tools.pre_commit import update_pre_commit
+
     afterpython_path = ap.paths.afterpython_path
     ruff_toml_path = afterpython_path / "ruff.toml"
     if ruff_toml_path.exists():
@@ -15,6 +17,28 @@ def init_ruff_toml():
     ruff_template_path = ap.paths.package_path / "ruff-template.toml"
     shutil.copy(ruff_template_path, ruff_toml_path)
     click.echo(f"Created {ruff_toml_path}")
+    # add ruff-pre-commit hook to .pre-commit-config.yaml
+    data_update = {
+        "repos": [
+            {
+                "repo": "https://github.com/astral-sh/ruff-pre-commit",
+                "rev": "v0.14.5",
+                "hooks": [
+                    {
+                        "id": "ruff-check",
+                        "stages": ["pre-commit"],
+                        "args": ["--config", "./afterpython/ruff.toml"],
+                    },
+                    {
+                        "id": "ruff-format",
+                        "stages": ["pre-commit"],
+                        "args": ["--config", "./afterpython/ruff.toml"],
+                    },
+                ],
+            },
+        ]
+    }
+    update_pre_commit(data_update)
 
 
 def init_website():
@@ -30,6 +54,7 @@ def init(ctx):
     from afterpython.tools._afterpython import init_afterpython
     from afterpython.tools.myst import init_myst
     from afterpython.tools.pre_commit import init_pre_commit
+    from afterpython.tools.commitizen import init_commitizen
 
     paths = ctx.obj["paths"]
     click.echo("Initializing afterpython...")
@@ -50,10 +75,16 @@ def init(ctx):
 
     init_website()
 
-    if click.confirm(f"\nCreate ruff.toml in {afterpython_path}?", default=True):
-        init_ruff_toml()
-
     if click.confirm(
         f"\nCreate .pre-commit-config.yaml in {afterpython_path}?", default=True
     ):
         init_pre_commit()
+
+    if click.confirm(f"\nCreate ruff.toml in {afterpython_path}?", default=True):
+        init_ruff_toml()
+
+    if click.confirm(
+        f"\nCreate commitizen configuration (cz.toml) in {afterpython_path}?",
+        default=True,
+    ):
+        init_commitizen()

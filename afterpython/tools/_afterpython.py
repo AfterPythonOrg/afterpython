@@ -53,6 +53,7 @@ def init_afterpython():
         print(f"afterpython.toml already exists at {afterpython_toml_path}")
         return
     afterpython_toml_path.touch()
+    print(f"Created {afterpython_toml_path}")
     update_afterpython(
         {
             "company": {

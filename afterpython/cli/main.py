@@ -19,6 +19,9 @@ from afterpython.cli.commands.start import start, doc, blog, tutorial, example, 
 from afterpython.cli.commands.preview import preview
 from afterpython.cli.commands.clean import clean
 from afterpython.cli.commands.pre_commit import pre_commit
+from afterpython.cli.commands.commitizen import commitizen
+from afterpython.cli.commands.commit import commit
+from afterpython.cli.commands.bump import bump
 
 
 @tui(command="tui", help="Open terminal UI")
@@ -60,3 +63,7 @@ afterpython_group.add_command(clean)
 afterpython_group.add_command(pre_commit)
 afterpython_group.add_command(pre_commit, name="pc")
 afterpython_group.add_command(pre_commit, name="precommit")
+afterpython_group.add_command(commitizen)
+afterpython_group.add_command(commitizen, name="cz")
+afterpython_group.add_command(commit)
+afterpython_group.add_command(bump)
