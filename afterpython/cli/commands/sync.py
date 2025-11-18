@@ -51,7 +51,12 @@ def sync():
     website_url = str(_from_tomlkit(afterpython["website"]).get("url", ""))
     authors = pyproject.authors
     nav_bar = [
-        {"title": content_type.capitalize()+"s", "url": f"{website_url}/{content_type}"} if website_url else ""
+        {
+            "title": content_type.capitalize() + "s",
+            "url": f"{website_url}/{content_type}",
+        }
+        if website_url
+        else ""
         for content_type in CONTENT_TYPES
     ]
 

@@ -13,7 +13,7 @@ from afterpython._io.toml import read_toml, write_toml, _to_tomlkit
 
 
 def read_pyproject() -> TOMLDocument:
-    '''Read pyproject.toml'''
+    """Read pyproject.toml"""
     return read_toml(ap.paths.pyproject_path)
 
 
@@ -22,7 +22,7 @@ def write_pyproject(data: TOMLDocument):
 
 
 def read_metadata() -> StandardMetadata:
-    '''Read metadata from pyproject.toml'''
+    """Read metadata from pyproject.toml"""
     return StandardMetadata.from_pyproject(read_pyproject())
 
 

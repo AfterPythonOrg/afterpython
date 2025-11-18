@@ -6,7 +6,7 @@
 # install afterpython as a dev dependency
 uv add --dev afterpython
 # initialize afterpython
-ap init 
+ap init
 ```
 
 ## afterpython/ Directory

@@ -6,6 +6,7 @@ from afterpython._io.yaml import write_yaml
 
 
 pre_commit_default = {
+    "exclude": "^afterpython/_website/",  # do not check the project website template
     "repos": [
         {
             "repo": "https://github.com/pre-commit/pre-commit-hooks",
@@ -25,7 +26,7 @@ pre_commit_default = {
                 # Run ruff check
                 {
                     "id": "ruff-check",
-                    "args": ["--config", str(ap.paths.afterpython_path / "ruff.toml")],
+                    "args": ["--config", "./afterpython/ruff.toml"],
                 },
                 {"id": "ruff-format"},  # Run ruff format
             ],
@@ -37,7 +38,7 @@ pre_commit_default = {
         #         {"id": "uv-lock"},  # Update the uv lockfile
         #     ]
         # },
-    ]
+    ],
 }
 
 

@@ -18,12 +18,22 @@ from afterpython.const import CONTENT_TYPES
     context_settings=dict(
         ignore_unknown_options=True,
         allow_extra_args=True,
-    )
+    ),
 )
 @click.pass_context
-@click.option('--all', is_flag=True, help='Start the development server for all content types and the project website')
-@click.option('--execute', is_flag=True, help='Execute Jupyter notebooks for all content types')
-@click.option('--no-website', is_flag=True, help='Skip running the website dev server (pnpm dev). Useful when you want to run pnpm dev manually with custom options.')
+@click.option(
+    "--all",
+    is_flag=True,
+    help="Start the development server for all content types and the project website",
+)
+@click.option(
+    "--execute", is_flag=True, help="Execute Jupyter notebooks for all content types"
+)
+@click.option(
+    "--no-website",
+    is_flag=True,
+    help="Skip running the website dev server (pnpm dev). Useful when you want to run pnpm dev manually with custom options.",
+)
 def dev(ctx, all: bool, execute: bool, no_website: bool):
     """Run the development server for the project website.
 
@@ -38,15 +48,15 @@ def dev(ctx, all: bool, execute: bool, no_website: bool):
     Use --no-website to skip the automatic 'pnpm dev' command, allowing you to run it manually
     with custom Vite options in the afterpython/_website directory.
     """
-    
+
     # Track all MyST processes for cleanup
     myst_processes = []
-    
+
     paths = ctx.obj["paths"]
 
     # OPTIMIZE: should implement incremental build?
     subprocess.run(["ap", "build", "--dev"], check=True)
-    
+
     def cleanup_processes():
         """Clean up all MyST server processes"""
         click.echo("\nShutting down MyST servers...")
@@ -70,14 +80,28 @@ def dev(ctx, all: bool, execute: bool, no_website: bool):
                 # Find available port for MyST server
                 myst_port = find_available_port(start_port=next_port)
                 next_port = myst_port + 1
-                click.echo(click.style(f"Starting MyST {content_type} server on port {myst_port}...", fg="green"))
+                click.echo(
+                    click.style(
+                        f"Starting MyST {content_type} server on port {myst_port}...",
+                        fg="green",
+                    )
+                )
 
                 # Append port to .env.development for SvelteKit
-                with open(env_file, 'a') as f:
-                    f.write(f"PUBLIC_{content_type.upper()}_URL=http://localhost:{myst_port}\n")
+                with open(env_file, "a") as f:
+                    f.write(
+                        f"PUBLIC_{content_type.upper()}_URL=http://localhost:{myst_port}\n"
+                    )
 
                 myst_process = subprocess.Popen(
-                    ["ap", f"{content_type}", "--port", str(myst_port), *(["--execute"] if execute else []), *ctx.args],
+                    [
+                        "ap",
+                        f"{content_type}",
+                        "--port",
+                        str(myst_port),
+                        *(["--execute"] if execute else []),
+                        *ctx.args,
+                    ],
                     # stdout=subprocess.DEVNULL,  # Suppress output (optional)
                     # stderr=subprocess.DEVNULL,  # Suppress errors (optional)
                 )
@@ -87,13 +111,17 @@ def dev(ctx, all: bool, execute: bool, no_website: bool):
                 # Without this delay, multiple MyST servers may attempt to bind to the same internal port,
                 # causing "address already in use" errors.
                 time.sleep(3)
-        
+
         if not no_website:
             node_env: NodeEnv = find_node_env()
             click.echo("Running the web dev server...")
-            subprocess.run(["pnpm", "dev"], cwd=paths.website_path, env=node_env, check=True)
+            subprocess.run(
+                ["pnpm", "dev"], cwd=paths.website_path, env=node_env, check=True
+            )
         else:
-            click.echo("Skipping website dev server (--no-website flag). Run 'pnpm dev' manually in afterpython/_website/ with your custom options.")
+            click.echo(
+                "Skipping website dev server (--no-website flag). Run 'pnpm dev' manually in afterpython/_website/ with your custom options."
+            )
             if all:
                 # Keep the process running to maintain MyST servers
                 click.echo("Press Ctrl+C to stop MyST servers...")

@@ -1,6 +1,7 @@
 """
 pcu = "pip check updates", similar to ncu (npm check updates in Node.js)
 """
+
 from __future__ import annotations
 from typing import TYPE_CHECKING, TypedDict, NamedTuple, TypeAlias
 
@@ -36,7 +37,9 @@ Dependencies = TypedDict(
 )
 
 
-def parse_min_max_versions_from_requirement(req: Requirement) -> dict[str, Version | None]:
+def parse_min_max_versions_from_requirement(
+    req: Requirement,
+) -> dict[str, Version | None]:
     min_ver: Version | None = None
     max_ver: Version | None = None
     if req.specifier:
@@ -47,17 +50,21 @@ def parse_min_max_versions_from_requirement(req: Requirement) -> dict[str, Versi
         else:
             min_ver, max_ver = versions[0], versions[-1]
     return {
-        'min_version': min_ver,
-        'max_version': max_ver,
+        "min_version": min_ver,
+        "max_version": max_ver,
     }
 
 
-async def get_latest_versions(requirements: list[Requirement]) -> dict[str, Version | None]:
+async def get_latest_versions(
+    requirements: list[Requirement],
+) -> dict[str, Version | None]:
     """Get latest versions for a list of dependencies from PyPI."""
     import httpx
     from afterpython.utils import fetch_pypi_json
 
-    async def fetch_version(client: httpx.AsyncClient, package_name: str) -> Version | None:
+    async def fetch_version(
+        client: httpx.AsyncClient, package_name: str
+    ) -> Version | None:
         """Fetch the latest version of a package from PyPI."""
         data = await fetch_pypi_json(client, package_name)
         return Version(data["info"]["version"]) if data else None
@@ -74,26 +81,29 @@ def get_dependencies() -> Dependencies:
 
     doc: TOMLDocument = read_pyproject()
     dependencies = {
-        'dependencies': list(doc['project'].get('dependencies', [])),
-        'optional-dependencies': dict(doc['project'].get('optional-dependencies', {})),
-        'dependency-groups': dict(doc.get('dependency-groups', {})),
-        'build-system': dict(doc.get('build-system', {})),
+        "dependencies": list(doc["project"].get("dependencies", [])),
+        "optional-dependencies": dict(doc["project"].get("optional-dependencies", {})),
+        "dependency-groups": dict(doc.get("dependency-groups", {})),
+        "build-system": dict(doc.get("build-system", {})),
     }
     # add "fake_category" to "dependencies" to have the same structure as "optional-dependencies" and "dependency-groups"
-    dependencies['dependencies'] = {'fake_category': dependencies['dependencies']}
+    dependencies["dependencies"] = {"fake_category": dependencies["dependencies"]}
     # only keep the "requires" key
-    if 'requires' in dependencies['build-system']:
-        dependencies['build-system'] = {'requires': dependencies['build-system']['requires']}
+    if "requires" in dependencies["build-system"]:
+        dependencies["build-system"] = {
+            "requires": dependencies["build-system"]["requires"]
+        }
 
     # convert all dependency strings to type "Requirement"
     for dep_type in dependencies:
         for category, deps in dependencies[dep_type].items():
             dependencies[dep_type][category] = [Requirement(dep) for dep in deps]
-    
+
     # flatten the dependencies to a list of type "Requirement"
     all_reqs = [
-        req for deps_dict in dependencies.values() 
-        for req_list in deps_dict.values() 
+        req
+        for deps_dict in dependencies.values()
+        for req_list in deps_dict.values()
         for req in req_list
     ]
 
@@ -107,7 +117,7 @@ def get_dependencies() -> Dependencies:
                 Dependency(
                     **parse_min_max_versions_from_requirement(req),
                     requirement=req,
-                    latest_version=latest_versions.get(req.name)
+                    latest_version=latest_versions.get(req.name),
                 )
                 for req in requirements
             ]
@@ -131,7 +141,7 @@ def update_dependencies(dependencies: Dependencies):
                 doc_deps = doc[dep_type][category]
             else:
                 raise ValueError(f"Invalid dependency type: {dep_type}")
-            
+
             # Update in place
             for i, (dep, package) in enumerate(zip(deps, doc_deps, strict=False)):
                 package: str  # package = e.g. "click>=8.3.0"
@@ -139,9 +149,16 @@ def update_dependencies(dependencies: Dependencies):
                 min_ver = str(dep.min_version) if dep.min_version else None
                 max_ver = str(dep.max_version) if dep.max_version else None
                 latest_ver = str(dep.latest_version) if dep.latest_version else None
-                if req.name in package and min_ver and latest_ver and min_ver in package:
+                if (
+                    req.name in package
+                    and min_ver
+                    and latest_ver
+                    and min_ver in package
+                ):
                     doc_deps[i] = package.replace(min_ver, latest_ver)
                     if max_ver and dep.latest_version not in req.specifier:
-                        doc_deps[i] = doc_deps[i].replace(max_ver, str(dep.max_version.next_breaking()))
+                        doc_deps[i] = doc_deps[i].replace(
+                            max_ver, str(dep.max_version.next_breaking())
+                        )
 
     write_pyproject(doc)

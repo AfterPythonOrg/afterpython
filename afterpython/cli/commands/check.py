@@ -8,7 +8,7 @@ import click
     context_settings=dict(
         ignore_unknown_options=True,
         allow_extra_args=True,
-    )
+    ),
 )
 @click.pass_context
 def check(ctx):

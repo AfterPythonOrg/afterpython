@@ -34,27 +34,29 @@ def add_molab_badge_to_jupyter_notebooks(content_type: tContentType):
     Note that the jupyter notebooks need to exist in the github repository first.
     If you have renamed a notebook, you need to push the changes to the github repository first for the badge to work.
     """
-    assert content_type.lower() in CONTENT_TYPES, f"Invalid content type: {content_type}"
+    assert content_type.lower() in CONTENT_TYPES, (
+        f"Invalid content type: {content_type}"
+    )
     metadata: StandardMetadata = read_metadata()
 
     if "repository" not in metadata.urls:
         return "Repository URL not found in [project.urls] in pyproject.toml, cannot add molab badge"
     else:
         github_url = metadata.urls["repository"]
-        
+
     path = ap.paths.afterpython_path / content_type.lower()
-    
+
     # iterate over all files in the path
     for notebook_path in path.rglob("*.ipynb"):
         # Skip files in _build directory
         if "_build" in notebook_path.parts:
             continue
-         
+
         # Get path relative to afterpython/ (includes tutorial/ in the path)
         content_path = notebook_path.relative_to(ap.paths.afterpython_path)
         molab_url = _create_molab_url(github_url, content_path)
         badge_md = f"[![Open in molab]({_get_molab_badge()})]({molab_url})"
-    
+
         # Read the notebook
         try:
             # Read the notebook
@@ -66,12 +68,12 @@ def add_molab_badge_to_jupyter_notebooks(content_type: tContentType):
         except Exception as e:
             print(f"✗ Error reading {content_path}: {e}")
             continue
-        
+
         # Validate notebook structure
-        if 'cells' not in notebook:
+        if "cells" not in notebook:
             print(f"✗ Skipping {content_path} - not a valid Jupyter notebook")
             continue
-    
+
         # Create a markdown cell with the badge
         badge_cell = {
             "cell_type": "markdown",
@@ -79,19 +81,19 @@ def add_molab_badge_to_jupyter_notebooks(content_type: tContentType):
             "metadata": {
                 "tags": ["molab", "hide-input"]  # Optional: use MyST tags
             },
-            "source": [badge_md]
+            "source": [badge_md],
         }
-    
+
         # Check if first cell is already a badge cell (avoid duplicates)
-        if notebook['cells'] and notebook['cells'][0].get('id') == 'molab-badge-cell':
+        if notebook["cells"] and notebook["cells"][0].get("id") == "molab-badge-cell":
             # Update existing badge
-            notebook['cells'][0] = badge_cell
+            notebook["cells"][0] = badge_cell
             print(f"✓ Updated molab badge in: {content_path}")
         else:
             # Insert at the beginning
-            notebook['cells'].insert(0, badge_cell)
+            notebook["cells"].insert(0, badge_cell)
             print(f"✓ Added molab badge to: {content_path}")
-        
+
         # Write back
-        with open(notebook_path, 'w') as f:
+        with open(notebook_path, "w") as f:
             json.dump(notebook, f, indent=1)

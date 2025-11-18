@@ -127,7 +127,7 @@ Start building your amazing project! 🚀
 
 def init_myst():
     """
-    Initialize MyST Markdown (mystmd) and myst.yml files in 
+    Initialize MyST Markdown (mystmd) and myst.yml files in
     doc/, blog/, tutorial/, example/, guide/ directories with sensible defaults
     """
     from afterpython.const import CONTENT_TYPES
@@ -145,14 +145,16 @@ def init_myst():
             "extends": "../authors.yml",
             "project": {
                 "license": "CC-BY-4.0",
-                "subject": content_type.capitalize() if content_type != "doc" else "Documentation",
+                "subject": content_type.capitalize()
+                if content_type != "doc"
+                else "Documentation",
             },
             "site": {
                 "options": {
                     "favicon": "../static/favicon.ico",
                     "logo": "../static/logo.svg",
                     "logo_dark": "../static/logo.svg",
-                    "analytics_google": f"{{{{ GOOGLE_ANALYTICS_ID }}}}",
+                    "analytics_google": "{{ GOOGLE_ANALYTICS_ID }}",
                     # "twitter": "",
                 },
             },

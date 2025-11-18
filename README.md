@@ -56,7 +56,7 @@ ap init
 
 
 ## Tech Stack
-- [MyST] 
+- [MyST]
 - [project-website-template]
 - [pre-commit]
 - [GitHub Actions]

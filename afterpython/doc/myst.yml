@@ -19,7 +19,7 @@ project:
     url: https://afterpython.org
   # To autogenerate a Table of Contents, run "myst init --write-toc"
   copyright: © AfterPython.Org 2025. All rights reserved.
-  # title: 
+  # title:
   description: CLI tool for AfterPython
   keywords:
   - package-maintenance
@@ -58,7 +58,7 @@ site:
     logo_dark: ../static/logo.svg
     logo_text: afterpython
     logo_url: https://ap.afterpython.org
-    analytics_google: {{GOOGLE_ANALYTICS_ID: null}: null}
+    analytics_google: "{{ GOOGLE_ANALYTICS_ID }}"
   title: afterpython's Doc
   nav:
   - title: Docs

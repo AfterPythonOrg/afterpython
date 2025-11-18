@@ -17,6 +17,7 @@ def run_cli() -> None:
 def run_pcu() -> None:
     """Entrypoint for 'pcu' command (alias for 'ap update deps')."""
     from afterpython.cli.commands.update import dependencies
+
     dependencies()
 
 

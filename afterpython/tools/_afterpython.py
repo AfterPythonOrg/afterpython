@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from tomlkit.toml_document import TOMLDocument
-    
+
 import tomlkit
 
 import afterpython as ap
@@ -11,7 +11,7 @@ from afterpython._io.toml import read_toml, write_toml, _to_tomlkit
 
 
 def read_afterpython() -> TOMLDocument:
-    '''Read afterpython.toml'''
+    """Read afterpython.toml"""
     return read_toml(ap.paths.afterpython_path / "afterpython.toml")
 
 
@@ -22,6 +22,7 @@ def update_afterpython(data_update: dict):
         data_update: dict of data to update
     """
     from afterpython.utils import deep_merge
+
     afterpython_toml_path = ap.paths.afterpython_path / "afterpython.toml"
 
     # read existing data
@@ -33,7 +34,7 @@ def update_afterpython(data_update: dict):
             existing_data = tomlkit.parse(f.read())
     if existing_data is None:
         existing_data = tomlkit.document()
-        
+
     # convert and update existing data
     # Convert to tomlkit objects to use "array of inline tables" format
     # e.g. authors = [{name = "..."}] instead of [[docs.authors]] (array of tables)
@@ -58,8 +59,6 @@ def init_afterpython():
                 "name": "",
                 "url": "",
             },
-            "website": {
-                "url": ""
-            }
+            "website": {"url": ""},
         }
     )

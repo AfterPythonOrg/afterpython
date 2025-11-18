@@ -6,7 +6,7 @@ const outputDir = "build";
 
 const config = {
 	preprocess: [vitePreprocess(), mdsvex()],
-	kit: { 
+	kit: {
 		adapter: adapter({
 			// default options are shown. On some platforms
 			// these options are set automatically — see below

@@ -109,7 +109,7 @@ def postbuild():
     context_settings=dict(
         ignore_unknown_options=True,
         allow_extra_args=True,
-    )
+    ),
 )
 @click.pass_context
 @click.option(
@@ -118,7 +118,9 @@ def postbuild():
     hidden=True,  # Internal flag used by `ap dev`, not exposed to users
     help="Development build - only build metadata for the landing page, skip content and production builds",
 )
-@click.option('--execute', is_flag=True, help='Execute Jupyter notebooks for all content types')
+@click.option(
+    "--execute", is_flag=True, help="Execute Jupyter notebooks for all content types"
+)
 def build(ctx, dev: bool, execute: bool):
     """Build the project website and all contents for production.
 
@@ -130,7 +132,7 @@ def build(ctx, dev: bool, execute: bool):
     Use --execute to execute Jupyter notebooks for all content types.
     """
     from afterpython.utils import has_content_for_myst
-    
+
     paths = ctx.obj["paths"]
     prebuild()
 
@@ -145,12 +147,21 @@ def build(ctx, dev: bool, execute: bool):
             if not has_content_for_myst(content_path):
                 click.echo(f"Skipping {content_type}/ (no content files found)")
                 return
-            
+
             click.echo(f"Building {content_type}/...")
             # NOTE: needs to set BASE_URL so that the project website can link to the content pages correctly at e.g. localhost:5173/doc
             build_env = {**node_env, "BASE_URL": f"/{content_type}"}
             subprocess.run(
-                ["myst", "build", "--html", *(["--execute"] if execute else []), *ctx.args], cwd=content_path, env=build_env, check=True
+                [
+                    "myst",
+                    "build",
+                    "--html",
+                    *(["--execute"] if execute else []),
+                    *ctx.args,
+                ],
+                cwd=content_path,
+                env=build_env,
+                check=True,
             )
 
     postbuild()
@@ -158,4 +169,6 @@ def build(ctx, dev: bool, execute: bool):
     # website's production build
     if not dev:
         click.echo("Building project website...")
-        subprocess.run(["pnpm", "build"], cwd=paths.website_path, env=node_env, check=True)
+        subprocess.run(
+            ["pnpm", "build"], cwd=paths.website_path, env=node_env, check=True
+        )
