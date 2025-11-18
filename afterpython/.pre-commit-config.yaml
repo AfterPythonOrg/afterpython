@@ -11,4 +11,7 @@ repos:
   rev: v0.14.5
   hooks:
   - id: ruff-check
+    args:
+    - --config
+    - /Users/stephenyau/afterpython.org/afterpython/afterpython/ruff.toml
   - id: ruff-format

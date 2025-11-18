@@ -25,7 +25,7 @@ pre_commit_default = {
                 # Run ruff check
                 {
                     "id": "ruff-check",
-                    # "args": ["--fix"],
+                    "args": ["--config", str(ap.paths.afterpython_path / "ruff.toml")],
                 },
                 {"id": "ruff-format"},  # Run ruff format
             ],
