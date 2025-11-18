@@ -27,8 +27,9 @@ def init_website():
 def init(ctx):
     """Initialize afterpython with MyST Markdown (by default) and project website template"""
     from afterpython.tools.pyproject import init_pyproject
-    from afterpython.tools.afterpython import init_afterpython
+    from afterpython.tools._afterpython import init_afterpython
     from afterpython.tools.myst import init_myst
+    from afterpython.tools.pre_commit import init_pre_commit
     
     paths = ctx.obj["paths"]
     click.echo("Initializing afterpython...")
@@ -51,3 +52,6 @@ def init(ctx):
 
     if click.confirm(f"\nCreate ruff.toml in {afterpython_path}?", default=True):
         init_ruff_toml()
+
+    if click.confirm(f"\nCreate .pre-commit-config.yaml in {afterpython_path}?", default=True):
+        init_pre_commit()

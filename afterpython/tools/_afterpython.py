@@ -49,6 +49,7 @@ def init_afterpython():
     """Initialize afterpython.toml"""
     afterpython_toml_path = ap.paths.afterpython_path / "afterpython.toml"
     if afterpython_toml_path.exists():
+        print(f"afterpython.toml already exists at {afterpython_toml_path}")
         return
     afterpython_toml_path.touch()
     update_afterpython(

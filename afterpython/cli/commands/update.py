@@ -10,6 +10,8 @@ import shutil
 
 import click
 
+import afterpython as ap
+
 
 @click.group()
 def update():
@@ -23,7 +25,12 @@ def update():
     is_flag=True,
     help="if enabled, the dependencies will be upgraded to the latest version",
 )
-def dependencies(upgrade: bool):
+@click.option(
+    '--all', 
+    is_flag=True, 
+    help='update all versions in dependencies and tool configurations (e.g. pre-commit-config.yaml)'
+)
+def dependencies(upgrade: bool, all: bool):
     """Update pyproject.toml dependencies to the latest version"""
     from afterpython.pcu import get_dependencies, update_dependencies
     from afterpython.utils import has_uv
@@ -65,6 +72,10 @@ def dependencies(upgrade: bool):
             click.echo(click.style("✓ All dependencies upgraded successfully 🎉", fg="green", bold=True))
         else:
             click.echo("uv not found. Updated pyproject.toml only (packages not installed).")
+    if all:
+        pre_commit_path = ap.paths.afterpython_path / ".pre-commit-config.yaml"
+        subprocess.run(["pre-commit", "autoupdate", "--config", str(pre_commit_path)], check=True)
+        click.echo("All pre-commit hooks updated successfully.")
 update.add_command(dependencies, name="deps")  # alias for "dependencies"
 
 

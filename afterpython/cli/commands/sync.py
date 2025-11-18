@@ -37,7 +37,7 @@ def _sync_authors_yml(authors: list[tuple[str, str | None]]):
 def sync():
     """Sync between pyproject.toml+afterpython.toml and authors.yml+myst.yml files"""
     from afterpython.const import CONTENT_TYPES
-    from afterpython.tools.afterpython import read_afterpython
+    from afterpython.tools._afterpython import read_afterpython
     from afterpython.tools.pyproject import read_metadata
     from afterpython._io.toml import _from_tomlkit
     from afterpython.tools.myst import update_myst_yml
