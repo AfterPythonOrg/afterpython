@@ -10,17 +10,16 @@ pre_commit_default = {
     # we need to explicitly pass in --hook-type whenever we run "pre-commit install --hook-type ..."
     "default_install_hook_types": ["pre-commit", "commit-msg", "pre-push"],
     "exclude": "^afterpython/_website/",  # do not check the project website template
-    # NOTE: explicitly writing stages (default is ['pre-commit']) to avoid confusion
     "repos": [
         {
             "repo": "https://github.com/pre-commit/pre-commit-hooks",
             "rev": "v6.0.0",
             "hooks": [
-                {"id": "trailing-whitespace"},
-                {"id": "end-of-file-fixer"},
-                {"id": "check-yaml"},
-                {"id": "check-toml"},
-                {"id": "check-added-large-files"},
+                {"id": "trailing-whitespace", "stages": ["pre-commit"]},
+                {"id": "end-of-file-fixer", "stages": ["pre-commit"]},
+                {"id": "check-yaml", "stages": ["pre-commit"]},
+                {"id": "check-toml", "stages": ["pre-commit"]},
+                {"id": "check-added-large-files", "stages": ["pre-commit"]},
             ],
         },
         {
@@ -30,9 +29,10 @@ pre_commit_default = {
                 # Run ruff check
                 {
                     "id": "ruff-check",
+                    "stages": ["pre-commit"],
                     "args": ["--config", "./afterpython/ruff.toml"],
                 },
-                {"id": "ruff-format"},  # Run ruff format
+                {"id": "ruff-format", "stages": ["pre-commit"]},  # Run ruff format
             ],
         },
         # {
