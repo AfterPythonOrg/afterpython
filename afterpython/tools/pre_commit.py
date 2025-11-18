@@ -6,7 +6,11 @@ from afterpython._io.yaml import write_yaml
 
 
 pre_commit_default = {
+    # default is only ["pre-commit"], without changing the default,
+    # we need to explicitly pass in --hook-type whenever we run "pre-commit install --hook-type ..."
+    "default_install_hook_types": ["pre-commit", "commit-msg", "pre-push"],
     "exclude": "^afterpython/_website/",  # do not check the project website template
+    # NOTE: explicitly writing stages (default is ['pre-commit']) to avoid confusion
     "repos": [
         {
             "repo": "https://github.com/pre-commit/pre-commit-hooks",
@@ -48,5 +52,5 @@ def init_pre_commit():
         print(f".pre-commit-config.yaml already exists at {pre_commit_path}")
         return
     write_yaml(pre_commit_path, pre_commit_default)
-    # installed in .git/hooks/pre-commit
-    subprocess.run(["ap", "pre-commit", "install"], check=True)
+    # installed in .git/hooks
+    subprocess.run(["ap", "pre-commit", "install", "--install-hooks"], check=True)

@@ -46,7 +46,7 @@ dependencies = [
     "pdoc>=16.0.0",
     "ruff>=0.14.5",
     "pre-commit>=4.4.0",
-    # "commitizen>=4.9.1",
+    "commitizen>=4.10.0",
     # "python-semantic-release>=10.5.2",
 ]
 
