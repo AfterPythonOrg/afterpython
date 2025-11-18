@@ -12,6 +12,7 @@ from afterpython.cli.commands.build import build
 from afterpython.cli.commands.dev import dev
 from afterpython.cli.commands.update import update
 from afterpython.cli.commands.check import check
+from afterpython.cli.commands.install import install
 from afterpython.cli.commands.format import format
 from afterpython.cli.commands.sync import sync
 from afterpython.cli.commands.start import start, doc, blog, tutorial, example, guide
@@ -43,6 +44,7 @@ afterpython_group.add_command(check)
 afterpython_group.add_command(format)
 afterpython_group.add_command(sync)
 afterpython_group.add_command(start)
+afterpython_group.add_command(install)
 afterpython_group.add_command(doc)
 afterpython_group.add_command(blog)
 afterpython_group.add_command(tutorial)

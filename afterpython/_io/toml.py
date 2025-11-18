@@ -7,8 +7,6 @@ if TYPE_CHECKING:
     
 import tomlkit
 
-import afterpython as ap
-
 
 # VIBE-CODED
 def _from_tomlkit(value):
@@ -103,47 +101,3 @@ def read_toml(file_path: Path) -> TOMLDocument:
 def write_toml(file_path: Path, data: TOMLDocument | dict):
     with open(file_path, "w") as f:
         f.write(tomlkit.dumps(data))
-
-
-def read_pyproject() -> TOMLDocument:
-    '''Read pyproject.toml'''
-    return read_toml(ap.paths.pyproject_path)
-
-
-def write_pyproject(data: TOMLDocument):
-    write_toml(ap.paths.pyproject_path, data)
-
-
-def read_afterpython() -> TOMLDocument:
-    '''Read afterpython.toml'''
-    return read_toml(ap.paths.afterpython_path / "afterpython.toml")
-
-
-def update_afterpython(data_update: dict):
-    """Update afterpython.toml
-
-    Args:
-        data_update: dict of data to update
-    """
-    from afterpython.utils import deep_merge
-    afterpython_toml_path = ap.paths.afterpython_path / "afterpython.toml"
-
-    # read existing data
-    if not afterpython_toml_path.exists():
-        afterpython_toml_path.touch()
-        existing_data = tomlkit.document()
-    else:
-        with open(afterpython_toml_path, "rb") as f:
-            existing_data = tomlkit.parse(f.read())
-    if existing_data is None:
-        existing_data = tomlkit.document()
-        
-    # convert and update existing data
-    # Convert to tomlkit objects to use "array of inline tables" format
-    # e.g. authors = [{name = "..."}] instead of [[docs.authors]] (array of tables)
-    converted_data = _to_tomlkit(data_update)
-
-    existing_data = deep_merge(existing_data, converted_data)
-
-    # write updated data
-    write_toml(afterpython_toml_path, existing_data)

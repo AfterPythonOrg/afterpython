@@ -1,154 +1,9 @@
-from __future__ import annotations
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from tomlkit.toml_document import TOMLDocument
-    from afterpython._typing import NodeEnv
-    from afterpython._typing import tContentType
-
 import shutil
-import asyncio
 import subprocess
 
 import click
 
 import afterpython as ap
-from afterpython.utils import find_node_env
-
-
-def _write_welcome_file(content_type: tContentType):
-    welcome_file = ap.paths.afterpython_path / content_type / "index.md"
-    if welcome_file.exists():
-        return
-    welcome_content = f"""# Welcome to AfterPython
-
-Welcome to your project's {content_type}! This is a starter page to help you get started.
-
-## Getting Started
-
-Replace this placeholder content with your own. Here's what you can do:
-
-- Creating new `.md` or `.ipynb` files in the `afterpython/{content_type}/` directory
-- Writing in MyST Markdown format
-- Adding images to the `afterpython/static/` directory and referencing them
-
-## Resources
-
-- [AfterPython's Project Website](https://ap.afterpython.org)
-- [MyST Markdown Guide](https://mystmd.org)
-
-Start building your amazing project! 🚀
-"""
-    welcome_file.write_text(welcome_content)
-    click.echo(f"Created {welcome_file}")
-    return welcome_file
-
-
-def init_pyproject():
-    """Initialize pyproject.toml with sensible defaults
-    - add [build-system] section with uv build backend (same as `uv init --package`)
-    - add [project.urls] section with homepage, repository, and documentation URLs
-    """
-    import httpx
-    from afterpython.utils import fetch_pypi_json
-    from afterpython._io._git import get_git_user_config, get_github_url
-    from afterpython._io.toml import read_pyproject, write_pyproject, _to_tomlkit
-
-    build_backend = "uv_build"
-
-    async def fetch_build_backend_version() -> str | None:
-        """Fetch the latest version of build backend package from PyPI."""
-        async with httpx.AsyncClient() as client:
-            data = await fetch_pypi_json(client, build_backend)
-            return data["info"]["version"] if data else None
-
-    data: TOMLDocument = read_pyproject()
-    is_updated = False
-
-    if "build-system" not in data:
-        uv_build_version = asyncio.run(fetch_build_backend_version())
-        if uv_build_version:
-            data["build-system"] = {
-                "requires": [f"{build_backend}>={uv_build_version}"],
-                "build-backend": build_backend,
-            }
-            is_updated = True
-
-    if "project" in data:
-        if "urls" not in data["project"]:
-            data["project"]["urls"] = {
-                "homepage": "",
-                "repository": get_github_url() or "",
-                "documentation": "",
-            }
-            is_updated = True
-        if "authors" not in data["project"]:
-            # convert git user config to tomlkit object
-            data["project"]["authors"] = _to_tomlkit([get_git_user_config()])
-            is_updated = True
-
-    if is_updated:
-        write_pyproject(data)
-
-
-def init_afterpython_toml():
-    """Initialize afterpython.toml"""
-    from afterpython._io.toml import update_afterpython
-
-    afterpython_toml_path = ap.paths.afterpython_path / "afterpython.toml"
-    if afterpython_toml_path.exists():
-        click.echo(f"afterpython.toml already exists at {afterpython_toml_path}")
-        return
-    afterpython_toml_path.touch()
-    update_afterpython(
-        {
-            "company": {
-                "name": "",
-                "url": "",
-            },
-            "website": {
-                "url": ""
-            }
-        }
-    )
-    click.echo(f"Created {afterpython_toml_path}")
-
-
-def init_mystmd():
-    """
-    Initialize MyST Markdown (mystmd) and myst.yml files in 
-    doc/, blog/, tutorial/, example/, guide/ directories with sensible defaults
-    """
-    from afterpython.const import CONTENT_TYPES
-    from afterpython._io.yaml import update_myst_yml
-
-    # find any existing node.js version and use it, if no, install the Node.js version specified in NODEENV_VERSION
-    node_env: NodeEnv = find_node_env()
-    subprocess.run(["npm", "install", "-g", "pnpm"], env=node_env, check=True)
-    for content_type in CONTENT_TYPES:
-        path = ap.paths.afterpython_path / content_type
-        click.echo(f"Initializing MyST Markdown (mystmd) in {path.name}/ directory ...")
-        path.mkdir(parents=True, exist_ok=True)
-        subprocess.run(["myst", "init"], cwd=path, input="n\n", text=True, env=node_env)
-        myst_yml_defaults = {
-            "extends": "../authors.yml",
-            "project": {
-                "license": "CC-BY-4.0",
-                "subject": content_type.capitalize() if content_type != "doc" else "Documentation",
-            },
-            "site": {
-                "options": {
-                    "favicon": "../static/favicon.ico",
-                    "logo": "../static/logo.svg",
-                    "logo_dark": "../static/logo.svg",
-                    "analytics_google": f"{{{{ GOOGLE_ANALYTICS_ID }}}}",
-                    # "twitter": "",
-                },
-            },
-        }
-        update_myst_yml(myst_yml_defaults, path)
-        _write_welcome_file(content_type)
-    subprocess.run(["ap", "sync"])
 
 
 def init_ruff_toml():
@@ -171,6 +26,10 @@ def init_website():
 @click.pass_context
 def init(ctx):
     """Initialize afterpython with MyST Markdown (by default) and project website template"""
+    from afterpython.tools.pyproject import init_pyproject
+    from afterpython.tools.afterpython import init_afterpython
+    from afterpython.tools.myst import init_myst
+    
     paths = ctx.obj["paths"]
     click.echo("Initializing afterpython...")
     afterpython_path = paths.afterpython_path
@@ -182,9 +41,9 @@ def init(ctx):
 
     init_pyproject()
 
-    init_afterpython_toml()
+    init_afterpython()
 
-    init_mystmd()
+    init_myst()
 
     # TODO: init faq.yml
 

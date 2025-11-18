@@ -10,7 +10,7 @@ from pathlib import Path
 from pyproject_metadata import StandardMetadata
 
 import afterpython as ap
-from afterpython._io.toml import read_pyproject
+from afterpython.tools.pyproject import read_metadata
 from afterpython.const import CONTENT_TYPES
 
 
@@ -35,7 +35,8 @@ def add_molab_badge_to_jupyter_notebooks(content_type: tContentType):
     If you have renamed a notebook, you need to push the changes to the github repository first for the badge to work.
     """
     assert content_type.lower() in CONTENT_TYPES, f"Invalid content type: {content_type}"
-    metadata: StandardMetadata = StandardMetadata.from_pyproject(read_pyproject())
+    metadata: StandardMetadata = read_metadata()
+
     if "repository" not in metadata.urls:
         return "Repository URL not found in [project.urls] in pyproject.toml, cannot add molab badge"
     else:

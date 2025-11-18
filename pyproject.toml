@@ -31,7 +31,7 @@ classifiers = [
 ]
 requires-python = ">=3.11"
 dependencies = [
-    "click>=8.3.0",
+    "click>=8.3.1",
     "trogon>=0.6.0",
     "httpx>=0.28.1",
     "tomlkit>=0.13.3",
@@ -44,7 +44,7 @@ dependencies = [
     # "jinja2>=3.1.6",
     "mystmd>=1.6.4",
     "pdoc>=16.0.0",
-    "ruff>=0.14.4",
+    "ruff>=0.14.5",
     "pre-commit>=4.4.0",
     # "commitizen>=4.9.1",
     # "python-semantic-release>=10.5.2",
@@ -64,7 +64,7 @@ pcu = "afterpython.main:run_pcu"
 override-dependencies = ["platformdirs>=4.5.0", "nodeenv>=1.9.1"]
 
 [build-system]
-requires = ["uv_build>=0.9.9,<0.10.0"]
+requires = ["uv_build>=0.9.10,<0.10.0"]
 build-backend = "uv_build"
 
 [dependency-groups]
