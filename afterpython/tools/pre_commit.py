@@ -26,13 +26,15 @@ pre_commit_default = {
             "repo": "https://github.com/astral-sh/ruff-pre-commit",
             "rev": "v0.14.5",
             "hooks": [
-                # Run ruff check
                 {
                     "id": "ruff-check",
                     "stages": ["pre-commit"],
                     "args": ["--config", "./afterpython/ruff.toml"],
                 },
-                {"id": "ruff-format", "stages": ["pre-commit"]},  # Run ruff format
+                {
+                    "id": "ruff-format",
+                    "stages": ["pre-commit"],
+                },
             ],
         },
         # {
