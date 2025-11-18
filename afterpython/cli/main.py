@@ -18,6 +18,7 @@ from afterpython.cli.commands.sync import sync
 from afterpython.cli.commands.start import start, doc, blog, tutorial, example, guide
 from afterpython.cli.commands.preview import preview
 from afterpython.cli.commands.clean import clean
+from afterpython.cli.commands.pre_commit import pre_commit
 
 
 @tui(command="tui", help="Open terminal UI")
@@ -31,7 +32,11 @@ def afterpython_group(ctx):
     ctx.obj["paths"] = ap.paths
 
     # Auto-sync before commands (except sync itself to avoid recursion)
-    if ctx.invoked_subcommand and ctx.invoked_subcommand not in ['sync', 'init'] and os.getenv("AP_AUTO_SYNC", "0") == "1":
+    if (
+        ctx.invoked_subcommand
+        and ctx.invoked_subcommand not in ["sync", "init"]
+        and os.getenv("AP_AUTO_SYNC", "0") == "1"
+    ):
         click.echo("Auto-syncing...")
         subprocess.run(["ap", "sync"])
 
@@ -52,3 +57,6 @@ afterpython_group.add_command(example)
 afterpython_group.add_command(guide)
 afterpython_group.add_command(preview)
 afterpython_group.add_command(clean)
+afterpython_group.add_command(pre_commit)
+afterpython_group.add_command(pre_commit, name="pc")
+afterpython_group.add_command(pre_commit, name="precommit")

@@ -4,13 +4,11 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from afterpython._typing import NodeEnv
     from afterpython.pcu import Dependencies
-    
+
 import subprocess
 import shutil
 
 import click
-
-import afterpython as ap
 
 
 @click.group()
@@ -21,14 +19,15 @@ def update():
 
 @update.command()
 @click.option(
-    "-u", "--upgrade",
+    "-u",
+    "--upgrade",
     is_flag=True,
     help="if enabled, the dependencies will be upgraded to the latest version",
 )
 @click.option(
-    '--all', 
-    is_flag=True, 
-    help='update all versions in dependencies and tool configurations (e.g. pre-commit-config.yaml)'
+    "--all",
+    is_flag=True,
+    help="update all versions in dependencies and tool configurations (e.g. pre-commit-config.yaml)",
 )
 def dependencies(upgrade: bool, all: bool):
     """Update pyproject.toml dependencies to the latest version"""
@@ -43,11 +42,11 @@ def dependencies(upgrade: bool, all: bool):
         click.echo(f"- {dep_type} package(s):")
         # category = extras or group name
         for category, deps in dependencies[dep_type].items():
-            if dep_type in ['dependencies', 'build-system']:
-                category_name = ''
-            elif dep_type == 'optional-dependencies':
+            if dep_type in ["dependencies", "build-system"]:
+                category_name = ""
+            elif dep_type == "optional-dependencies":
                 category_name = f"extras: {category}"
-            elif dep_type == 'dependency-groups':
+            elif dep_type == "dependency-groups":
                 category_name = f"group: {category}"
             else:
                 raise ValueError(f"Invalid dependency type: {dep_type}")
@@ -56,7 +55,9 @@ def dependencies(upgrade: bool, all: bool):
                 has_update = dep.min_version != dep.latest_version
                 if has_update:
                     has_at_least_one_update = True
-                    msg += f" → {click.style(dep.latest_version, fg='green', bold=True)}"
+                    msg += (
+                        f" → {click.style(dep.latest_version, fg='green', bold=True)}"
+                    )
                 if category_name:
                     msg += f" ({category_name})"
                 click.echo(msg)
@@ -69,13 +70,20 @@ def dependencies(upgrade: bool, all: bool):
             click.echo("Upgrading dependencies with uv...")
             subprocess.run(["uv", "lock"], check=True)
             subprocess.run(["uv", "sync", "--all-extras", "--all-groups"], check=True)
-            click.echo(click.style("✓ All dependencies upgraded successfully 🎉", fg="green", bold=True))
+            click.echo(
+                click.style(
+                    "✓ All dependencies upgraded successfully 🎉", fg="green", bold=True
+                )
+            )
         else:
-            click.echo("uv not found. Updated pyproject.toml only (packages not installed).")
+            click.echo(
+                "uv not found. Updated pyproject.toml only (packages not installed)."
+            )
     if all:
-        pre_commit_path = ap.paths.afterpython_path / ".pre-commit-config.yaml"
-        subprocess.run(["pre-commit", "autoupdate", "--config", str(pre_commit_path)], check=True)
+        subprocess.run(["ap", "pre-commit", "autoupdate"], check=True)
         click.echo("All pre-commit hooks updated successfully.")
+
+
 update.add_command(dependencies, name="deps")  # alias for "dependencies"
 
 

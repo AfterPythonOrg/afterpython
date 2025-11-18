@@ -16,7 +16,7 @@ pre_commit_default = {
                 {"id": "check-yaml"},
                 {"id": "check-toml"},
                 {"id": "check-added-large-files"},
-            ]
+            ],
         },
         {
             "repo": "https://github.com/astral-sh/ruff-pre-commit",
@@ -26,9 +26,9 @@ pre_commit_default = {
                 {
                     "id": "ruff-check",
                     # "args": ["--fix"],
-                },  
+                },
                 {"id": "ruff-format"},  # Run ruff format
-            ]
+            ],
         },
         # {
         #     "repo": "https://github.com/astral-sh/uv-pre-commit",
@@ -47,4 +47,5 @@ def init_pre_commit():
         print(f".pre-commit-config.yaml already exists at {pre_commit_path}")
         return
     write_yaml(pre_commit_path, pre_commit_default)
-    subprocess.run(["pre-commit", "install", "--config", str(pre_commit_path)], check=True)
+    # installed in .git/hooks/pre-commit
+    subprocess.run(["ap", "pre-commit", "install"], check=True)
