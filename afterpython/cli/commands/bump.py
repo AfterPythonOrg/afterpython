@@ -37,6 +37,18 @@ def bump(ctx, release: bool, pre: bool):
     # bump using cz bump's default behavior
     if release:
         subprocess.run(["ap", "cz", "bump", *ctx.args])
+
+        # Get the new version after bump
+        metadata = read_metadata()
+        new_version = metadata.version
+        if new_version is None:
+            raise click.ClickException("Unable to read version after bump")
+
+        tag = f"v{new_version}"
+
+        # Auto-push the specific tag to trigger release workflow
+        click.echo(f"\n🚀 Pushing tag {tag} to trigger release workflow...")
+        subprocess.run(["git", "push", "origin", tag])
     else:
         metadata = read_metadata()
         version = metadata.version

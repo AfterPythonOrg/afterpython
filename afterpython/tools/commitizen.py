@@ -5,7 +5,7 @@ commitizen_default = {
     "tool": {
         "commitizen": {
             "name": "cz_conventional_commits",
-            "tag_format": "$version",
+            "tag_format": "v$version",
             "version_scheme": "pep440",
             "version_provider": "uv",
             "update_changelog_on_bump": False,
