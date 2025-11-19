@@ -44,7 +44,7 @@ requires-dist = [
     { name = "commitizen", specifier = ">=4.10.0" },
     { name = "gitpython", specifier = ">=3.1.45" },
     { name = "httpx", specifier = ">=0.28.1" },
-    { name = "mystmd", specifier = ">=1.6.4" },
+    { name = "mystmd", specifier = ">=1.6.6" },
     { name = "pdoc", specifier = ">=16.0.0" },
     { name = "pre-commit", specifier = ">=4.4.0" },
     { name = "pygithub", specifier = ">=2.8.1" },
@@ -1148,15 +1148,15 @@ wheels = [
 
 [[package]]
 name = "mystmd"
-version = "1.6.4"
+version = "1.6.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "nodeenv" },
     { name = "platformdirs" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a2/77/3c02edbedc6366de73982ca2fb117bf27e64294bcf347b23173a3d97de53/mystmd-1.6.4.tar.gz", hash = "sha256:7b9492838869ddcd56dbef493c76ed3ef9a7757b402da40f6c4c690291b9e209", size = 2779761, upload-time = "2025-11-03T17:12:04.601Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f3/f0/d7474b88a73f4940d7ba486f4a71e57525dcfa55d4f9edc94c703244deee/mystmd-1.6.6.tar.gz", hash = "sha256:141498ae30cd8ee1e35071d17460bd5b1951fdf942f3fcf155b50cd9a030daf0", size = 2790948, upload-time = "2025-11-19T02:10:34.745Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c4/63/5187a0114326ceaff6324c7a9a8d39b248be03e033c5f1e4e97e5d1ac50e/mystmd-1.6.4-py3-none-any.whl", hash = "sha256:3b0d2bf31953ec0043fca2e89b40c7cfb041fb73af10bb2c2e687be1d1a16f59", size = 2811135, upload-time = "2025-11-03T17:12:02.486Z" },
+    { url = "https://files.pythonhosted.org/packages/bb/18/8ce6aade002012b3cca4e02a15aacfa541572fbc79d4c25d01920484fd1b/mystmd-1.6.6-py3-none-any.whl", hash = "sha256:7f64df247e9217360cae35172e3f4b886f5b111d4bac2eeca152f8f6661aa687", size = 2822275, upload-time = "2025-11-19T02:10:32.65Z" },
 ]
 
 [[package]]

@@ -1,3 +1,4 @@
+import os
 import subprocess
 
 import click
@@ -11,6 +12,14 @@ import click
     ),
 )
 @click.pass_context
-def commit(ctx):
+@click.option(
+    "--no-cz", "--no-commitizen", is_flag=True, help="Skip running 'cz commit'"
+)
+def commit(ctx, no_cz: bool):
     """Run 'cz commit'"""
-    subprocess.run(["ap", "cz", "commit", *ctx.args])
+    if not no_cz:
+        subprocess.run(["ap", "cz", "commit", *ctx.args])
+    else:
+        env = os.environ.copy()
+        env["SKIP"] = "commitizen,commitizen-branch"
+        subprocess.run(["git", "commit", *ctx.args], env=env)
