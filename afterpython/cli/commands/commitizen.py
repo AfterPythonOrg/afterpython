@@ -1,6 +1,7 @@
 import subprocess
 
 import click
+from click.exceptions import Exit
 
 
 @click.command(
@@ -15,4 +16,8 @@ def commitizen(ctx):
     """Run commitizen"""
     paths = ctx.obj["paths"]
     cz_toml_path = paths.afterpython_path / "cz.toml"
-    subprocess.run(["cz", "--config", str(cz_toml_path), *ctx.args])
+    result = subprocess.run(
+        ["cz", "--config", str(cz_toml_path), *ctx.args], check=False
+    )
+    if result.returncode != 0:
+        raise Exit(result.returncode)

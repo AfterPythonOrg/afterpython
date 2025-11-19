@@ -1,6 +1,7 @@
 import subprocess
 
 import click
+from click.exceptions import Exit
 
 
 def _command_supports_config(command: str) -> bool:
@@ -51,4 +52,6 @@ def pre_commit(ctx):
         args.insert(command_idx + 1, "--config")
         args.insert(command_idx + 2, str(pre_commit_path))
 
-    subprocess.run(["pre-commit", *args], check=True)
+    result = subprocess.run(["pre-commit", *args], check=False)
+    if result.returncode != 0:
+        raise Exit(result.returncode)
