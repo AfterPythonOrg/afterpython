@@ -1,6 +1,7 @@
 import subprocess
 
 import click
+from click.exceptions import Exit
 
 
 @click.command(
@@ -17,6 +18,10 @@ def check(ctx):
     ruff_toml = paths.afterpython_path / "ruff.toml"
     if ruff_toml.exists():
         click.echo(f"Using ruff configuration from {ruff_toml}")
-        subprocess.run(["ruff", "check", "--config", str(ruff_toml), *ctx.args])
+        result = subprocess.run(
+            ["ruff", "check", "--config", str(ruff_toml), *ctx.args], check=False
+        )
     else:
-        subprocess.run(["ruff", "check", *ctx.args])
+        result = subprocess.run(["ruff", "check", *ctx.args], check=False)
+    if result.returncode != 0:
+        raise Exit(result.returncode)

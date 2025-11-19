@@ -1,6 +1,7 @@
 import subprocess
 
 import click
+from click.exceptions import Exit
 
 
 @click.command(
@@ -13,4 +14,6 @@ import click
 @click.pass_context
 def format(ctx):
     """Simple wrapper for ruff format for convenience"""
-    subprocess.run(["ruff", "format", *ctx.args])
+    result = subprocess.run(["ruff", "format", *ctx.args], check=False)
+    if result.returncode != 0:
+        raise Exit(result.returncode)

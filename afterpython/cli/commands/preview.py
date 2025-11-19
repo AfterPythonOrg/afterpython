@@ -1,6 +1,7 @@
 import subprocess
 
 import click
+from click.exceptions import Exit
 
 
 @click.command()
@@ -14,6 +15,8 @@ def preview(ctx):
     click.echo(
         "Previewing the production build of the project website (including myst's builds)..."
     )
-    subprocess.run(
-        ["pnpm", "preview"], cwd=paths.website_path, env=node_env, check=True
+    result = subprocess.run(
+        ["pnpm", "preview"], cwd=paths.website_path, env=node_env, check=False
     )
+    if result.returncode != 0:
+        raise Exit(result.returncode)

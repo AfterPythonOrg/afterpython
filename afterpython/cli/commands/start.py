@@ -7,6 +7,7 @@ if TYPE_CHECKING:
 import subprocess
 
 import click
+from click.exceptions import Exit
 
 
 command_kwargs = {
@@ -73,9 +74,11 @@ def start(ctx, doc: bool, blog: bool, tutorial: bool, example: bool, guide: bool
         click.echo(f"Skipping {content_type}/ (no content files found)")
         return
 
-    subprocess.run(
-        ["myst", "start", *ctx.args], cwd=content_path, env=node_env, check=True
+    result = subprocess.run(
+        ["myst", "start", *ctx.args], cwd=content_path, env=node_env, check=False
     )
+    if result.returncode != 0:
+        raise Exit(result.returncode)
 
 
 def _run(ctx):

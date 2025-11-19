@@ -8,6 +8,7 @@ import shutil
 import subprocess
 
 import click
+from click.exceptions import Exit
 
 from afterpython.utils import find_node_env, has_content_for_myst
 from afterpython.const import CONTENT_TYPES
@@ -42,12 +43,14 @@ def clean(ctx, all: bool):
 
         click.echo(f"Cleaning {content_type}/...")
         # Pass through any extra args to myst clean (e.g., --cache, --templates)
-        subprocess.run(
+        result = subprocess.run(
             ["myst", "clean", *ctx.args, *(["--all"] if all else [])],
             cwd=content_path,
             env=node_env,
-            check=True,
+            check=False,
         )
+        if result.returncode != 0:
+            raise Exit(result.returncode)
 
     # Clean afterpython's build directories if --all flag is used
     if all:

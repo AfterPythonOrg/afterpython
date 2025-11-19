@@ -9,6 +9,7 @@ import subprocess
 import shutil
 
 import click
+from click.exceptions import Exit
 
 
 @click.group()
@@ -68,8 +69,14 @@ def dependencies(upgrade: bool, all: bool):
         update_dependencies(dependencies)  # write the latest versions to pyproject.toml
         if has_uv():
             click.echo("Upgrading dependencies with uv...")
-            subprocess.run(["uv", "lock"], check=True)
-            subprocess.run(["uv", "sync", "--all-extras", "--all-groups"], check=True)
+            result = subprocess.run(["uv", "lock"], check=False)
+            if result.returncode != 0:
+                raise Exit(result.returncode)
+            result = subprocess.run(
+                ["uv", "sync", "--all-extras", "--all-groups"], check=False
+            )
+            if result.returncode != 0:
+                raise Exit(result.returncode)
             click.echo(
                 click.style(
                     "✓ All dependencies upgraded successfully 🎉", fg="green", bold=True
@@ -80,7 +87,7 @@ def dependencies(upgrade: bool, all: bool):
                 "uv not found. Updated pyproject.toml only (packages not installed)."
             )
     if all:
-        subprocess.run(["ap", "pre-commit", "autoupdate"], check=True)
+        subprocess.run(["ap", "pre-commit", "autoupdate"])
         click.echo("All pre-commit hooks updated successfully.")
 
 
@@ -124,10 +131,18 @@ def website(ctx, no_backup: bool):
     try:
         click.echo("Updating the project website template...")
         node_env: NodeEnv = find_node_env()
-        subprocess.run(
-            ["pnpx", "degit", website_template_repo, str(website_path)], env=node_env
+        result = subprocess.run(
+            ["pnpx", "degit", website_template_repo, str(website_path)],
+            env=node_env,
+            check=False,
         )
-        subprocess.run(["pnpm", "install"], cwd=website_path, env=node_env, check=True)
+        if result.returncode != 0:
+            raise Exit(result.returncode)
+        result = subprocess.run(
+            ["pnpm", "install"], cwd=website_path, env=node_env, check=False
+        )
+        if result.returncode != 0:
+            raise Exit(result.returncode)
     except Exception as e:
         click.echo(f"✗ Error updating project website template: {e}", err=True)
         if not no_backup:

@@ -1,6 +1,7 @@
 import subprocess
 
 import click
+from click.exceptions import Exit
 
 from afterpython.utils import has_uv
 
@@ -16,4 +17,6 @@ def install():
     if not has_uv():
         click.echo("uv not found. Please install uv first.")
         return
-    subprocess.run(["uv", "sync", "--all-extras", "--all-groups"], check=True)
+    result = subprocess.run(["uv", "sync", "--all-extras", "--all-groups"], check=False)
+    if result.returncode != 0:
+        raise Exit(result.returncode)

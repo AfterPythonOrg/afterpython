@@ -8,6 +8,7 @@ import time
 import subprocess
 
 import click
+from click.exceptions import Exit
 
 from afterpython.utils import find_node_env, find_available_port
 from afterpython.const import CONTENT_TYPES
@@ -55,7 +56,7 @@ def dev(ctx, all: bool, execute: bool, no_website: bool):
     paths = ctx.obj["paths"]
 
     # OPTIMIZE: should implement incremental build?
-    subprocess.run(["ap", "build", "--dev"], check=True)
+    subprocess.run(["ap", "build", "--dev"])
 
     def cleanup_processes():
         """Clean up all MyST server processes"""
@@ -115,9 +116,11 @@ def dev(ctx, all: bool, execute: bool, no_website: bool):
         if not no_website:
             node_env: NodeEnv = find_node_env()
             click.echo("Running the web dev server...")
-            subprocess.run(
-                ["pnpm", "dev"], cwd=paths.website_path, env=node_env, check=True
+            result = subprocess.run(
+                ["pnpm", "dev"], cwd=paths.website_path, env=node_env, check=False
             )
+            if result.returncode != 0:
+                raise Exit(result.returncode)
         else:
             click.echo(
                 "Skipping website dev server (--no-website flag). Run 'pnpm dev' manually in afterpython/_website/ with your custom options."

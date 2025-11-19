@@ -11,6 +11,7 @@ import shutil
 import subprocess
 
 import click
+from click.exceptions import Exit
 
 import afterpython as ap
 from afterpython.utils import find_node_env
@@ -151,7 +152,7 @@ def build(ctx, dev: bool, execute: bool):
             click.echo(f"Building {content_type}/...")
             # NOTE: needs to set BASE_URL so that the project website can link to the content pages correctly at e.g. localhost:5173/doc
             build_env = {**node_env, "BASE_URL": f"/{content_type}"}
-            subprocess.run(
+            result = subprocess.run(
                 [
                     "myst",
                     "build",
@@ -161,14 +162,18 @@ def build(ctx, dev: bool, execute: bool):
                 ],
                 cwd=content_path,
                 env=build_env,
-                check=True,
+                check=False,
             )
+            if result.returncode != 0:
+                raise Exit(result.returncode)
 
     postbuild()
 
     # website's production build
     if not dev:
         click.echo("Building project website...")
-        subprocess.run(
-            ["pnpm", "build"], cwd=paths.website_path, env=node_env, check=True
+        result = subprocess.run(
+            ["pnpm", "build"], cwd=paths.website_path, env=node_env, check=False
         )
+        if result.returncode != 0:
+            raise Exit(result.returncode)
