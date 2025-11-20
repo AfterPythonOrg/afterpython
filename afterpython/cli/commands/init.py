@@ -14,7 +14,7 @@ def init_ruff_toml():
     if ruff_toml_path.exists():
         click.echo(f"Ruff configuration file {ruff_toml_path} already exists")
         return
-    ruff_template_path = ap.paths.package_path / "ruff-template.toml"
+    ruff_template_path = ap.paths.templates_path / "ruff-template.toml"
     shutil.copy(ruff_template_path, ruff_toml_path)
     click.echo(f"Created {ruff_toml_path}")
     # add ruff-pre-commit hook to .pre-commit-config.yaml
@@ -55,6 +55,7 @@ def init(ctx):
     from afterpython.tools.myst import init_myst
     from afterpython.tools.pre_commit import init_pre_commit
     from afterpython.tools.commitizen import init_commitizen
+    from afterpython.tools.github_actions import init_release_workflow
 
     paths = ctx.obj["paths"]
     click.echo("Initializing afterpython...")
@@ -84,7 +85,9 @@ def init(ctx):
         init_ruff_toml()
 
     if click.confirm(
-        f"\nCreate commitizen configuration (cz.toml) in {afterpython_path}?",
+        f"\nCreate commitizen configuration (cz.toml) in {afterpython_path} "
+        f"and release workflow in .github/workflows/release.yml?",
         default=True,
     ):
         init_commitizen()
+        init_release_workflow()

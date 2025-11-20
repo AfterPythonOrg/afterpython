@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 @dataclass
 class Paths:
     package_path: Path = field(init=False)
+    templates_path: Path = field(init=False)
     user_path: Path = field(init=False)
     pyproject_path: Path = field(init=False)
     afterpython_path: Path = field(init=False)
@@ -15,6 +16,7 @@ class Paths:
     def __post_init__(self):
         # package path is the path to the afterpython package in user's site-packages
         self.package_path = Path(__file__).resolve().parents[0]
+        self.templates_path = self.package_path / "templates"
         self.user_path = self._find_project_root()
         self.pyproject_path = self.user_path / "pyproject.toml"
         self.afterpython_path = self.user_path / "afterpython"
