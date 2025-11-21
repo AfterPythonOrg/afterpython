@@ -16,8 +16,11 @@ const config = {
 			precompress: false,
 			strict: true,
 		}),
+		// GitHub Pages serves sites from a subdirectory (e.g., username.github.io/repo-name/)
+		// Set base path via BASE_PATH env var so all routes and assets are correctly prefixed
+		// Without this, routes like /doc would resolve to username.github.io/doc instead of username.github.io/afterpython/doc
 		paths: {
-			base: process.env.NODE_ENV === 'production' ? '/afterpython' : '',
+			base: process.env.BASE_PATH || '',
 		},
 		alias: {
 			// '@': 'src/',

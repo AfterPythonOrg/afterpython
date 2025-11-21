@@ -67,7 +67,7 @@ jobs:
       - name: Build website
         run: ap build
         env:
-          NODE_ENV: production
+          BASE_PATH: /afterpython
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
