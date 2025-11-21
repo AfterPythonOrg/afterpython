@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
+
 	type LogoProps = {
 		class?: string;
 		size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -36,9 +38,9 @@
 </script>
 
 {#if hasLogo}
-	<a href="/" class="flex items-center {className}">
+	<a href={resolve('/')} class="flex items-center {className}">
 		<img
-			src="/logo.svg"
+			src={resolve(`/logo.svg`)}
 			alt="Logo"
 			class="{sizeClasses[size]} w-auto"
 			onerror={handleImageError}

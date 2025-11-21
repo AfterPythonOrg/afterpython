@@ -3,9 +3,10 @@
 	import type { LayoutProps } from './$types';
 	import ThemeToggle from '$components/ThemeToggle.svelte';
 	import Logo from '$components/Logo.svelte';
-	import Footer from '$components/Footer.svelte';
+	// import Footer from '$components/Footer.svelte';
 	import { dev } from '$app/environment';
 	import { env } from '$env/dynamic/public';
+	import { resolve } from '$app/paths';
 
 	let { data: metadataJson, children }: LayoutProps = $props();
 
@@ -28,7 +29,7 @@
 			<Logo size="md" />
 			<ul class="flex gap-18 justify-center flex-1">
 				<li>
-					<a href={dev ? env.PUBLIC_DOC_URL : "/doc"} target="_blank" rel="external noopener noreferrer">
+					<a href={dev ? env.PUBLIC_DOC_URL : resolve("/doc")} target="_blank" rel="external noopener noreferrer">
 						Documentation
 					</a>
 				</li>
@@ -60,5 +61,5 @@
 
 	{@render children()}
 
-	<Footer projectName={metadataJson.name} projectSummary={metadataJson.summary} {repositoryUrl} />
+	<!-- <Footer projectName={metadataJson.name} projectSummary={metadataJson.summary} {repositoryUrl} /> -->
 </div>

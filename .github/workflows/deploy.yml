@@ -66,9 +66,6 @@ jobs:
         run: pnpm install
         working-directory: ./afterpython/_website
 
-      - name: Debug BASE_PATH
-        run: echo "BASE_PATH will be set to /${{ github.event.repository.name }}"
-
       - name: Build website
         run: ap build
         env:
