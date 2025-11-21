@@ -53,7 +53,7 @@ dependencies = [
 [project.urls]
 homepage = "https://afterpython.org"
 repository = "https://github.com/AfterPythonOrg/afterpython"
-documentation = "https://docs.afterpython.org"
+documentation = "https://ap.afterpython.org/doc"
 
 [project.scripts]
 ap = "afterpython.main:run_cli"

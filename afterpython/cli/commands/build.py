@@ -160,7 +160,7 @@ def build(ctx, dev: bool, execute: bool):
             click.echo(f"Building {content_type}/...")
             # NOTE: needs to set BASE_URL so that the project website can link to the content pages correctly at e.g. localhost:5173/doc
             # BASE_PATH is set by the GitHub Actions workflow
-            base_path = os.getenv("BASE_PATH", "/afterpython")
+            base_path = os.getenv("BASE_PATH", "")
             base_url = f"{base_path}/{content_type}"
             build_env = {**node_env, "BASE_URL": base_url}
             result = subprocess.run(
