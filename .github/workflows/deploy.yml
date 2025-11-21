@@ -67,7 +67,10 @@ jobs:
         working-directory: ./afterpython/_website
 
       - name: Build website
-        run: ap build
+        run: |
+          echo "Repository name: ${{ github.event.repository.name }}"
+          echo "BASE_PATH: $BASE_PATH"
+          ap build
         env:
           BASE_PATH: '/${{ github.event.repository.name }}'
 

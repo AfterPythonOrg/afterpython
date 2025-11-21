@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
+	import { asset, resolve } from '$app/paths';
 
 	type LogoProps = {
 		class?: string;
@@ -25,11 +25,11 @@
 
 		// Try formats in priority order: svg -> png -> jpg -> jpeg
 		if (currentSrc.endsWith('/logo.svg')) {
-			img.src = '/logo.png';
+			img.src = asset(`/logo.png`);
 		} else if (currentSrc.endsWith('/logo.png')) {
-			img.src = '/logo.jpg';
+			img.src = asset(`/logo.jpg`);
 		} else if (currentSrc.endsWith('/logo.jpg')) {
-			img.src = '/logo.jpeg';
+			img.src = asset(`/logo.jpeg`);
 		} else {
 			// All formats failed, hide the logo
 			hasLogo = false;
@@ -40,7 +40,7 @@
 {#if hasLogo}
 	<a href={resolve('/')} class="flex items-center {className}">
 		<img
-			src={resolve(`/logo.svg`)}
+			src={asset(`/logo.svg`)}
 			alt="Logo"
 			class="{sizeClasses[size]} w-auto"
 			onerror={handleImageError}
