@@ -57,21 +57,20 @@ site:
     logo: ../static/logo.svg
     logo_dark: ../static/logo.svg
     logo_text: afterpython
-    logo_url: https://ap.afterpython.org
+    logo_url: https://afterpython.afterpython.org
     analytics_google: "{{ GOOGLE_ANALYTICS_ID }}"
   title: afterpython's Doc
   nav:
   - title: Docs
-    url: https://ap.afterpython.org/doc
+    url: https://afterpython.afterpython.org/doc
   - title: Blogs
-    url: https://ap.afterpython.org/blog
+    url: https://afterpython.afterpython.org/blog
   - title: Tutorials
-    url: https://ap.afterpython.org/tutorial
+    url: https://afterpython.afterpython.org/tutorial
   - title: Examples
-    url: https://ap.afterpython.org/example
+    url: https://afterpython.afterpython.org/example
   - title: Guides
-    url: https://ap.afterpython.org/guide
-# See web layout at: https://mystmd.org/guide/website-navigation
+    url: https://afterpython.afterpython.org/guide
   actions:
   - title: ⭐ Star
     url: https://github.com/AfterPythonOrg/afterpython

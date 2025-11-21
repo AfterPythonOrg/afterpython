@@ -4,4 +4,4 @@ name = "AfterPython.Org"  # used in myst.yml's venue.title
 url = "https://afterpython.org"  # used in myst.yml's venue.url
 
 [website]
-url = "https://ap.afterpython.org"
+url = "https://afterpython.afterpython.org"

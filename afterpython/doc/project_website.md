@@ -3,7 +3,7 @@
 
 # Project Website
 
-> The project website for `afterpython` is created using `afterpython` itself. See the [**website**](https://ap.afterpython.org).
+> The project website for `afterpython` is created using `afterpython` itself. See the [**website**](https://afterpython.afterpython.org).
 
 ## Definition
 On [PyPI], you typically see three urls under **Project Links**,

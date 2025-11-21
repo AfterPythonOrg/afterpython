@@ -82,7 +82,7 @@ def detect_license_from_file(file_path: str) -> str:
     return ""
 
 
-def deep_merge(base: dict, updates: dict) -> dict:
+def deep_merge(base: dict, updates: dict, extend_lists: bool = True) -> dict:
     """Deep merge updates into base, preserving structure and metadata.
 
     Works with:
@@ -106,8 +106,10 @@ def deep_merge(base: dict, updates: dict) -> dict:
         if key in base:
             if isinstance(base[key], dict) and isinstance(value, dict):
                 # Recursively merge dicts
-                deep_merge(base[key], value)
-            elif isinstance(base[key], list) and isinstance(value, list):
+                deep_merge(base[key], value, extend_lists=extend_lists)
+            elif (
+                isinstance(base[key], list) and isinstance(value, list) and extend_lists
+            ):
                 # Extend lists, but only add items that don't already exist
                 for item in value:
                     if item not in base[key]:

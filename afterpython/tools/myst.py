@@ -48,7 +48,7 @@ def update_authors_yml(data_update: dict):
     write_yaml(file_path, existing_data)
 
 
-def update_myst_yml(data_update: dict, path: Path):
+def update_myst_yml(data_update: dict, path: Path, add_comments: bool = False):
     """Update myst.yml while preserving order and formatting
 
     Args:
@@ -64,36 +64,39 @@ def update_myst_yml(data_update: dict, path: Path):
         )
 
     existing_data = read_yaml(file_path) or {}
-    existing_data = deep_merge(existing_data, data_update)
+    existing_data = deep_merge(existing_data, data_update, extend_lists=False)
 
-    # set comments for project section for convenience
-    if "project" in existing_data:
-        if not existing_data["project"].ca.items.get("id"):
-            existing_data["project"].yaml_set_comment_before_after_key(
-                "id",
-                before="See how to create Table of Contents at: https://mystmd.org/guide/table-of-contents",
-            )
-        if not existing_data["project"].ca.items.get("authors"):
-            existing_data["project"].yaml_set_comment_before_after_key(
-                "authors",
-                before="See more authors' fields at: https://mystmd.org/guide/frontmatter#frontmatter-authors",
-            )
-        if not existing_data["project"].ca.items.get("venue"):
-            existing_data["project"].yaml_set_comment_before_after_key(
-                "venue",
-                before="See more venue's fields at: https://mystmd.org/guide/frontmatter#venue",
-            )
-    if "site" in existing_data:
-        if not existing_data["site"].ca.items.get("options"):
-            existing_data["site"].yaml_set_comment_before_after_key(
-                "options",
-                before="See options at: https://mystmd.org/guide/website-templates#site-options",
-            )
-        if not existing_data["site"].ca.items.get("actions"):
-            existing_data["site"].yaml_set_comment_before_after_key(
-                "actions",
-                before="See web layout at: https://mystmd.org/guide/website-navigation",
-            )
+    # NOTE: this checking existing_data["key1"].ca.items.get("key2") is buggy
+    # only add_comments=True during init to avoid adding duplicate comments
+    if add_comments:
+        # set comments for project section for convenience
+        if "project" in existing_data:
+            if not existing_data["project"].ca.items.get("id"):
+                existing_data["project"].yaml_set_comment_before_after_key(
+                    "id",
+                    before="See how to create Table of Contents at: https://mystmd.org/guide/table-of-contents",
+                )
+            if not existing_data["project"].ca.items.get("authors"):
+                existing_data["project"].yaml_set_comment_before_after_key(
+                    "authors",
+                    before="See more authors' fields at: https://mystmd.org/guide/frontmatter#frontmatter-authors",
+                )
+            if not existing_data["project"].ca.items.get("venue"):
+                existing_data["project"].yaml_set_comment_before_after_key(
+                    "venue",
+                    before="See more venue's fields at: https://mystmd.org/guide/frontmatter#venue",
+                )
+        if "site" in existing_data:
+            if not existing_data["site"].ca.items.get("options"):
+                existing_data["site"].yaml_set_comment_before_after_key(
+                    "options",
+                    before="See options at: https://mystmd.org/guide/website-templates#site-options",
+                )
+            if not existing_data["site"].ca.items.get("actions"):
+                existing_data["site"].yaml_set_comment_before_after_key(
+                    "actions",
+                    before="See web layout at: https://mystmd.org/guide/website-navigation",
+                )
 
     write_yaml(file_path, existing_data)
 
@@ -116,7 +119,7 @@ Replace this placeholder content with your own. Here's what you can do:
 
 ## Resources
 
-- [AfterPython's Project Website](https://ap.afterpython.org)
+- [AfterPython's Project Website](https://afterpython.afterpython.org)
 - [MyST Markdown Guide](https://mystmd.org)
 
 Start building your amazing project! 🚀
@@ -159,6 +162,6 @@ def init_myst():
                 },
             },
         }
-        update_myst_yml(myst_yml_defaults, path)
+        update_myst_yml(myst_yml_defaults, path, add_comments=True)
         _write_welcome_file(content_type)
     subprocess.run(["ap", "sync"])

@@ -2,6 +2,7 @@ from datetime import datetime
 
 import click
 from pyproject_metadata import StandardMetadata
+from tomlkit.toml_document import TOMLDocument
 
 import afterpython as ap
 from afterpython.utils import convert_author_name_to_id
@@ -38,7 +39,11 @@ def sync():
     """Sync between pyproject.toml+afterpython.toml and authors.yml+myst.yml files"""
     from afterpython.const import CONTENT_TYPES
     from afterpython.tools._afterpython import read_afterpython
-    from afterpython.tools.pyproject import read_metadata
+    from afterpython.tools.pyproject import (
+        read_metadata,
+        read_pyproject,
+        write_pyproject,
+    )
     from afterpython._io.toml import _from_tomlkit
     from afterpython.tools.myst import update_myst_yml
 
@@ -61,6 +66,13 @@ def sync():
     ]
 
     _sync_authors_yml(authors)
+
+    # update "homepage", "repository", and "documentation" in pyproject.toml
+    if website_url:
+        doc: TOMLDocument = read_pyproject()
+        doc["project"]["urls"]["homepage"] = website_url
+        doc["project"]["urls"]["documentation"] = f"{website_url}/doc"
+        write_pyproject(doc)
 
     # update myst.yml files for each content type (e.g. doc/, blog/, tutorial/, example/, guide/)
     # based on the current values in pyproject.toml and afterpython.toml
