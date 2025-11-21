@@ -55,7 +55,10 @@ def init(ctx):
     from afterpython.tools.myst import init_myst
     from afterpython.tools.pre_commit import init_pre_commit
     from afterpython.tools.commitizen import init_commitizen
-    from afterpython.tools.github_actions import init_release_workflow
+    from afterpython.tools.github_actions import (
+        init_release_workflow,
+        init_deploy_workflow,
+    )
 
     paths = ctx.obj["paths"]
     click.echo("Initializing afterpython...")
@@ -91,3 +94,5 @@ def init(ctx):
     ):
         init_commitizen()
         init_release_workflow()
+
+    init_deploy_workflow()

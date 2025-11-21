@@ -17,6 +17,15 @@ import click
 )
 def commit(ctx, no_cz: bool):
     """Run 'cz commit'"""
+    from afterpython.utils import handle_passthrough_help
+
+    # Show both our options and commitizen's help and exit
+    handle_passthrough_help(
+        ctx,
+        ["cz", "commit"],
+        show_underlying=True,
+    )
+
     if not no_cz:
         subprocess.run(["ap", "cz", "commit", *ctx.args])
     else:

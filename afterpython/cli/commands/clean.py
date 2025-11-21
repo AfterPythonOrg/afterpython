@@ -29,6 +29,15 @@ from afterpython.const import CONTENT_TYPES
 )
 def clean(ctx, all: bool):
     """Clean the build directory"""
+    from afterpython.utils import handle_passthrough_help
+
+    # Show both our options and myst's help and exit
+    handle_passthrough_help(
+        ctx,
+        ["myst", "clean"],
+        show_underlying=True,
+    )
+
     paths = ctx.obj["paths"]
     node_env: NodeEnv = find_node_env()
 

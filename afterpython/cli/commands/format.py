@@ -14,6 +14,15 @@ from click.exceptions import Exit
 @click.pass_context
 def format(ctx):
     """Simple wrapper for ruff format for convenience"""
+    from afterpython.utils import handle_passthrough_help
+
+    # Show both our options and ruff's help and exit
+    handle_passthrough_help(
+        ctx,
+        ["ruff", "format"],
+        show_underlying=True,
+    )
+
     result = subprocess.run(["ruff", "format", *ctx.args], check=False)
     if result.returncode != 0:
         raise Exit(result.returncode)

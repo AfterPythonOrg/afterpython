@@ -30,6 +30,14 @@ def bump(ctx, release: bool, pre: bool):
     Use --release to bump to next stable version (cz bump default behavior).
     """
     from afterpython.tools.pyproject import read_metadata
+    from afterpython.utils import handle_passthrough_help
+
+    # Show both our options and commitizen's help and exit
+    handle_passthrough_help(
+        ctx,
+        ["cz", "bump"],
+        show_underlying=True,
+    )
 
     if release and pre:
         raise click.ClickException("Only one of --release or --pre can be specified")
@@ -37,6 +45,10 @@ def bump(ctx, release: bool, pre: bool):
     # bump using cz bump's default behavior
     if release:
         subprocess.run(["ap", "cz", "bump", *ctx.args])
+
+        # Skip tag push if this is a dry run
+        if "--dry-run" in ctx.args:
+            return
 
         # Get the new version after bump
         metadata = read_metadata()

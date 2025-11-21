@@ -44,6 +44,14 @@ def start(ctx, doc: bool, blog: bool, tutorial: bool, example: bool, guide: bool
     """Simple wrapper for `myst start` for convenience"""
     from afterpython.utils import find_node_env, has_content_for_myst
     from afterpython.const import CONTENT_TYPES
+    from afterpython.utils import handle_passthrough_help
+
+    # Show both our options and myst's help and exit
+    handle_passthrough_help(
+        ctx,
+        ["myst", "start"],
+        show_underlying=True,
+    )
 
     node_env: NodeEnv = find_node_env()
     paths = ctx.obj["paths"]

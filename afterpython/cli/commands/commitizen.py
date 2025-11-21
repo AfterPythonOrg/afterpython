@@ -14,6 +14,15 @@ from click.exceptions import Exit
 @click.pass_context
 def commitizen(ctx):
     """Run commitizen"""
+    from afterpython.utils import handle_passthrough_help
+
+    # Show both our options and commitizen's help and exit
+    handle_passthrough_help(
+        ctx,
+        ["cz"],
+        show_underlying=True,
+    )
+
     paths = ctx.obj["paths"]
     cz_toml_path = paths.afterpython_path / "cz.toml"
     result = subprocess.run(

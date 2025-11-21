@@ -133,6 +133,14 @@ def build(ctx, dev: bool, execute: bool):
     Use --execute to execute Jupyter notebooks for all content types.
     """
     from afterpython.utils import has_content_for_myst
+    from afterpython.utils import handle_passthrough_help
+
+    # Show both our options and myst's help and exit
+    handle_passthrough_help(
+        ctx,
+        ["myst", "build"],
+        show_underlying=True,
+    )
 
     paths = ctx.obj["paths"]
     prebuild()
@@ -147,7 +155,7 @@ def build(ctx, dev: bool, execute: bool):
             content_path = paths.afterpython_path / content_type
             if not has_content_for_myst(content_path):
                 click.echo(f"Skipping {content_type}/ (no content files found)")
-                return
+                continue
 
             click.echo(f"Building {content_type}/...")
             # NOTE: needs to set BASE_URL so that the project website can link to the content pages correctly at e.g. localhost:5173/doc

@@ -14,6 +14,15 @@ from click.exceptions import Exit
 @click.pass_context
 def check(ctx):
     """Simple wrapper for ruff check for convenience, always use the afterpython/ruff.toml if it exists"""
+    from afterpython.utils import handle_passthrough_help
+
+    # Show both our options and ruff's help and exit
+    handle_passthrough_help(
+        ctx,
+        ["ruff", "check"],
+        show_underlying=True,
+    )
+
     paths = ctx.obj["paths"]
     ruff_toml = paths.afterpython_path / "ruff.toml"
     if ruff_toml.exists():

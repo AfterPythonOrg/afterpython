@@ -50,6 +50,15 @@ def dev(ctx, all: bool, execute: bool, no_website: bool):
     with custom Vite options in the afterpython/_website directory.
     """
 
+    from afterpython.utils import handle_passthrough_help
+
+    # Show both our options and myst's help and exit
+    handle_passthrough_help(
+        ctx,
+        ["myst", "start"],
+        show_underlying=True,
+    )
+
     # Track all MyST processes for cleanup
     myst_processes = []
 

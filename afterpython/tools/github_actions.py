@@ -44,3 +44,35 @@ def init_release_workflow():
         "      - Use 'ap bump --release' for stable releases (auto-pushes tag)\n"
         "      - Use 'ap bump --pre' then 'ap release' for pre-releases\n"
     )
+
+
+def init_deploy_workflow():
+    """Initialize GitHub Actions deployment workflow for GitHub Pages.
+
+    Creates .github/workflows/deploy.yml in the user's project root.
+    This workflow triggers on pushes to main branch and:
+    - Builds the project website with 'ap build'
+    - Deploys to GitHub Pages
+    - Allows manual deployment via workflow_dispatch
+    """
+    user_path = ap.paths.user_path
+    workflow_dir = user_path / ".github" / "workflows"
+    workflow_path = workflow_dir / "deploy.yml"
+
+    if workflow_path.exists():
+        click.echo(f"GitHub Actions deploy workflow {workflow_path} already exists")
+        return
+
+    # Create .github/workflows directory if it doesn't exist
+    workflow_dir.mkdir(parents=True, exist_ok=True)
+
+    # Copy template from package
+    template_path = ap.paths.templates_path / "deploy-workflow-template.yml"
+    if not template_path.exists():
+        raise FileNotFoundError(
+            f"Template file not found: {template_path}\n"
+            "This might indicate a corrupted installation. Please reinstall afterpython."
+        )
+
+    shutil.copy(template_path, workflow_path)
+    click.echo(f"Created {workflow_path}")
