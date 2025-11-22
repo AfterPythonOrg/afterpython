@@ -37,6 +37,9 @@ content types: doc, blog, tutorial, example, guide, etc.
 
 use a full web ui framework ([Svelte]) to wrap the content and escape the scope of MyST
 
+## Homepage
+Currently only your `README.md` is used as the homepage.
+
 ### API Reference
 use pdoc
 ### FAQs

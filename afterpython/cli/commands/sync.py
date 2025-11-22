@@ -79,7 +79,7 @@ def sync():
     for content_type in CONTENT_TYPES:
         path = ap.paths.afterpython_path / content_type
         nav_bar_per_content_type = [
-            item for item in nav_bar if item["title"] != content_type.capitalize()
+            item for item in nav_bar if item["title"] != content_type.capitalize() + "s"
         ]
         title = project_name + f"'s {content_type.capitalize()}"
         data = {

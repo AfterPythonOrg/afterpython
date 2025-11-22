@@ -1,12 +1,12 @@
 # AfterPython: Python Package Maintenance Toolkit and Project Website Generator
 
 [![afterpython](https://afterpython.org/shield.svg)](https://afterpython.org)
-[![Pixi Badge](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json)](https://pixi.sh)
 ![PyPI downloads](https://img.shields.io/pypi/dm/afterpython)
 [![PyPI](https://img.shields.io/pypi/v/afterpython.svg)](https://pypi.org/project/afterpython)
 ![PyPI - Support Python Versions](https://img.shields.io/pypi/pyversions/afterpython)
 [![Discussions](https://img.shields.io/badge/Discussions-Let's%20Chat-green)](https://github.com/AfterPythonOrg/afterpython/discussions)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/AfterPythonOrg/afterpython)
+<!-- [![Pixi Badge](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json)](https://pixi.sh) -->
 
 
 [MyST]: https://mystmd.org
@@ -21,6 +21,7 @@
 [Scikit-Learn]: https://scikit-learn.org
 [WebLLM]: https://webllm.mlc.ai/
 [project-website-template]: https://github.com/AfterPythonOrg/project-website-template
+[commitizen]: https://github.com/commitizen-tools/commitizen
 [uv]: https://docs.astral.sh/uv/
 [ruff]: https://docs.astral.sh/ruff/
 
@@ -61,6 +62,7 @@ ap init
 - [pre-commit]
 - [GitHub Actions]
 - [pdoc]
+- [commitizen]
 - [uv]
 - [ruff]
 - [pagefind]

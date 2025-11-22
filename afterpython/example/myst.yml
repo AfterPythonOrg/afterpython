@@ -54,8 +54,6 @@ site:
     url: https://afterpython.afterpython.org/blog
   - title: Tutorials
     url: https://afterpython.afterpython.org/tutorial
-  - title: Examples
-    url: https://afterpython.afterpython.org/example
   - title: Guides
     url: https://afterpython.afterpython.org/guide
   actions:
