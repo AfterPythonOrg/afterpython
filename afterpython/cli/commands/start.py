@@ -16,6 +16,7 @@ command_kwargs = {
         ignore_unknown_options=True,
         allow_extra_args=True,
     ),
+    "hidden": True,  # Hide these commands from help output
 }
 
 

@@ -28,18 +28,60 @@ from afterpython.const import CONTENT_TYPES
     help="Start the development server for all content types and the project website",
 )
 @click.option(
+    "--doc",
+    is_flag=True,
+    help="Start the development server for documentation content",
+)
+@click.option(
+    "--blog",
+    is_flag=True,
+    help="Start the development server for blog content",
+)
+@click.option(
+    "--tutorial",
+    is_flag=True,
+    help="Start the development server for tutorial content",
+)
+@click.option(
+    "--example",
+    is_flag=True,
+    help="Start the development server for example content",
+)
+@click.option(
+    "--guide",
+    is_flag=True,
+    help="Start the development server for guide content",
+)
+@click.option(
     "--execute", is_flag=True, help="Execute Jupyter notebooks for all content types"
 )
 @click.option(
     "--no-website",
+    "-n",
     is_flag=True,
     help="Skip running the website dev server (pnpm dev). Useful when you want to run pnpm dev manually with custom options.",
 )
-def dev(ctx, all: bool, execute: bool, no_website: bool):
+def dev(
+    ctx,
+    all: bool,
+    doc: bool,
+    blog: bool,
+    tutorial: bool,
+    example: bool,
+    guide: bool,
+    execute: bool,
+    no_website: bool,
+):
     """Run the development server for the project website.
 
-    If --all is enabled, starts MyST dev servers for all content types (doc/blog/tutorial/example/guide)
-    and the project website.
+    By default, runs only the website without any content servers.
+    Use --all to start all content types, or specify individual content types with --doc, --blog, etc.
+
+    Examples:
+      ap dev              # Website only
+      ap dev --all        # Website + all content types
+      ap dev --doc        # Website + doc content
+      ap dev --doc --blog # Website + doc and blog content
 
     Any extra arguments are passed to the MyST servers (via 'ap doc/blog/tutorial/example/guide' commands).
     See "myst start --help" for more details.
@@ -79,14 +121,35 @@ def dev(ctx, all: bool, execute: bool, no_website: bool):
             except Exception:
                 pass
 
+    # Determine which content types to run
+    if all:
+        enabled_content_types = set(CONTENT_TYPES)
+    else:
+        # Check individual flags
+        content_flags = {
+            "doc": doc,
+            "blog": blog,
+            "tutorial": tutorial,
+            "example": example,
+            "guide": guide,
+        }
+        assert set(content_flags.keys()) == set(CONTENT_TYPES), (
+            "Incomplete content flags"
+        )
+        enabled_content_types = {ct for ct, flag in content_flags.items() if flag}
+
     try:
-        if all:
+        if enabled_content_types:
             # Clear .env.development before writing new ports
             env_file = paths.website_path / ".env.development"
             env_file.write_text("")  # Clear existing content
 
             next_port = 3000
             for content_type in CONTENT_TYPES:
+                # Skip content types that are not enabled
+                if content_type not in enabled_content_types:
+                    continue
+
                 # Find available port for MyST server
                 myst_port = find_available_port(start_port=next_port)
                 next_port = myst_port + 1
@@ -134,7 +197,7 @@ def dev(ctx, all: bool, execute: bool, no_website: bool):
             click.echo(
                 "Skipping website dev server (--no-website flag). Run 'pnpm dev' manually in afterpython/_website/ with your custom options."
             )
-            if all:
+            if enabled_content_types:
                 # Keep the process running to maintain MyST servers
                 click.echo("Press Ctrl+C to stop MyST servers...")
                 while True:
