@@ -34,13 +34,13 @@ project:
 site:
   template: book-theme
   # options:
-  #   favicon: favicon.ico
+  #   favicon: favicon.svg
   #   logo: site_logo.png
 # See options at: https://mystmd.org/guide/website-templates#site-options
 # See options at: https://mystmd.org/guide/website-templates#site-options
 # See options at: https://mystmd.org/guide/website-templates#site-options
   options:
-    favicon: ../static/favicon.ico
+    favicon: ../static/favicon.svg
     logo: ../static/logo.svg
     logo_dark: ../static/logo.svg
     analytics_google: '{{ GOOGLE_ANALYTICS_ID }}'

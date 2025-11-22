@@ -60,7 +60,7 @@ site:
   template: book-theme
 # See options at: https://mystmd.org/guide/website-templates#site-options
   options:
-    favicon: ../static/favicon.ico
+    favicon: ../static/favicon.svg
     logo: ../static/logo.svg
     logo_dark: ../static/logo.svg
     logo_text: afterpython

@@ -154,7 +154,7 @@ def init_myst():
             },
             "site": {
                 "options": {
-                    "favicon": "../static/favicon.ico",
+                    "favicon": "../static/favicon.svg",
                     "logo": "../static/logo.svg",
                     "logo_dark": "../static/logo.svg",
                     "analytics_google": "{{ GOOGLE_ANALYTICS_ID }}",
