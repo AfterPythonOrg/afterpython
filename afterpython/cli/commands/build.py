@@ -22,6 +22,41 @@ from afterpython.builders import (
 )
 
 
+def determine_base_path() -> str:
+    """Determine BASE_PATH based on website URL configuration.
+
+    Returns:
+        Empty string if custom domain is configured (no github.io in URL)
+        /repo-name if using default GitHub Pages URL (contains github.io)
+    """
+    from afterpython.tools._afterpython import read_afterpython
+    from afterpython.tools.pyproject import read_metadata
+    from afterpython._io.toml import _from_tomlkit
+
+    # Read website URL from afterpython.toml
+    afterpython = read_afterpython()
+    website_url = str(_from_tomlkit(afterpython["website"]).get("url", ""))
+
+    # If custom domain (no github.io), no BASE_PATH needed
+    if "github.io" not in website_url:
+        return ""
+
+    # For GitHub Pages default URL, extract repo name from repository URL
+    pyproject = read_metadata()
+    github_url = str(pyproject.urls.get("repository", ""))
+
+    if not github_url:
+        click.echo(
+            "Warning: No repository URL found in pyproject.toml, using empty BASE_PATH"
+        )
+        return ""
+
+    # Extract repo name from URL like "https://github.com/AfterPythonOrg/afterpython"
+    # -> "afterpython"
+    repo_name = github_url.rstrip("/").split("/")[-1]
+    return f"/{repo_name}"
+
+
 def prebuild():
     def _check_initialized():
         # Check if 'ap init' has been run
@@ -145,6 +180,13 @@ def build(ctx, dev: bool, execute: bool):
     paths = ctx.obj["paths"]
     prebuild()
 
+    # Determine BASE_PATH based on website URL configuration
+    base_path = determine_base_path()
+    if base_path:
+        click.echo(f"Using BASE_PATH: {base_path}")
+    else:
+        click.echo("Using BASE_PATH: (empty - custom domain)")
+
     click.echo("Building metadata.json...")
     build_metadata()
 
@@ -159,10 +201,8 @@ def build(ctx, dev: bool, execute: bool):
 
             click.echo(f"Building {content_type}/...")
             # NOTE: needs to set BASE_URL so that the project website can link to the content pages correctly at e.g. localhost:5173/doc
-            # BASE_PATH is set by the GitHub Actions workflow
-            base_path = os.getenv("BASE_PATH", "")
             base_url = f"{base_path}/{content_type}"
-            build_env = {**node_env, "BASE_URL": base_url}
+            build_env = {**node_env, "BASE_URL": base_url, "BASE_PATH": base_path}
             result = subprocess.run(
                 [
                     "myst",
@@ -183,8 +223,9 @@ def build(ctx, dev: bool, execute: bool):
     # website's production build
     if not dev:
         click.echo("Building project website...")
+        website_env = {**node_env, "BASE_PATH": base_path}
         result = subprocess.run(
-            ["pnpm", "build"], cwd=paths.website_path, env=node_env, check=False
+            ["pnpm", "build"], cwd=paths.website_path, env=website_env, check=False
         )
         if result.returncode != 0:
             raise Exit(result.returncode)
