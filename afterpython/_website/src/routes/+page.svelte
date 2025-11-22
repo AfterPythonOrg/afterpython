@@ -2,6 +2,9 @@
   import type { PageProps } from './$types';
   import MarkdownRenderer from '$components/MarkdownRenderer.svelte';
   import StarIcon from '$components/StarIcon.svelte';
+  import { dev } from '$app/environment';
+	import { env } from '$env/dynamic/public';
+	import { resolve } from '$app/paths';
 
   const { data: metadataJson }: PageProps = $props();
 
@@ -67,7 +70,12 @@
         </a>
       {/if}
       <button class="px-6 py-3 bg-pm500 text-white rounded-lg font-medium hover:bg-pm600 transition-colors">
-        Go to Playground
+        <a
+          href={dev ? env.PUBLIC_DOC_URL : resolve("/doc")}
+          rel="external noopener noreferrer"
+        >
+          Go to Documentation
+        </a>
       </button>
     </div>
 

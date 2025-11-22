@@ -2,6 +2,7 @@
 	import GitHubIcon from '$components/GitHubIcon.svelte';
 	import { dev } from '$app/environment';
 	import { env } from '$env/dynamic/public';
+	import { resolve } from '$app/paths';
 
 	type FooterProps = {
 		projectName?: string;
@@ -45,7 +46,7 @@
 			<div>
 				<h3 class="text-lg font-semibold text-tx50 mb-3">Resources</h3>
 				<ul class="space-y-2 text-sm text-tx300">
-					<li><a href={dev ? env.PUBLIC_DOC_URL : "/doc"} target="_blank" rel="external noopener noreferrer" class="hover:text-tx50 transition-colors">Documentation</a></li>
+					<li><a href={dev ? env.PUBLIC_DOC_URL : resolve("/doc")} target="_blank" rel="external noopener noreferrer" class="hover:text-tx50 transition-colors">Documentation</a></li>
 					<!-- <li><a href="/tutorials" class="hover:text-tx50 transition-colors">Tutorials</a></li>
 					<li><a href="/examples" class="hover:text-tx50 transition-colors">Examples</a></li>
 					<li><a href="/blog" class="hover:text-tx50 transition-colors">Blog</a></li> -->

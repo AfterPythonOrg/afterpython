@@ -3,7 +3,7 @@
 	import type { LayoutProps } from './$types';
 	import ThemeToggle from '$components/ThemeToggle.svelte';
 	import Logo from '$components/Logo.svelte';
-	// import Footer from '$components/Footer.svelte';
+	import Footer from '$components/Footer.svelte';
 	import { dev } from '$app/environment';
 	import { env } from '$env/dynamic/public';
 	import { resolve } from '$app/paths';
@@ -33,7 +33,7 @@
 						Documentation
 					</a>
 				</li>
-				<!-- <li>
+				<li>
 					<a href={'/tutorial'}>Tutorials</a>
 				</li>
 				<li>
@@ -44,7 +44,7 @@
 				</li>
 				<li>
 					<a href={'/blog'}>Blog</a>
-				</li> -->
+				</li>
 				<!-- <li>
 					<a href={'/exercises'}>Exercises</a>
 				</li>
@@ -61,5 +61,5 @@
 
 	{@render children()}
 
-	<!-- <Footer projectName={metadataJson.name} projectSummary={metadataJson.summary} {repositoryUrl} /> -->
+	<Footer projectName={metadataJson.name} projectSummary={metadataJson.summary} {repositoryUrl} />
 </div>

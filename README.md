@@ -46,7 +46,16 @@ First-time maintainers must learn multiple tools and concepts, e.g. [MyST], [Sem
 - [ ] **⚡ Full-text search** across **ALL** your content in your website — docs, blogs, tutorials, everything
 - [ ] **🤖 Embedded AI Chatbot** that answers questions directly using an in-browser LLM — at no cost
 
+---
+## Project Website
+> The project website for `afterpython` is created using `afterpython` itself. See the [**website**](https://afterpython.afterpython.org).
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="afterpython/static/website-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="afterpython/static/website-light.png">
+  <img alt="Project Website" src="afterpython/static/website-light.png">
+</picture>
 
+---
 ## Installation
 ```bash
 # install afterpython as a dev dependency
