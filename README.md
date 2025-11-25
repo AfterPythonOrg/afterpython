@@ -55,16 +55,20 @@ First-time maintainers must learn multiple tools and concepts, e.g. [MyST], [Sem
   <img alt="Project Website" src="afterpython/static/website-light.png">
 </picture>
 
+You can create your own website too and deploy it to GitHub Pages in **less than a minute**! See [Quickstart](https://afterpython.afterpython.org/doc/quickstart).
+
 ---
 ## Installation
 ```bash
 # install afterpython as a dev dependency
 uv add --dev afterpython
+
 # initialize afterpython
 ap init
 ```
 
 
+---
 ## Tech Stack
 - [MyST]
 - [project-website-template]
@@ -78,3 +82,8 @@ ap init
 - [WebLLM]
 <!-- - ty -->
 <!-- - [pixi] -->
+
+
+---
+## *Mission*
+> Only by making package maintenance and documentation easy can we encourage more Python developers to publish their own packages and grow the ecosystem even further.
