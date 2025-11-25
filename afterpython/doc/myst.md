@@ -3,7 +3,6 @@
 [MyST History]: https://mystmd.org/guide/background#what-is-the-myst-document-engine-and-myst-markdown
 [MyST Overview]: https://mystmd.org/guide/overview
 [Jupyter Notebook]: https://jupyter.org
-[template]: https://github.com/AfterPythonOrg/project-website-template
 [JupyterBook]: https://jupyterbook.org/stable/
 [molab]: https://molab.marimo.io/
 [Marimo]: https://marimo.io/
@@ -61,6 +60,7 @@ Some settings in `myst.yml` may not work as expected, and you may need to report
 Please do **_NOT_** report `mystmd` bugs on `afterpython` repository.
 :::
 
+---
 ### Table of Contents (TOC)
 The `toc` subsection under `project` in `myst.yml` defines how your content is organized.
 
@@ -68,11 +68,13 @@ You can run `myst init --write-toc` in your content directory (e.g., `afterpytho
 
 *See [Table of Contents](https://mystmd.org/guide/table-of-contents) for more details.*
 
+---
 ### authors.yml
 When you run `ap init`, `afterpython` creates an `authors.yml` file in the `afterpython/` directory and syncs authors from `pyproject.toml`. This allows you to easily manage the authors of your project.
 
 *See [Authorship](https://mystmd.org/guide/authorship#skip-to-frontmatter), you can add social media links to your authors in `authors.yml` (e.g. GitHub, X, etc.)*
 
+---
 #### Change Author at Page Level
 By default, authors defined in `authors.yml` will all be used in `myst.yml` at the project level (see `project.authors` in `myst.yml`). However, you can override this behavior at the page level by adding the `authors` frontmatter at the top of your content (e.g. `doc/your_page.md`):
 ```markdown
@@ -81,3 +83,8 @@ authors:
 - new_author_id_defined_in_authors_yml
 ---
 ```
+
+
+:::{tip}
+This entire documentation is written in MyST Markdown. You can click the "Edit this page" button in the top right corner to see the source code as an example of how to write content in MyST Markdown.
+:::

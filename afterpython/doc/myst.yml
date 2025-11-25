@@ -35,13 +35,7 @@ project:
   toc:
   - file: overview.md
   - file: quickstart.md
-  - title: Walkthrough
-    children:
-    - file: walkthrough/directories.md
-    - file: walkthrough/afterpython_toml.md
-    - file: walkthrough/static_files.md
-    - file: walkthrough/myst_yml.md
-    - file: walkthrough/authors_yml.md
+  - file: walkthrough.md
   - file: concepts.md
   - file: myst.md
   - file: project_website.md
