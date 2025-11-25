@@ -30,6 +30,8 @@ A project website is basically a website that serves as the **homepage for your 
 
 It aggregates and presents all your content in one place, including documentation, blog posts, tutorials, examples, and how-to guides.
 
+To **set the logo and favicon** for the project website, put your `logo.svg` and `favicon.svg` in the `afterpython/static/` directory.
+
 See [](project_website.md)  for more details.
 
 ---

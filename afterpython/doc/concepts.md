@@ -1,43 +1,53 @@
+[mystmd]: https://mystmd.org
+[commitizen]: https://github.com/commitizen-tools/commitizen
+[pre-commit]: https://github.com/pre-commit/pre-commit
+[ruff]: https://github.com/astral-sh/ruff
+
 # Concepts
 
-::::{aside}
-:::{glossary}
-MyST Markdown
-: MyST Markdown is a superset of Markdown that adds support for Sphinx-style directives and roles.
-:::
-
-:::{glossary}
-Jupyter Notebook
-: Jupyter Notebook is an interactive computational environment that allows you to write and execute code in a notebook format.
-:::
-
-:::{glossary}
-pre-commit
-: pre-commit is a tool that allows you to run checks on your code before you commit it.
-:::
-
-:::{glossary}
-GitHub Actions
-: GitHub Actions is a CI/CD platform that allows you to automate your workflow.
-:::
-::::
-
-
-## How It Works
-`afterpython` uses [MyST Document Engine] under the hood so you can write content in [MyST Markdown] and [Jupyter Notebook], then builds a project website using a [template] to display all your content in an organized way.
-
-
 ## afterpython/ Folder
-aim to store everything python project related
-provide a structured way
+The `afterpython/` folder serves as a centralized location for both your project website content and maintenance tool configurations. It contains:
+
+**Content directories:**
+- `afterpython/doc/` - Documentation
+- `afterpython/blog/` - Blog posts
+- `afterpython/tutorial/` - Tutorials
+- `afterpython/example/` - Examples
+- `afterpython/guide/` - How-to Guides
+
+**Configuration files:**
+- `cz.toml` for [commitizen]
+- `ruff.toml` for [ruff]
+- `.pre-commit-config.yaml` for [pre-commit]
+- `authors.yml` for [mystmd]
+- `afterpython.toml` for `afterpython` itself
+
+**Purpose:**
+
+This structure serves two goals:
+
+1. **Declutter the root directory** - Keeps maintenance-related configuration files separate from package code, making the project structure cleaner
+2. **Provide sane defaults** - Comes pre-configured with sensible defaults for common maintenance tools like [commitizen], [pre-commit], and [ruff], so you can start using them immediately
 
 
-## Structure / Content Types
-explain each of their definitions
-- content
-    - doc
-    - blog
-    - tutorial
-    - example
-    - guide
--
+---
+## afterpython.toml
+`afterpython.toml` is a configuration file for `afterpython`. Think of it as an extension of `pyproject.toml`, storing extra information about your project such as company name, company URL, project website URL, etc. Currently it only supports the following fields:
+
+```toml
+[company]
+name = "Your Company Name"
+url = "https://your-company.com"
+
+[website]
+url = "https://your-project-website.com"
+```
+
+---
+## Content Types
+- **Documentation** (`afterpython/doc/`) - Conceptual explanations on how the project works
+- **Blog** (`afterpython/blog/`) - Project updates, announcements, and release notes
+- **Tutorials** (`afterpython/tutorial/`) - Step-by-step learning guides
+- **Examples** (`afterpython/example/`) - Real-world code examples/snippets
+- **Guides** (`afterpython/guide/`) - Task-oriented how-to instructions
+- **API Reference** (`afterpython/reference/`) - Auto-generated API documentation from docstrings

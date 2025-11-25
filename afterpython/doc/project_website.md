@@ -58,10 +58,15 @@ When updates are available, run `ap update website`, which will update `afterpyt
 ## Customization and Styling
 Since all the code is pulled from [project-website-template] to `afterpython/_website/`, you can customize the project website by modifying the code in `afterpython/_website/src/`.
 
+
+### Landing Page
 For example, to change the landing page, which by default displays the `README.md`, you can modify the code in `afterpython/_website/src/routes/+page.svelte`.
 
 > If you don't know Svelte and are using an LLM to code for you, remember to ask it to write in Svelte 5 syntax.
 
+### Static Files
+All static files (e.g. `logo.svg`, `favicon.svg`, images, css files, etc.) should be put in the `afterpython/static/` directory.
+They will be automatically copied to the `afterpython/_website/static/` directory during `ap build`.
 
 ---
 ## Work in Progress 🚧

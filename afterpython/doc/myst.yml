@@ -35,7 +35,6 @@ project:
   toc:
   - file: overview.md
   - file: quickstart.md
-  - file: walkthrough.md
   - file: concepts.md
   - file: myst.md
   - file: project_website.md
