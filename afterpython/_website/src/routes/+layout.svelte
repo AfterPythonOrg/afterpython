@@ -33,7 +33,7 @@
 						Documentation
 					</a>
 				</li>
-				<li>
+				<!-- <li>
 					<a href={'/tutorial'}>Tutorials</a>
 				</li>
 				<li>
@@ -44,7 +44,7 @@
 				</li>
 				<li>
 					<a href={'/blog'}>Blog</a>
-				</li>
+				</li> -->
 				<!-- <li>
 					<a href={'/exercises'}>Exercises</a>
 				</li>

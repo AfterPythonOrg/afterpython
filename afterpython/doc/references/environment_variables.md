@@ -1,6 +1,9 @@
-# Environment Variables
+---
+authors:
+- new_author_id_defined_in_authors_yml
+---
 
-## `UV_PUBLISH_TOKEN`
+# Environment Variables
 
 ## `AP_AUTO_SYNC`
 

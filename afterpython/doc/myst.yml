@@ -68,14 +68,16 @@ site:
     analytics_google: "{{ GOOGLE_ANALYTICS_ID }}"
   title: afterpython's Doc
   nav:
-  - title: Blogs
-    url: https://afterpython.afterpython.org/blog
+  - title: AfterPython.Org
+    url: https://afterpython.org
+  - title: Guides
+    url: https://afterpython.afterpython.org/guide
   - title: Tutorials
     url: https://afterpython.afterpython.org/tutorial
   - title: Examples
     url: https://afterpython.afterpython.org/example
-  - title: Guides
-    url: https://afterpython.afterpython.org/guide
+  - title: Blogs
+    url: https://afterpython.afterpython.org/blog
   actions:
   - title: ⭐ Star
     url: https://github.com/AfterPythonOrg/afterpython

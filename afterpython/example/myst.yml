@@ -48,14 +48,16 @@ site:
     logo_url: https://afterpython.afterpython.org
   title: afterpython's Example
   nav:
+  - title: AfterPython.Org
+    url: https://afterpython.org
+  - title: Guides
+    url: https://afterpython.afterpython.org/guide
+  - title: Tutorials
+    url: https://afterpython.afterpython.org/tutorial
   - title: Docs
     url: https://afterpython.afterpython.org/doc
   - title: Blogs
     url: https://afterpython.afterpython.org/blog
-  - title: Tutorials
-    url: https://afterpython.afterpython.org/tutorial
-  - title: Guides
-    url: https://afterpython.afterpython.org/guide
   actions:
   - title: ⭐ Star
     url: https://github.com/AfterPythonOrg/afterpython

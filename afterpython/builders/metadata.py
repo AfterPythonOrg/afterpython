@@ -23,7 +23,7 @@ def convert_paths():
         markdown_text = metadata["description"]
 
     # Replace with the correct paths
-    updated_markdown = markdown_text.replace("./afterpython/static/", "/")
+    updated_markdown = markdown_text.replace("afterpython/static/", "/")
 
     # Write back to metadata.json
     metadata["description"] = updated_markdown

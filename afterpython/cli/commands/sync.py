@@ -55,15 +55,20 @@ def sync():
     company_url = str(_from_tomlkit(afterpython["company"]).get("url", ""))
     website_url = str(_from_tomlkit(afterpython["website"]).get("url", ""))
     authors = pyproject.authors
-    nav_bar = [
-        {
-            "title": content_type.capitalize() + "s",
-            "url": f"{website_url}/{content_type}",
-        }
-        if website_url
-        else ""
-        for content_type in CONTENT_TYPES
-    ]
+    if company_name and company_url:
+        nav_bar = [{"title": company_name, "url": company_url}]
+    else:
+        nav_bar = []
+    if website_url:
+        nav_bar.extend(
+            [
+                {
+                    "title": content_type.capitalize() + "s",
+                    "url": f"{website_url}/{content_type}",
+                }
+                for content_type in CONTENT_TYPES
+            ]
+        )
 
     _sync_authors_yml(authors)
 
