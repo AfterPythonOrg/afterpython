@@ -1,3 +1,5 @@
+[pre-commit]: https://github.com/pre-commit/pre-commit
+
 # CI/CD Pipelines
 
 ## `pre-commit`
@@ -7,6 +9,4 @@
 
 ## GitHub Actions
 
-## GitHub Dependabots
-
-## PyPI and GitHub Releases
+## GitHub Dependabots 🚧

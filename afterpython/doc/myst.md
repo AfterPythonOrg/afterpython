@@ -29,6 +29,11 @@ This section serves as a quick guide to MyST. Quotes below are sourced from the 
 ## Jupyter Notebook
 The [MyST Document Engine][MyST Overview] can parse [Jupyter Notebook]s and render them as HTML. This means you can write content in both MyST Markdown and Jupyter Notebooks—`afterpython` will organize and render them together as part of your project website.
 
+### Notebook Cell Tags
+You can add tags to notebook cells to control their behavior. For example, you can add the `hide-input` tag to a cell to hide the input of the cell.
+
+*See [Notebook Cell Tags](https://mystmd.org/guide/notebook-configuration#tbl-notebook-cell-tags) for more details.*
+
 ### Molab Badge
 
 If the [environment variable](references/environment_variables.md) `AP_MOLAB_BADGE` is set to `1`, `afterpython` automatically adds [molab] badges to Jupyter Notebooks during the build process.
@@ -88,3 +93,12 @@ authors:
 :::{tip}
 This entire documentation is written in MyST Markdown. You can click the "Edit this page" button in the top right corner to see the source code as an example of how to write content in MyST Markdown.
 :::
+
+
+---
+## Synchronization
+`ap sync` copies corresponding values from `pyproject.toml` and `afterpython.toml` into `authors.yml` and `myst.yml`.
+
+For example, after updating authors in `pyproject.toml`, run `ap sync` to update `authors.yml` and your `myst.yml` files automatically.
+
+You can also change `[company.name]` in `afterpython.toml` and run `ap sync` to update `venue.title` (set to the company name) in your `myst.yml` files.

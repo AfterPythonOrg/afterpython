@@ -41,6 +41,7 @@ project:
   - title: Package Maintenance
     children:
     - file: package_maintenance/package_management.md
+    - file: package_maintenance/release_management.md
     - file: package_maintenance/ci_cd.md
   - title: References
     children:
