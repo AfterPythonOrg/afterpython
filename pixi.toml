@@ -4,6 +4,7 @@ channels = ["conda-forge"]
 name = "afterpython"
 platforms = ["osx-arm64", "linux-64"]
 version = "0.0.1.dev2"
+requires-pixi = ">=0.59"  # command: pixi workspace requires-pixi set ">=0.59"
 
 [tasks]
 add = { cmd = "uv add {{ lib }} && pixi add --pypi {{ lib }}", args = ["lib"] }
@@ -57,7 +58,7 @@ pytest-cov = ">=7.0.0"
 pytest-mock = ">=3.15.1"
 pytest-xdist = ">=3.8.0"
 [feature.test.tasks]
-test = "pytest"
+test = "pytest -v -n auto"
 
 [feature.py311.dependencies]
 python = "3.11.*"

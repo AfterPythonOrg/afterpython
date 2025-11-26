@@ -35,6 +35,11 @@ def has_uv() -> bool:
     return shutil.which("uv") is not None
 
 
+def has_pixi() -> bool:
+    """Check if pixi is installed"""
+    return shutil.which("pixi") is not None
+
+
 def has_gh() -> bool:
     """Check if gh is installed"""
     return shutil.which("gh") is not None

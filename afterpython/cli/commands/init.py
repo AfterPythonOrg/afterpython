@@ -47,8 +47,14 @@ def init_website():
 
 
 @click.command()
+@click.option(
+    "--yes",
+    "-y",
+    is_flag=True,
+    help="Automatically answer yes to all prompts",
+)
 @click.pass_context
-def init(ctx):
+def init(ctx, yes):
     """Initialize afterpython with MyST Markdown (by default) and project website template"""
     from afterpython.tools.pyproject import init_pyproject
     from afterpython.tools._afterpython import init_afterpython
@@ -56,8 +62,7 @@ def init(ctx):
     from afterpython.tools.pre_commit import init_pre_commit
     from afterpython.tools.commitizen import init_commitizen
     from afterpython.tools.github_actions import (
-        init_release_workflow,
-        init_deploy_workflow,
+        create_workflow,
     )
 
     paths = ctx.obj["paths"]
@@ -79,20 +84,21 @@ def init(ctx):
 
     init_website()
 
-    if click.confirm(
+    if yes or click.confirm(
         f"\nCreate .pre-commit-config.yaml in {afterpython_path}?", default=True
     ):
         init_pre_commit()
 
-    if click.confirm(f"\nCreate ruff.toml in {afterpython_path}?", default=True):
+    if yes or click.confirm(f"\nCreate ruff.toml in {afterpython_path}?", default=True):
         init_ruff_toml()
 
-    if click.confirm(
+    if yes or click.confirm(
         f"\nCreate commitizen configuration (cz.toml) in {afterpython_path} "
         f"and release workflow in .github/workflows/release.yml?",
         default=True,
     ):
         init_commitizen()
-        init_release_workflow()
+        create_workflow("release")
 
-    init_deploy_workflow()
+    create_workflow("deploy")
+    create_workflow("ci")
