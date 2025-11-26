@@ -70,36 +70,4 @@ build-backend = "uv_build"
 
 [tool.uv.build-backend]
 module-name = "afterpython"
-module-root = ""
-source-exclude = [
-    "afterpython/doc",
-    "afterpython/blog",
-    "afterpython/tutorial",
-    "afterpython/example",
-    "afterpython/guide",
-    "afterpython/static",
-    "afterpython/_website",
-    "afterpython/_build",
-    "afterpython/cz.toml",
-    "afterpython/.pre-commit-config.yaml",
-    "afterpython/ruff.toml",
-    "afterpython/afterpython.toml",
-    "afterpython/authors.yml",
-    "afterpython/faq.yml",
-]
-wheel-exclude = [
-    "afterpython/doc",
-    "afterpython/blog",
-    "afterpython/tutorial",
-    "afterpython/example",
-    "afterpython/guide",
-    "afterpython/static",
-    "afterpython/_website",
-    "afterpython/_build",
-    "afterpython/cz.toml",
-    "afterpython/.pre-commit-config.yaml",
-    "afterpython/ruff.toml",
-    "afterpython/afterpython.toml",
-    "afterpython/authors.yml",
-    "afterpython/faq.yml",
-]
+module-root = "src"

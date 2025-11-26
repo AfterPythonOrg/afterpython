@@ -3333,7 +3333,7 @@ packages:
 - pypi: ./
   name: afterpython
   version: 0.1.0.dev8
-  sha256: e04148cdb3b7ae2107fee015dba785344b212ce7552a4d4822f4059309f28dab
+  sha256: a3c7886cbf3ed3b87e87d837f9cecf4530c907e36924ef82608b44e7cc723640
   requires_dist:
   - click>=8.3.1
   - trogon>=0.6.0
