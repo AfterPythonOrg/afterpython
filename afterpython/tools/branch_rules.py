@@ -20,6 +20,13 @@ DEFAULT_RULESET = {
             "exclude": [],  # No exclusions
         }
     },
+    "bypass_actors": [
+        {
+            "actor_id": 5,  # Repository admin role
+            "actor_type": "RepositoryRole",
+            "bypass_mode": "pull_request",
+        }
+    ],
     "rules": [  # Array of protection rules
         # Rule 1: No Force Pushes
         {"type": "non_fast_forward"},  # Prevents git push --force

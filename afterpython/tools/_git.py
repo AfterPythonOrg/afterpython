@@ -106,5 +106,32 @@ def get_github_username() -> str | None:
     return result.stdout.strip()
 
 
+def get_current_user_id() -> int | None:
+    """
+    Get the GitHub user ID of the currently authenticated user.
+
+    Returns:
+        User ID or None if error
+    """
+    if not is_gh_authenticated():
+        return None
+
+    result = subprocess.run(
+        ["gh", "api", "user", "--jq", ".id"],
+        capture_output=True,
+        text=True,
+    )
+
+    if result.returncode != 0:
+        print(f"Error fetching user ID: {result.stderr}")
+        return None
+
+    try:
+        return int(result.stdout.strip())
+    except ValueError:
+        print("Error: Failed to parse user ID")
+        return None
+
+
 # TODO: use gh's token for pygithub to get repo issues
 # def get_repo_issues(owner: str, repo: str) -> list[dict]:
