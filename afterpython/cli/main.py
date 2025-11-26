@@ -3,27 +3,28 @@ import subprocess
 from collections import defaultdict
 
 import click
+from dotenv import find_dotenv, load_dotenv
 from trogon import tui
-from dotenv import load_dotenv, find_dotenv
+
 import afterpython as ap
 from afterpython import __version__
-from afterpython.cli.commands.init import init
 from afterpython.cli.commands.build import build
-from afterpython.cli.commands.dev import dev
-from afterpython.cli.commands.update import update
-from afterpython.cli.commands.check import check
-from afterpython.cli.commands.install import install
-from afterpython.cli.commands.format import format
-from afterpython.cli.commands.sync import sync
-from afterpython.cli.commands.start import start, doc, blog, tutorial, example, guide
-from afterpython.cli.commands.preview import preview
-from afterpython.cli.commands.clean import clean
-from afterpython.cli.commands.pre_commit import pre_commit
-from afterpython.cli.commands.commitizen import commitizen
-from afterpython.cli.commands.commit import commit
 from afterpython.cli.commands.bump import bump
-from afterpython.cli.commands.release import release
+from afterpython.cli.commands.check import check
+from afterpython.cli.commands.clean import clean
+from afterpython.cli.commands.commit import commit
+from afterpython.cli.commands.commitizen import commitizen
+from afterpython.cli.commands.dev import dev
+from afterpython.cli.commands.format import format
+from afterpython.cli.commands.init import init
 from afterpython.cli.commands.init_branch_rules import init_branch_rules
+from afterpython.cli.commands.install import install
+from afterpython.cli.commands.pre_commit import pre_commit
+from afterpython.cli.commands.preview import preview
+from afterpython.cli.commands.release import release
+from afterpython.cli.commands.start import blog, doc, example, guide, start, tutorial
+from afterpython.cli.commands.sync import sync
+from afterpython.cli.commands.update import update
 
 
 class AliasGroup(click.Group):

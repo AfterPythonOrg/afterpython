@@ -1,9 +1,7 @@
 import subprocess
 
 import afterpython as ap
-
-from afterpython._io.yaml import write_yaml, read_yaml
-
+from afterpython._io.yaml import read_yaml, write_yaml
 
 pre_commit_default = {
     # default is only ["pre-commit"], without changing the default,

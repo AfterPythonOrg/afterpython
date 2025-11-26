@@ -3,7 +3,8 @@ pcu = "pip check updates", similar to ncu (npm check updates in Node.js)
 """
 
 from __future__ import annotations
-from typing import TYPE_CHECKING, TypedDict, NamedTuple, TypeAlias
+
+from typing import TYPE_CHECKING, NamedTuple, TypeAlias, TypedDict
 
 if TYPE_CHECKING:
     from tomlkit.toml_document import TOMLDocument
@@ -60,6 +61,7 @@ async def get_latest_versions(
 ) -> dict[str, Version | None]:
     """Get latest versions for a list of dependencies from PyPI."""
     import httpx
+
     from afterpython.utils import fetch_pypi_json
 
     async def fetch_version(

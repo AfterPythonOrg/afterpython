@@ -9,7 +9,6 @@ from copy import deepcopy
 
 from afterpython.tools._git import is_gh_authenticated
 
-
 DEFAULT_RULESET = {
     "name": "afterpython-default",  # The ruleset identifier in GitHub
     "target": "branch",  # This ruleset applies to branches (not tags)

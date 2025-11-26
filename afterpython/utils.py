@@ -1,9 +1,12 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from pathlib import Path
+
     from httpx import AsyncClient
+
     from afterpython._typing import NodeEnv
 
 import os
@@ -20,6 +23,7 @@ def find_node_env() -> NodeEnv:
     If no, install the Node.js version specified in NODEENV_VERSION
     """
     from mystmd_py.nodeenv import find_any_node
+
     from afterpython.const import NODEENV_VERSION
 
     # from mystmd_py.main import ensure_valid_version

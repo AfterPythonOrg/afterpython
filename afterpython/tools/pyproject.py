@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -9,7 +10,7 @@ import asyncio
 from pyproject_metadata import StandardMetadata
 
 import afterpython as ap
-from afterpython._io.toml import read_toml, write_toml, _to_tomlkit
+from afterpython._io.toml import _to_tomlkit, read_toml, write_toml
 
 
 def read_pyproject() -> TOMLDocument:
@@ -32,8 +33,9 @@ def init_pyproject():
     - add [project.urls] section with homepage, repository, and documentation URLs
     """
     import httpx
-    from afterpython.utils import fetch_pypi_json
+
     from afterpython.tools._git import get_git_user_config, get_github_url
+    from afterpython.utils import fetch_pypi_json
 
     build_backend = "uv_build"
 

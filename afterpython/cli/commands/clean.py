@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -10,8 +11,8 @@ import subprocess
 import click
 from click.exceptions import Exit
 
-from afterpython.utils import find_node_env, has_content_for_myst
 from afterpython.const import CONTENT_TYPES
+from afterpython.utils import find_node_env, has_content_for_myst
 
 
 @click.command(

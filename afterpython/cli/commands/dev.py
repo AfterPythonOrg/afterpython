@@ -1,17 +1,18 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from afterpython._typing import NodeEnv
 
-import time
 import subprocess
+import time
 
 import click
 from click.exceptions import Exit
 
-from afterpython.utils import find_node_env, find_available_port
 from afterpython.const import CONTENT_TYPES
+from afterpython.utils import find_available_port, find_node_env
 
 
 @click.command(

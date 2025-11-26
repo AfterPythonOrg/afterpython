@@ -1,6 +1,5 @@
 import afterpython as ap
 
-
 commitizen_default = {
     "tool": {
         "commitizen": {
@@ -36,8 +35,8 @@ commitizen_pre_commit_hook = {
 
 
 def init_commitizen():
-    from afterpython.tools.pre_commit import update_pre_commit
     from afterpython._io.toml import write_toml
+    from afterpython.tools.pre_commit import update_pre_commit
 
     afterpython_path = ap.paths.afterpython_path
     commitizen_toml_path = afterpython_path / "cz.toml"

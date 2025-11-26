@@ -56,15 +56,15 @@ def init_website():
 @click.pass_context
 def init(ctx, yes):
     """Initialize afterpython with MyST Markdown (by default) and project website template"""
-    from afterpython.tools.pyproject import init_pyproject
     from afterpython.tools._afterpython import init_afterpython
-    from afterpython.tools.myst import init_myst
-    from afterpython.tools.pre_commit import init_pre_commit
     from afterpython.tools.commitizen import init_commitizen
     from afterpython.tools.github_actions import (
-        create_workflow,
         create_dependabot,
+        create_workflow,
     )
+    from afterpython.tools.myst import init_myst
+    from afterpython.tools.pre_commit import init_pre_commit
+    from afterpython.tools.pyproject import init_pyproject
 
     paths = ctx.obj["paths"]
     click.echo("Initializing afterpython...")

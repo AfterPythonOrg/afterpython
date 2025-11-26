@@ -1,15 +1,17 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from pathlib import Path
-    from afterpython._typing import tContentType, NodeEnv
+
+    from afterpython._typing import NodeEnv, tContentType
 
 import subprocess
 
 import afterpython as ap
+from afterpython._io.yaml import read_yaml, write_yaml
 from afterpython.utils import deep_merge
-from afterpython._io.yaml import write_yaml, read_yaml
 
 
 def update_authors_yml(data_update: dict):

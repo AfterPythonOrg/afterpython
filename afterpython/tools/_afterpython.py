@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -7,7 +8,7 @@ if TYPE_CHECKING:
 import tomlkit
 
 import afterpython as ap
-from afterpython._io.toml import read_toml, write_toml, _to_tomlkit
+from afterpython._io.toml import _to_tomlkit, read_toml, write_toml
 
 
 def read_afterpython() -> TOMLDocument:

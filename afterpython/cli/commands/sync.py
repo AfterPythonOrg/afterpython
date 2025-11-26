@@ -10,8 +10,8 @@ from afterpython.utils import convert_author_name_to_id
 
 def _sync_authors_yml(authors: list[tuple[str, str | None]]):
     """Sync authors.yml with authors in pyproject.toml"""
-    from afterpython.tools.myst import update_authors_yml
     from afterpython._io.yaml import read_yaml
+    from afterpython.tools.myst import update_authors_yml
 
     # read myst.yml from docs path to get "version"
     doc_myst_yml = read_yaml(ap.paths.afterpython_path / "doc" / "myst.yml")
@@ -37,15 +37,15 @@ def _sync_authors_yml(authors: list[tuple[str, str | None]]):
 @click.command()
 def sync():
     """Sync between pyproject.toml+afterpython.toml and authors.yml+myst.yml files"""
+    from afterpython._io.toml import _from_tomlkit
     from afterpython.const import CONTENT_TYPES
     from afterpython.tools._afterpython import read_afterpython
+    from afterpython.tools.myst import update_myst_yml
     from afterpython.tools.pyproject import (
         read_metadata,
         read_pyproject,
         write_pyproject,
     )
-    from afterpython._io.toml import _from_tomlkit
-    from afterpython.tools.myst import update_myst_yml
 
     pyproject: StandardMetadata = read_metadata()
     project_name = str(pyproject.name)

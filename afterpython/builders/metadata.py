@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -7,7 +8,6 @@ if TYPE_CHECKING:
 import json
 
 import afterpython as ap
-
 
 build_path = ap.paths.build_path
 

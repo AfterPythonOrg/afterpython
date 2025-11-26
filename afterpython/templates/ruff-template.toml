@@ -18,7 +18,7 @@ ignore = [
 ]
 # extended rules:
 extend-select = [
-    # "I",     # isort - import sorting
+    "I",     # isort - import sorting
     "UP",    # pyupgrade - upgrade syntax for newer Python
     "B",     # flake8-bugbear - find likely bugs
     "SIM",   # flake8-simplify - simplify code

@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -10,8 +11,8 @@ from pathlib import Path
 from pyproject_metadata import StandardMetadata
 
 import afterpython as ap
-from afterpython.tools.pyproject import read_metadata
 from afterpython.const import CONTENT_TYPES
+from afterpython.tools.pyproject import read_metadata
 
 
 def _get_molab_badge() -> str:

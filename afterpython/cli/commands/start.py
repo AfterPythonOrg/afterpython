@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -8,7 +9,6 @@ import subprocess
 
 import click
 from click.exceptions import Exit
-
 
 command_kwargs = {
     "add_help_option": False,  # disable click's --help option so that myst start --help can work
@@ -43,9 +43,12 @@ command_kwargs = {
 )
 def start(ctx, doc: bool, blog: bool, tutorial: bool, example: bool, guide: bool):
     """Simple wrapper for `myst start` for convenience"""
-    from afterpython.utils import find_node_env, has_content_for_myst
     from afterpython.const import CONTENT_TYPES
-    from afterpython.utils import handle_passthrough_help
+    from afterpython.utils import (
+        find_node_env,
+        handle_passthrough_help,
+        has_content_for_myst,
+    )
 
     # Show both our options and myst's help and exit
     handle_passthrough_help(

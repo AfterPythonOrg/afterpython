@@ -1,10 +1,12 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
+
 from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from afterpython._typing import NodeEnv
     from pathlib import Path
+
+    from afterpython._typing import NodeEnv
 
 import os
 import shutil
@@ -14,12 +16,12 @@ import click
 from click.exceptions import Exit
 
 import afterpython as ap
-from afterpython.utils import find_node_env
-from afterpython.const import CONTENT_TYPES
 from afterpython.builders import (
-    build_metadata,
     add_molab_badge_to_jupyter_notebooks,
+    build_metadata,
 )
+from afterpython.const import CONTENT_TYPES
+from afterpython.utils import find_node_env
 
 
 def determine_base_path() -> str:
@@ -29,9 +31,9 @@ def determine_base_path() -> str:
         Empty string if custom domain is configured (no github.io in URL)
         /repo-name if using default GitHub Pages URL (contains github.io)
     """
+    from afterpython._io.toml import _from_tomlkit
     from afterpython.tools._afterpython import read_afterpython
     from afterpython.tools.pyproject import read_metadata
-    from afterpython._io.toml import _from_tomlkit
 
     # Read website URL from afterpython.toml
     afterpython = read_afterpython()
@@ -167,8 +169,7 @@ def build(ctx, dev: bool, execute: bool):
 
     Use --execute to execute Jupyter notebooks for all content types.
     """
-    from afterpython.utils import has_content_for_myst
-    from afterpython.utils import handle_passthrough_help
+    from afterpython.utils import handle_passthrough_help, has_content_for_myst
 
     # Show both our options and myst's help and exit
     handle_passthrough_help(

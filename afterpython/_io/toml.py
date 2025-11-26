@@ -1,9 +1,11 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from tomlkit.toml_document import TOMLDocument
     from pathlib import Path
+
+    from tomlkit.toml_document import TOMLDocument
 
 import tomlkit
 
@@ -16,7 +18,7 @@ def _from_tomlkit(value):
     - tomlkit containers → plain Python containers
     - tomlkit primitives → plain Python primitives
     """
-    from tomlkit.items import Array, InlineTable, Table, AoT
+    from tomlkit.items import AoT, Array, InlineTable, Table
 
     if value is None:
         return None
@@ -58,7 +60,7 @@ def _to_tomlkit(value):
     - List of dicts → array of inline tables: [{key = val}]
     - Nested dicts → nested tables with proper structure
     """
-    from tomlkit import inline_table, array
+    from tomlkit import array, inline_table
 
     if value is None:
         return None

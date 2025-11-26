@@ -1,12 +1,13 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from afterpython._typing import NodeEnv
     from afterpython.pcu import Dependencies
 
-import subprocess
 import shutil
+import subprocess
 
 import click
 from click.exceptions import Exit
