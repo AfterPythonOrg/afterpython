@@ -95,8 +95,9 @@ jobs:
 
       - name: Run tests with pytest
         # Run pytest with verbose output
-        # Even without tests, pytest will exit successfully (0 tests collected)
-        run: pytest -v
+        # Exit code 5 (no tests collected) is treated as success
+        run: |
+          pytest -v || if [ $? -eq 5 ]; then exit 0; else exit $?; fi
 
   # Job 4: Test Suite - Pixi Workflow
   # Pixi-based testing for projects using pixi.toml
@@ -131,7 +132,9 @@ jobs:
         #   py311 = ["py311", "test"]
         #   [feature.test.tasks]
         #   test = "pytest -v"
-        run: pixi run -e ${{ matrix.environment }} test
+        # Note: Exit code 5 (no tests collected) is treated as success
+        run: |
+          pixi run -e ${{ matrix.environment }} test || if [ $? -eq 5 ]; then exit 0; else exit $?; fi
 
   # Job 5: Build Verification
   # Ensures the package can be built successfully
