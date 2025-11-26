@@ -1,5 +1,3 @@
-# default is only ["pre-commit"], without changing the default,
-# we need to explicitly pass in --hook-type whenever we run "pre-commit install --hook-type ..."
 default_install_hook_types:
 - pre-commit
 - commit-msg

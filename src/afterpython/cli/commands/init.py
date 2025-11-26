@@ -7,38 +7,13 @@ import afterpython as ap
 
 
 def init_ruff_toml():
-    from afterpython.tools.pre_commit import update_pre_commit
-
-    afterpython_path = ap.paths.afterpython_path
-    ruff_toml_path = afterpython_path / "ruff.toml"
+    ruff_toml_path = ap.paths.afterpython_path / "ruff.toml"
     if ruff_toml_path.exists():
         click.echo(f"Ruff configuration file {ruff_toml_path} already exists")
         return
     ruff_template_path = ap.paths.templates_path / "ruff-template.toml"
     shutil.copy(ruff_template_path, ruff_toml_path)
     click.echo(f"Created {ruff_toml_path}")
-    # add ruff-pre-commit hook to .pre-commit-config.yaml
-    data_update = {
-        "repos": [
-            {
-                "repo": "https://github.com/astral-sh/ruff-pre-commit",
-                "rev": "v0.14.6",
-                "hooks": [
-                    {
-                        "id": "ruff-check",
-                        "stages": ["pre-commit"],
-                        "args": ["--config", "./afterpython/ruff.toml"],
-                    },
-                    {
-                        "id": "ruff-format",
-                        "stages": ["pre-commit"],
-                        "args": ["--config", "./afterpython/ruff.toml"],
-                    },
-                ],
-            },
-        ]
-    }
-    update_pre_commit(data_update)
 
 
 def init_website():
