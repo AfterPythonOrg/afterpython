@@ -39,13 +39,13 @@ dependencies = [
     "gitpython>=3.1.45",
     "pygithub>=2.8.1",
     "python-dotenv>=1.2.1",
-    "pyproject-metadata>=0.9.1",
+    "pyproject-metadata>=0.10.0",
     # "jupytext>=1.18.1",
     # "jinja2>=3.1.6",
     "mystmd>=1.6.6",
     "pdoc>=16.0.0",
-    "ruff>=0.14.5",
-    "pre-commit>=4.4.0",
+    "ruff>=0.14.6",
+    "pre-commit>=4.5.0",
     "commitizen>=4.10.0",
     # "python-semantic-release>=10.5.2",
 ]
@@ -64,11 +64,11 @@ pcu = "afterpython.main:run_pcu"
 override-dependencies = ["platformdirs>=4.5.0", "nodeenv>=1.9.1"]
 
 [build-system]
-requires = ["uv_build>=0.9.10,<0.10.0"]
+requires = ["uv_build>=0.9.12,<0.10.0"]
 build-backend = "uv_build"
 
 [dependency-groups]
-dev = ["notebook>=7.4.7"]
+dev = ["notebook>=7.5.0"]
 
 [tool.uv.build-backend]
 module-name = "afterpython"
