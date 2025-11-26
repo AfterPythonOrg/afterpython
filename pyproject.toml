@@ -1,6 +1,6 @@
 [project]
 name = "afterpython"
-version = "0.1.0.dev14"
+version = "0.1.0.dev15"
 description = "CLI tool to streamline Python package maintenance and generate a dedicated project website"
 license = "Apache-2.0"
 authors = [
