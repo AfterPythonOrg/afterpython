@@ -95,3 +95,24 @@ def bump(ctx, release: bool, pre: bool):
         result = subprocess.run(["pixi", "install"], check=False)
         if result.returncode != 0:
             raise Exit(result.returncode)
+
+        # Check if pixi.lock was modified
+        status = subprocess.run(
+            ["git", "diff", "--name-only", "pixi.lock"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if status.stdout.strip():
+            # Stage and commit pixi.lock
+            subprocess.run(["git", "add", "pixi.lock"], check=True)
+            subprocess.run(
+                [
+                    "git",
+                    "commit",
+                    "-m",
+                    "build: update pixi.lock after version bump",
+                ],
+                check=True,
+            )
+            click.echo("✓ Committed pixi.lock update")
