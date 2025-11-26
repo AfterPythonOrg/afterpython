@@ -34,7 +34,7 @@ def update():
 def dependencies(upgrade: bool, all: bool):
     """Update pyproject.toml dependencies to the latest version"""
     from afterpython.pcu import get_dependencies, update_dependencies
-    from afterpython.utils import has_uv
+    from afterpython.utils import has_pixi, has_uv
 
     dependencies: Dependencies = get_dependencies()
     has_at_least_one_update = False
@@ -80,7 +80,9 @@ def dependencies(upgrade: bool, all: bool):
                 raise Exit(result.returncode)
             click.echo(
                 click.style(
-                    "✓ All dependencies upgraded successfully 🎉", fg="green", bold=True
+                    "✓ All dependencies in pyproject.toml upgraded successfully 🎉",
+                    fg="green",
+                    bold=True,
                 )
             )
         else:
@@ -90,6 +92,26 @@ def dependencies(upgrade: bool, all: bool):
     if all:
         subprocess.run(["ap", "pre-commit", "autoupdate"])
         click.echo("All pre-commit hooks updated successfully.")
+        if has_pixi():
+            click.echo("Upgrading dependencies with pixi...")
+            result = subprocess.run(
+                ["pixi", "upgrade", "--exclude", "python"], check=False
+            )
+            if result.returncode != 0:
+                raise Exit(result.returncode)
+            result = subprocess.run(["pixi", "lock"], check=False)
+            if result.returncode != 0:
+                raise Exit(result.returncode)
+            result = subprocess.run(["pixi", "install"], check=False)
+            if result.returncode != 0:
+                raise Exit(result.returncode)
+            click.echo(
+                click.style(
+                    "✓ All dependencies in pixi.toml upgraded successfully 🎉",
+                    fg="green",
+                    bold=True,
+                )
+            )
 
 
 update.add_command(dependencies, name="deps")  # alias for "dependencies"

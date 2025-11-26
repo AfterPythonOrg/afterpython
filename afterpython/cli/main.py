@@ -8,6 +8,7 @@ from trogon import tui
 
 import afterpython as ap
 from afterpython import __version__
+from afterpython.cli.commands.add import add
 from afterpython.cli.commands.build import build
 from afterpython.cli.commands.bump import bump
 from afterpython.cli.commands.check import check
@@ -19,9 +20,11 @@ from afterpython.cli.commands.format import format
 from afterpython.cli.commands.init import init
 from afterpython.cli.commands.init_branch_rules import init_branch_rules
 from afterpython.cli.commands.install import install
+from afterpython.cli.commands.lock import lock
 from afterpython.cli.commands.pre_commit import pre_commit
 from afterpython.cli.commands.preview import preview
 from afterpython.cli.commands.release import release
+from afterpython.cli.commands.remove import remove
 from afterpython.cli.commands.start import blog, doc, example, guide, start, tutorial
 from afterpython.cli.commands.sync import sync
 from afterpython.cli.commands.update import update
@@ -124,3 +127,6 @@ afterpython_group.add_command(commit)
 afterpython_group.add_command(bump)
 afterpython_group.add_command(release)
 afterpython_group.add_command(init_branch_rules)
+afterpython_group.add_command(add)
+afterpython_group.add_command(remove)
+afterpython_group.add_command(lock)

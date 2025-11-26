@@ -65,11 +65,8 @@ pcu = "afterpython.main:run_pcu"
 override-dependencies = ["platformdirs>=4.5.0", "nodeenv>=1.9.1"]
 
 [build-system]
-requires = ["uv_build>=0.9.12,<0.10.0"]
+requires = ["uv_build>=0.9.13,<0.10.0"]
 build-backend = "uv_build"
-
-[dependency-groups]
-dev = ["notebook>=7.5.0"]
 
 [tool.uv.build-backend]
 module-name = "afterpython"

@@ -10,9 +10,10 @@ This roadmap is tentative and subject to change
 - full-text search engine using pagefind
 - incremental build, only build changed content (for `ap dev`)
 - integrate with `git-cliff` for changelog generation
-- integrate with `pixi`, supports `conda install`
 - supports docs built by different engines? e.g. Sphix, MkDocs
 - update `afterpython` itself using `ap update afterpython`
     - it merges the new defaults in a newer version of `afterpython` into your project
     - very difficult, need to create an interactive UX to show the diffs and let the user choose to merge or not
+- add type checker using `ty`
 - support python 3.14
+- integrate with `pixi`, supports `conda install`

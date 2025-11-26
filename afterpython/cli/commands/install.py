@@ -3,7 +3,7 @@ import subprocess
 import click
 from click.exceptions import Exit
 
-from afterpython.utils import has_uv
+from afterpython.utils import has_pixi, has_uv
 
 
 @click.command(
@@ -13,10 +13,16 @@ from afterpython.utils import has_uv
     )
 )
 def install():
-    """Run 'uv sync --all-extras --all-groups' to install all dependencies"""
+    """Install all dependencies (runs 'uv sync --all-extras --all-groups' and 'pixi install' if present)"""
     if not has_uv():
         click.echo("uv not found. Please install uv first.")
         return
+
     result = subprocess.run(["uv", "sync", "--all-extras", "--all-groups"], check=False)
     if result.returncode != 0:
         raise Exit(result.returncode)
+
+    if has_pixi():
+        result = subprocess.run(["pixi", "install"], check=False)
+        if result.returncode != 0:
+            raise Exit(result.returncode)

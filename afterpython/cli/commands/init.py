@@ -22,7 +22,7 @@ def init_ruff_toml():
         "repos": [
             {
                 "repo": "https://github.com/astral-sh/ruff-pre-commit",
-                "rev": "v0.14.5",
+                "rev": "v0.14.6",
                 "hooks": [
                     {
                         "id": "ruff-check",
