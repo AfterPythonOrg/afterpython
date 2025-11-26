@@ -1,7 +1,7 @@
 [project]
 name = "afterpython"
 version = "0.1.0.dev8"
-description = "CLI tool for AfterPython"
+description = "CLI tool to streamline Python package maintenance and generate a dedicated project website"
 license = "Apache-2.0"
 authors = [
     { name = "Stephen Yau", email = "softwareentrepreneer+afterpython@gmail.com" },

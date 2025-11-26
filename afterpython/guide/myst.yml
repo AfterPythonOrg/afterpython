@@ -19,7 +19,7 @@ project:
     url: https://afterpython.org
   copyright: © AfterPython.Org 2025. All rights reserved.
   title: ''
-  description: CLI tool for AfterPython
+  description: CLI tool to streamline Python package maintenance and generate a dedicated project website
   keywords:
   - package-maintenance
   - project-website
@@ -52,12 +52,12 @@ site:
     url: https://afterpython.org
   - title: Tutorials
     url: https://afterpython.afterpython.org/tutorial
-  - title: Docs
-    url: https://afterpython.afterpython.org/doc
-  - title: Examples
-    url: https://afterpython.afterpython.org/example
   - title: Blogs
     url: https://afterpython.afterpython.org/blog
+  - title: Examples
+    url: https://afterpython.afterpython.org/example
+  - title: Docs
+    url: https://afterpython.afterpython.org/doc
   actions:
   - title: ⭐ Star
     url: https://github.com/AfterPythonOrg/afterpython

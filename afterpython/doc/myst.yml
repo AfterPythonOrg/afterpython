@@ -20,7 +20,7 @@ project:
   # To autogenerate a Table of Contents, run "myst init --write-toc"
   copyright: © AfterPython.Org 2025. All rights reserved.
   # title:
-  description: CLI tool for AfterPython
+  description: CLI tool to streamline Python package maintenance and generate a dedicated project website
   keywords:
   - package-maintenance
   - project-website
@@ -64,14 +64,14 @@ site:
   nav:
   - title: AfterPython.Org
     url: https://afterpython.org
-  - title: Guides
-    url: https://afterpython.afterpython.org/guide
   - title: Tutorials
     url: https://afterpython.afterpython.org/tutorial
-  - title: Examples
-    url: https://afterpython.afterpython.org/example
   - title: Blogs
     url: https://afterpython.afterpython.org/blog
+  - title: Examples
+    url: https://afterpython.afterpython.org/example
+  - title: Guides
+    url: https://afterpython.afterpython.org/guide
   actions:
   - title: ⭐ Star
     url: https://github.com/AfterPythonOrg/afterpython

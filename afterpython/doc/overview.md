@@ -22,8 +22,9 @@
 ---
 ## Why use `afterpython`
 - Write content directly in [MyST Markdown] or [Jupyter Notebook]
-- Go from writing to website deployment in minutes — no need to learn any of the underlying tools
-- Centralize all your content in a modern, unified project website — from documentation to blog posts
+- Go from writing to **website deployment in minutes** — no need to learn any of the underlying tools
+- Centralize all your content in a modern, **unified project website** — from documentation to blog posts
+- Zero-config orchestration — Pre-configured modern tooling with sane defaults (see [](overview.md#tech-stack)), so you can start maintaining packages immediately **without learning each tool**
 - 🚧 Export content as PDF — for example, combine all blog posts into a single PDF file
 - 🚧 **⚡ Full-text search** across **ALL** your content in your website — docs, blogs, tutorials, everything
 - 🚧 **🤖 Embedded AI Chatbot** that answers questions directly using an in-browser LLM — at no cost

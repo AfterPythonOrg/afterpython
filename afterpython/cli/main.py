@@ -1,10 +1,10 @@
 import os
 import subprocess
+from collections import defaultdict
 
 import click
 from trogon import tui
 from dotenv import load_dotenv, find_dotenv
-
 import afterpython as ap
 from afterpython import __version__
 from afterpython.cli.commands.init import init
@@ -26,8 +26,60 @@ from afterpython.cli.commands.release import release
 from afterpython.cli.commands.init_branch_rules import init_branch_rules
 
 
+class AliasGroup(click.Group):
+    """Custom group that displays command aliases together."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._aliases = defaultdict(list)  # Maps primary command -> list of aliases
+        self._alias_to_primary = {}  # Maps alias -> primary command name
+
+    def add_command(self, cmd, name=None):
+        """Track aliases when the same command is added with different names."""
+        name = name or cmd.name
+
+        # Check if this command object was already added under a different name
+        for existing_name, existing_cmd in self.commands.items():
+            if existing_cmd is cmd and existing_name != name:
+                # This is an alias
+                self._aliases[existing_name].append(name)
+                self._alias_to_primary[name] = existing_name
+                break
+
+        super().add_command(cmd, name)
+
+    def format_commands(self, ctx, formatter):
+        """Format commands with aliases shown together."""
+        commands = []
+        for subcommand in self.list_commands(ctx):
+            # Skip aliases - they'll be shown with their primary command
+            if subcommand in self._alias_to_primary:
+                continue
+
+            cmd = self.get_command(ctx, subcommand)
+            if cmd is None:
+                continue
+
+            # Skip hidden commands
+            if cmd.hidden:
+                continue
+
+            help_text = cmd.get_short_help_str(limit=formatter.width)
+
+            # Build command name with aliases
+            aliases = self._aliases.get(subcommand, [])
+            if aliases:
+                subcommand = f"{subcommand}, {', '.join(aliases)}"
+
+            commands.append((subcommand, help_text))
+
+        if commands:
+            with formatter.section("Commands"):
+                formatter.write_dl(commands)
+
+
 @tui(command="tui", help="Open terminal UI")
-@click.group(context_settings={"help_option_names": ["-h", "--help"]})
+@click.group(cls=AliasGroup, context_settings={"help_option_names": ["-h", "--help"]})
 @click.pass_context
 @click.version_option(version=__version__)
 def afterpython_group(ctx):
@@ -65,7 +117,6 @@ afterpython_group.add_command(preview)
 afterpython_group.add_command(clean)
 afterpython_group.add_command(pre_commit)
 afterpython_group.add_command(pre_commit, name="pc")
-afterpython_group.add_command(pre_commit, name="precommit")
 afterpython_group.add_command(commitizen)
 afterpython_group.add_command(commitizen, name="cz")
 afterpython_group.add_command(commit)
