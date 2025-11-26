@@ -31,8 +31,7 @@ DEFAULT_RULESET = {
             "parameters": {
                 "required_status_checks": [
                     {"context": "lint"},
-                    {"context": "test-uv-complete"},
-                    {"context": "test-pixi-complete"},
+                    {"context": "test"},
                     {"context": "build"},
                 ],
                 # The PR branch must be up to date with the base branch (main) before merging

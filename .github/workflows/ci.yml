@@ -61,7 +61,7 @@ jobs:
             echo "use_pixi=false" >> $GITHUB_OUTPUT
           fi
 
-  # Job 3: Test Suite - UV Workflow
+  # Job 3.1: Test Suite - UV Workflow
   # Traditional Python testing with uv for projects without pixi
   test-uv:
     needs: detect-test-strategy
@@ -99,24 +99,7 @@ jobs:
         run: |
           pytest -v || if [ $? -eq 5 ]; then exit 0; else exit $?; fi
 
-  # Job 3.1: Test Suite - UV Workflow - Complete
-  # This creates a single check that passes only when all matrix jobs pass
-  test-uv-complete:
-    if: always() && needs.detect-test-strategy.outputs.use_pixi == 'false'
-    needs: [detect-test-strategy, test-uv]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check test-uv status
-        run: |
-          if [ "${{ needs.test-uv.result }}" == "success" ] || [ "${{ needs.test-uv.result }}" == "skipped" ]; then
-            echo "All test-uv jobs passed!"
-            exit 0
-          else
-            echo "Some test-uv jobs failed"
-            exit 1
-          fi
-
-  # Job 4: Test Suite - Pixi Workflow
+  # Job 3.2: Test Suite - Pixi Workflow
   # Pixi-based testing for projects using pixi.toml
   test-pixi:
     needs: detect-test-strategy
@@ -153,24 +136,28 @@ jobs:
         run: |
           pixi run -e ${{ matrix.environment }} test || if [ $? -eq 5 ]; then exit 0; else exit $?; fi
 
-  # Job 4.1: Test Suite - Pixi Workflow - Complete
-  # This creates a single check that passes only when all matrix jobs pass
-  test-pixi-complete:
-    if: always() && needs.detect-test-strategy.outputs.use_pixi == 'true'
-    needs: [detect-test-strategy, test-pixi]
+  # Job 3.3: Test Suite - Complete
+  # Unified test status for branch protection
+  test:
+    if: always()
+    needs: [detect-test-strategy, test-uv, test-pixi]
     runs-on: ubuntu-latest
     steps:
-      - name: Check test-pixi status
+      - name: Check test results
         run: |
-          if [ "${{ needs.test-pixi.result }}" == "success" ] || [ "${{ needs.test-pixi.result }}" == "skipped" ]; then
-            echo "All test-pixi jobs passed!"
-            exit 0
-          else
-            echo "Some test-pixi jobs failed"
-            exit 1
+          uv_result="${{ needs.test-uv.result }}"
+          pixi_result="${{ needs.test-pixi.result }}"
+          # One should succeed, the other should be skipped
+          if [ "$uv_result" == "success" ] || [ "$uv_result" == "skipped" ]; then
+            if [ "$pixi_result" == "success" ] || [ "$pixi_result" == "skipped" ]; then
+              echo "All tests passed!"
+              exit 0
+            fi
           fi
+          echo "Tests failed: uv=$uv_result, pixi=$pixi_result"
+          exit 1
 
-  # Job 5: Build Verification
+  # Job 4: Build Verification
   # Ensures the package can be built successfully
   build:
     runs-on: ubuntu-latest
@@ -206,5 +193,5 @@ jobs:
         # This ensures the package is usable after installation
         run: ap --help
 
-  # Job 6: Type Check
+  # Job 5: Type Check
   # typecheck:
