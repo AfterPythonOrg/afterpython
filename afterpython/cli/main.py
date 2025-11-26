@@ -23,6 +23,7 @@ from afterpython.cli.commands.commitizen import commitizen
 from afterpython.cli.commands.commit import commit
 from afterpython.cli.commands.bump import bump
 from afterpython.cli.commands.release import release
+from afterpython.cli.commands.init_branch_rules import init_branch_rules
 
 
 @tui(command="tui", help="Open terminal UI")
@@ -70,3 +71,4 @@ afterpython_group.add_command(commitizen, name="cz")
 afterpython_group.add_command(commit)
 afterpython_group.add_command(bump)
 afterpython_group.add_command(release)
+afterpython_group.add_command(init_branch_rules)
