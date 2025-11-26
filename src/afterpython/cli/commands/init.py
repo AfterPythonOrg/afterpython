@@ -46,6 +46,24 @@ def init_website():
     subprocess.run(["ap", "update", "website"])
 
 
+def init_py_typed():
+    from afterpython.tools.pyproject import find_package_directory
+
+    try:
+        package_dir = find_package_directory()
+    except FileNotFoundError:
+        click.echo(
+            "Could not find package directory (__init__.py not found), skipping py-typed initialization"
+        )
+        return
+    py_typed_path = package_dir / "py.typed"
+    if py_typed_path.exists():
+        click.echo(f"py.typed file already exists at {py_typed_path}")
+        return
+    py_typed_path.touch()
+    click.echo(f"Created {py_typed_path}")
+
+
 @click.command()
 @click.option(
     "--yes",
@@ -84,6 +102,9 @@ def init(ctx, yes):
     # TODO: init faq.yml
 
     init_website()
+
+    # TODO: add type checking related stuff here
+    init_py_typed()
 
     create_workflow("deploy")
     create_workflow("ci")

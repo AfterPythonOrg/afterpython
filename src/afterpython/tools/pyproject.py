@@ -6,6 +6,7 @@ if TYPE_CHECKING:
     from tomlkit.toml_document import TOMLDocument
 
 import asyncio
+from pathlib import Path
 
 from pyproject_metadata import StandardMetadata
 
@@ -25,6 +26,41 @@ def write_pyproject(data: TOMLDocument):
 def read_metadata() -> StandardMetadata:
     """Read metadata from pyproject.toml"""
     return StandardMetadata.from_pyproject(read_pyproject())
+
+
+def find_package_directory() -> Path:
+    """Find the user's package directory.
+
+    Supports both common Python project layouts:
+    - src layout: user_project/src/package_name/__init__.py
+    - flat layout: user_project/package_name/__init__.py
+
+    Returns:
+        Path to the package directory containing __init__.py
+
+    Raises:
+        FileNotFoundError: If package directory cannot be found in either layout
+    """
+    metadata = read_metadata()
+    package_name = metadata.name
+    project_root = ap.paths.user_path
+
+    # Try src layout first (recommended layout)
+    src_layout_dir = project_root / "src" / package_name
+    if (src_layout_dir / "__init__.py").exists():
+        return src_layout_dir
+
+    # Try flat layout
+    flat_layout_dir = project_root / package_name
+    if (flat_layout_dir / "__init__.py").exists():
+        return flat_layout_dir
+
+    # Package not found in either location
+    raise FileNotFoundError(
+        f"Could not find package '{package_name}' in either src layout "
+        f"({src_layout_dir}) or flat layout ({flat_layout_dir}). "
+        f"Expected to find __init__.py in one of these locations."
+    )
 
 
 def init_pyproject():
