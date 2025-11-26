@@ -63,6 +63,7 @@ def init(ctx, yes):
     from afterpython.tools.commitizen import init_commitizen
     from afterpython.tools.github_actions import (
         create_workflow,
+        create_dependabot,
     )
 
     paths = ctx.obj["paths"]
@@ -84,6 +85,9 @@ def init(ctx, yes):
 
     init_website()
 
+    create_workflow("deploy")
+    create_workflow("ci")
+
     if yes or click.confirm(
         f"\nCreate .pre-commit-config.yaml in {afterpython_path}?", default=True
     ):
@@ -100,5 +104,9 @@ def init(ctx, yes):
         init_commitizen()
         create_workflow("release")
 
-    create_workflow("deploy")
-    create_workflow("ci")
+    if yes or click.confirm(
+        "\nCreate Dependabot configuration (.github/dependabot.yml) "
+        "to auto-update GitHub Actions versions?",
+        default=True,
+    ):
+        create_dependabot()

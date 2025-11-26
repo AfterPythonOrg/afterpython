@@ -19,11 +19,11 @@ See [PyPI and GitHub Releases](./release_management.md#pypi-and-github-releases)
 ### `deploy.yml`
 Deploys your project website to GitHub Pages.
 
+### `dependabot.yml` (optional)
+Automatically updates GitHub Actions versions.
+
 ---
 ## Security Scanning 🚧
 
 ---
 ## Code Coverage 🚧
-
----
-## GitHub Dependabot 🚧
