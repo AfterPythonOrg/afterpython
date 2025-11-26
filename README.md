@@ -85,5 +85,5 @@ ap init
 
 
 ---
-## *Mission*
+## *Our Mission*
 > Only by making package maintenance and documentation easy can we encourage more Python developers to publish their own packages and grow the ecosystem even further.

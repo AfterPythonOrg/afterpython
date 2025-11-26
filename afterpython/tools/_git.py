@@ -58,7 +58,7 @@ def get_github_url() -> str | None:
         return None
 
 
-def setup_github_auth():
+def is_gh_authenticated():
     """Guide user through GitHub authentication."""
     if not has_gh():
         print("""
@@ -89,7 +89,6 @@ Please authenticate with GitHub:
         """)
         return False
 
-    print("✓ GitHub authentication verified")
     return True
 
 

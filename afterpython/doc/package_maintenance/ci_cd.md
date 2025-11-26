@@ -22,6 +22,26 @@ Deploys your project website to GitHub Pages.
 ### `dependabot.yml` (optional)
 Automatically updates GitHub Actions versions.
 
+
+---
+## Branch Protection Rules
+To create default branch protection rules:
+1. install GitHub CLI
+    - on macOS: `brew install gh`
+    - on Linux: https://github.com/cli/cli/releases
+    - on Windows: https://cli.github.com/
+2. authenticate with GitHub CLI by running `gh auth login`
+3. run `ap init-branch-rules`, this will create **3 branch protection rules** (a ruleset named `afterpython-default`) for your `main` branch.
+    - No Force Pushes
+        - Prevents overwriting history on the main branch.
+	- No Branch Deletion
+        - Protects the main branch from being deleted.
+	- CI Status Checks (before the branch can be updated)
+        - Requires all configured CI checks to pass before any update (push or PR merge) is allowed.
+
+You can view them in **GitHub → Settings → Rules → Rulesets**
+
+
 ---
 ## Security Scanning 🚧
 
