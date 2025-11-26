@@ -1,6 +1,9 @@
 import subprocess
 
 import click
+from click.exceptions import Exit
+
+from afterpython.utils import has_pixi
 
 
 @click.command(
@@ -86,3 +89,9 @@ def bump(ctx, release: bool, pre: bool):
                 args = ["--prerelease", prerelease_type, *ctx.args]
 
         subprocess.run(["ap", "cz", "bump", *args])
+
+    # Update pixi.lock after version bump (editable install requires lock refresh)
+    if has_pixi():
+        result = subprocess.run(["pixi", "install"], check=False)
+        if result.returncode != 0:
+            raise Exit(result.returncode)
