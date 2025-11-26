@@ -24,7 +24,7 @@ DEFAULT_RULESET = {
         {
             "actor_id": 5,  # Repository admin role
             "actor_type": "RepositoryRole",
-            "bypass_mode": "pull_request",
+            "bypass_mode": "always",
         }
     ],
     "rules": [  # Array of protection rules
