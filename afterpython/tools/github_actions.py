@@ -24,7 +24,7 @@ def _copy_github_template(template_name: str, target_path: Path):
         )
 
     shutil.copy(template_path, target_path)
-    click.echo(f"Created {target_path}")
+    print(f"Created {target_path}")
 
 
 def create_workflow(workflow_name: str):

@@ -24,6 +24,11 @@ The structure of `afterpython/` is as follows:
 - `afterpython/example/`
 - `afterpython/guide/`
 
+:::{note} Default Branch Protection Rules
+Default branch protection rules can be created by running `ap init-branch-rules`. See [](package_maintenance/ci_cd.md#branch-protection-rules) for more details.
+:::
+
+
 ---
 ## Project Website
 A project website is basically a website that serves as the **homepage for your project**.

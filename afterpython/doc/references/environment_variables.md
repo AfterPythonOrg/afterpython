@@ -5,4 +5,4 @@
 
 ---
 ## `AP_MOLAB_BADGE`
-> Default: `0`. If set to `1`, automatically adds Molab badges to Jupyter notebooks.
+> Default: `1`. If set to `1`, automatically adds Molab badges to Jupyter notebooks.
