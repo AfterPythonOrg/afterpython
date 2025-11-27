@@ -36,7 +36,7 @@ def _sync_authors_yml(authors: list[tuple[str, str | None]]):
 
 @click.command()
 def sync():
-    """Sync between pyproject.toml+afterpython.toml and authors.yml+myst.yml files"""
+    """Sync configuration between pyproject.toml/afterpython.toml and authors.yml/myst.yml"""
     from afterpython._io.toml import _from_tomlkit
     from afterpython.const import CONTENT_TYPES
     from afterpython.tools._afterpython import read_afterpython

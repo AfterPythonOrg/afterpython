@@ -13,7 +13,7 @@ from click.exceptions import Exit
 )
 @click.pass_context
 def format(ctx):
-    """Simple wrapper for ruff format for convenience"""
+    """Run ruff formatter"""
     from afterpython.utils import handle_passthrough_help
 
     # Show both our options and ruff's help and exit

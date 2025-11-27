@@ -41,11 +41,11 @@ project:
   - title: Package Maintenance
     children:
     - file: package_maintenance/package_management.md
-    - file: package_maintenance/release_management.md
+    - file: package_maintenance/commit_workflow.md
+    - file: package_maintenance/package_releases.md
     - file: package_maintenance/ci_cd.md
   - title: References
     children:
-    - file: references/cli_commands.md
     - file: references/environment_variables.md
     - file: references/roadmap.md
   - file: CONTRIBUTING.md

@@ -42,7 +42,7 @@ command_kwargs = {
     "--guide", is_flag=True, help="Start the development server for guide/ directory"
 )
 def start(ctx, doc: bool, blog: bool, tutorial: bool, example: bool, guide: bool):
-    """Simple wrapper for `myst start` for convenience"""
+    """Start MyST development server for a specific content type"""
     from afterpython.const import CONTENT_TYPES
     from afterpython.utils import (
         find_node_env,

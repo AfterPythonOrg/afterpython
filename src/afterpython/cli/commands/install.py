@@ -13,7 +13,7 @@ from afterpython.utils import has_pixi, has_uv
     )
 )
 def install():
-    """Install all dependencies (runs 'uv sync --all-extras --all-groups' and 'pixi install' if present)"""
+    """Install all project dependencies (manages both uv and pixi if present)"""
     if not has_uv():
         click.echo("uv not found. Please install uv first.")
         return

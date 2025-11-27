@@ -13,7 +13,7 @@ from click.exceptions import Exit
 )
 @click.pass_context
 def commitizen(ctx):
-    """Run commitizen"""
+    """Run commitizen CLI (uses afterpython/cz.toml)"""
     from afterpython.utils import handle_passthrough_help
 
     # Show both our options and commitizen's help and exit

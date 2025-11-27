@@ -26,10 +26,10 @@ from afterpython.utils import find_node_env, has_content_for_myst
 @click.option(
     "--all",
     is_flag=True,
-    help='--all passed to "myst clean", also clean afterpython build directories (_build/ and _website/build/)',
+    help="Also clean AfterPython build directories (_build/ and _website/build/)",
 )
 def clean(ctx, all: bool):
-    """Clean the build directory"""
+    """Clean build artifacts from content types and website"""
     from afterpython.utils import handle_passthrough_help
 
     # Show both our options and myst's help and exit

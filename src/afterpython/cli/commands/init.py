@@ -48,7 +48,7 @@ def init_py_typed():
 )
 @click.pass_context
 def init(ctx, yes):
-    """Initialize afterpython with MyST Markdown (by default) and project website template"""
+    """Initialize AfterPython project structure and website template"""
     from afterpython.tools._afterpython import init_afterpython
     from afterpython.tools.commitizen import init_commitizen
     from afterpython.tools.github_actions import (

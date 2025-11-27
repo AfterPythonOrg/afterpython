@@ -13,7 +13,10 @@ import click
 )
 @click.pass_context
 @click.option(
-    "--no-cz", "--no-commitizen", is_flag=True, help="Skip running 'cz commit'"
+    "--no-cz",
+    "--no-commitizen",
+    is_flag=True,
+    help="Skip 'commitizen' and 'commitizen-branch' pre-commit hooks",
 )
 @click.option(
     "--no-pc",
@@ -22,7 +25,7 @@ import click
     help="Skip running pre-commit checks before commit",
 )
 def commit(ctx, no_cz: bool, no_pc: bool):
-    """Run 'cz commit'"""
+    """Create a conventional commit with interactive prompts"""
     from afterpython.utils import handle_passthrough_help
 
     # Show both our options and commitizen's help and exit

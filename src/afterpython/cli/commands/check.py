@@ -13,7 +13,7 @@ from click.exceptions import Exit
 )
 @click.pass_context
 def check(ctx):
-    """Simple wrapper for ruff check for convenience, always use the afterpython/ruff.toml if it exists"""
+    """Run ruff linter (uses afterpython/ruff.toml if available)"""
     from afterpython.utils import handle_passthrough_help
 
     # Show both our options and ruff's help and exit

@@ -27,7 +27,7 @@ def _command_supports_config(command: str) -> bool:
 )
 @click.pass_context
 def pre_commit(ctx):
-    """Run pre-commit, always use the afterpython/.pre-commit-config.yaml if it exists"""
+    """Run pre-commit hooks (uses afterpython/.pre-commit-config.yaml if available)"""
     from afterpython.utils import handle_passthrough_help
 
     # Show both our options and pre-commit's help and exit

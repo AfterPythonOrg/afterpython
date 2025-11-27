@@ -24,15 +24,15 @@ def update():
     "-u",
     "--upgrade",
     is_flag=True,
-    help="if enabled, the dependencies will be upgraded to the latest version",
+    help="Upgrade dependencies to their latest versions",
 )
 @click.option(
     "--all",
     is_flag=True,
-    help="update all versions in dependencies and tool configurations (e.g. pre-commit-config.yaml)",
+    help="Also update pre-commit hooks and pixi dependencies",
 )
 def dependencies(upgrade: bool, all: bool):
-    """Update pyproject.toml dependencies to the latest version"""
+    """Check and update project dependencies to latest versions"""
     from afterpython.pcu import get_dependencies, update_dependencies
     from afterpython.utils import has_pixi, has_uv
 
@@ -122,10 +122,10 @@ update.add_command(dependencies, name="deps")  # alias for "dependencies"
 @click.option(
     "--no-backup",
     is_flag=True,
-    help="if enabled, the existing project website template will not be backed up",
+    help="Skip creating a backup of the existing website template",
 )
 def website(ctx, no_backup: bool):
-    """Update the project website template to the latest version"""
+    """Update project website template to the latest version"""
     from afterpython.utils import find_node_env
 
     website_template_repo = "AfterPythonOrg/project-website-template"

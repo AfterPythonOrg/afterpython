@@ -8,7 +8,7 @@ from afterpython.utils import has_pixi, has_uv
 
 @click.command()
 def lock():
-    """Lock the dependencies (runs 'uv lock' and 'pixi lock' if present)"""
+    """Lock project dependencies (manages both uv and pixi if present)"""
     if not has_uv():
         click.echo("uv not found. Please install uv first.")
         return

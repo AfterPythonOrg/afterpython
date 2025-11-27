@@ -7,7 +7,7 @@ from click.exceptions import Exit
 @click.command()
 @click.pass_context
 def preview(ctx):
-    """Preview the production build of the project website (including myst's builds)"""
+    """Preview the production build of the project website"""
     from afterpython.utils import find_node_env
 
     paths = ctx.obj["paths"]
