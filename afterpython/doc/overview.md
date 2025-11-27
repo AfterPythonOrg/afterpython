@@ -29,6 +29,18 @@
 - 🚧 **⚡ Full-text search** across **ALL** your content in your website — docs, blogs, tutorials, everything
 - 🚧 **🤖 Embedded AI Chatbot** that answers questions directly using an in-browser LLM — at no cost
 
+
+---
+## CLI Commands
+```bash
+# show all commands
+ap --help
+
+# or use terminal UI (TUI)
+ap tui
+```
+
+
 ---
 ## Tech Stack
 - [MyST]

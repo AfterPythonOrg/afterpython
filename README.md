@@ -70,6 +70,17 @@ ap init
 
 
 ---
+## CLI Commands
+```bash
+# show all commands
+ap --help
+
+# or use terminal UI (TUI)
+ap tui
+```
+
+
+---
 ## Tech Stack
 - [MyST]
 - [project-website-template]
