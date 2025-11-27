@@ -66,7 +66,6 @@ def init(ctx, yes):
 
     afterpython_path.mkdir(parents=True, exist_ok=True)
     static_path.mkdir(parents=True, exist_ok=True)
-    afterpython_path.joinpath("afterpython.toml").touch()
 
     init_pyproject()
 

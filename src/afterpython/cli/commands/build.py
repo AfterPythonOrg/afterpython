@@ -37,7 +37,7 @@ def determine_base_path() -> str:
 
     # Read website URL from afterpython.toml
     afterpython = read_afterpython()
-    website_url = str(_from_tomlkit(afterpython["website"]).get("url", ""))
+    website_url = str(_from_tomlkit(afterpython.get("website", {})).get("url", ""))
 
     # If custom domain (no github.io), no BASE_PATH needed
     if "github.io" not in website_url:

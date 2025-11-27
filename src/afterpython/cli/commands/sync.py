@@ -51,9 +51,9 @@ def sync():
     project_name = str(pyproject.name)
     afterpython = read_afterpython()
     github_url = str(pyproject.urls.get("repository", ""))
-    company_name = str(_from_tomlkit(afterpython["company"]).get("name", ""))
-    company_url = str(_from_tomlkit(afterpython["company"]).get("url", ""))
-    website_url = str(_from_tomlkit(afterpython["website"]).get("url", ""))
+    company_name = str(_from_tomlkit(afterpython.get("company", {})).get("name", ""))
+    company_url = str(_from_tomlkit(afterpython.get("company", {})).get("url", ""))
+    website_url = str(_from_tomlkit(afterpython.get("website", {})).get("url", ""))
     authors = pyproject.authors
     if company_name and company_url:
         nav_bar = [{"title": company_name, "url": company_url}]
