@@ -140,12 +140,12 @@ def dev(
     try:
         prebuild()
 
+        # Clear .env.development before writing new ports
+        env_file = paths.website_path / ".env.development"
+        env_file.write_text("")  # Clear existing content
+
         # myst development servers
         if enabled_content_types:
-            # Clear .env.development before writing new ports
-            env_file = paths.website_path / ".env.development"
-            env_file.write_text("")  # Clear existing content
-
             next_port = 3000
             for content_type in CONTENT_TYPES:
                 # Skip content types that are not enabled
