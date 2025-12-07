@@ -84,16 +84,13 @@
 				</a>
 			{/if}
 			{#if data.contentTypes?.doc}
-				<button
+				<a
+					href={dev ? env.PUBLIC_DOC_URL : resolve('/doc')}
+					rel="external noopener noreferrer"
 					class="rounded-lg bg-pm500 px-6 py-3 font-medium text-white transition-colors hover:bg-pm600"
 				>
-					<a
-						href={dev ? env.PUBLIC_DOC_URL : resolve('/doc')}
-						rel="external noopener noreferrer"
-					>
-						Go to Documentation
-					</a>
-				</button>
+					Go to Documentation
+				</a>
 			{/if}
 		</div>
 
