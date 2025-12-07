@@ -5,7 +5,7 @@ from pyproject_metadata import StandardMetadata
 from tomlkit.toml_document import TOMLDocument
 
 import afterpython as ap
-from afterpython.utils import convert_author_name_to_id
+from afterpython.utils import convert_author_name_to_id, normalize_static_path
 
 
 def _sync_authors_yml(authors: list[tuple[str, str | None]]):
@@ -54,6 +54,23 @@ def sync():
     company_name = str(_from_tomlkit(afterpython.get("company", {})).get("name", ""))
     company_url = str(_from_tomlkit(afterpython.get("company", {})).get("url", ""))
     website_url = str(_from_tomlkit(afterpython.get("website", {})).get("url", ""))
+    try:
+        website_favicon = normalize_static_path(
+            str(_from_tomlkit(afterpython.get("website", {})).get("favicon", ""))
+        )
+        website_logo = normalize_static_path(
+            str(_from_tomlkit(afterpython.get("website", {})).get("logo", ""))
+        )
+        website_logo_dark = normalize_static_path(
+            str(_from_tomlkit(afterpython.get("website", {})).get("logo_dark", ""))
+        )
+        website_thumbnail = normalize_static_path(
+            str(_from_tomlkit(afterpython.get("website", {})).get("thumbnail", ""))
+        )
+    except ValueError as e:
+        click.echo(f"Error in reading afterpython.toml: {e}")
+        return
+
     authors = pyproject.authors
     if company_name and company_url:
         nav_bar = [{"title": company_name, "url": company_url}]
@@ -83,9 +100,9 @@ def sync():
     # based on the current values in pyproject.toml and afterpython.toml
     for content_type in CONTENT_TYPES:
         path = ap.paths.afterpython_path / content_type
-        nav_bar_per_content_type = [
-            item for item in nav_bar if item["title"] != content_type.capitalize() + "s"
-        ]
+        # nav_bar_per_content_type = [
+        #     item for item in nav_bar if item["title"] != content_type.capitalize() + "s"
+        # ]
         title = project_name + f"'s {content_type.capitalize()}"
         data = {
             "project": {
@@ -103,14 +120,24 @@ def sync():
                 "description": str(pyproject.description),
                 "keywords": list(map(str, pyproject.keywords)),
                 "github": github_url,
+                "thumbnail": "../static" + website_thumbnail
+                if website_thumbnail
+                else "",
             },
             "site": {
                 "title": title,
                 "options": {
+                    "favicon": "../static" + website_favicon if website_favicon else "",
+                    "logo": "../static" + website_logo if website_logo else "",
+                    "logo_dark": "../static" + website_logo_dark
+                    if website_logo_dark
+                    else "",
                     "logo_text": project_name,
                     "logo_url": website_url,
                 },
-                "nav": nav_bar_per_content_type,
+                # FIXME: disable nav bar for now until myst fixes the issue with the nav bar
+                # the current issue is they prepend the BASE_URL to the nav bar links even they are external
+                # "nav": nav_bar_per_content_type,
                 "actions": [
                     {
                         "title": "⭐ Star",

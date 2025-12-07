@@ -5,3 +5,11 @@ url = "https://afterpython.org"  # used in myst.yml's venue.url
 
 [website]
 url = "https://afterpython.afterpython.org"
+favicon = "favicon.svg"
+logo = "logo.svg"
+logo_dark = "logo.svg"
+thumbnail = "thumbnail.png"  # thumbnail for the website, also used as default thumbnail for all content types, e.g. blog posts, tutorials, examples, and guides
+
+# [website.blog]
+# thumbnail = "blog_default_thumbnail.png"  # inside blog/static/ folder, default thumbnail for blog posts
+# featured_post = "blog1.md"

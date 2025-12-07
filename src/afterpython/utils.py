@@ -224,3 +224,76 @@ def handle_passthrough_help(
             subprocess.run([*underlying_command, "--help"])
 
         ctx.exit(0)
+
+
+def normalize_static_path(path: str) -> str:
+    """
+    Normalize paths for static assets.
+
+    Only allows two formats:
+    1. Pure filename/path without ./ or ../ (e.g., "logo.svg", "somewhere/logo.svg")
+    2. Absolute path starting with / (e.g., "/somewhere/logo.svg")
+
+    Args:
+        path: User-provided path from afterpython.toml
+
+    Returns:
+        Normalized path
+
+    Raises:
+        ValueError: If path contains ./ or ../ or other invalid patterns
+
+    Examples:
+        >>> normalize_static_path("logo.svg")
+        'logo.svg'
+        >>> normalize_static_path("somewhere/logo.svg")
+        '/somewhere/logo.svg'
+        >>> normalize_static_path("/somewhere/logo.svg")
+        '/somewhere/logo.svg'
+        >>> normalize_static_path("./logo.svg")  # Raises ValueError
+        >>> normalize_static_path("../logo.svg")  # Raises ValueError
+        >>> normalize_static_path("static/logo.svg")  # Raises ValueError
+    """
+    if not path:
+        return ""
+
+    # Reject paths with ./ or ../
+    if "./" in path or "../" in path or path.startswith(".") or path.startswith(".."):
+        raise ValueError(
+            f"Invalid path '{path}': paths cannot contain './' or '../'. "
+            f"Use either a pure filename (e.g., 'logo.svg') or absolute path (e.g., '/somewhere/logo.svg')"
+        )
+
+    # Reject paths with 'static' in them
+    if "static" in path.lower():
+        raise ValueError(
+            f"Invalid path '{path}': do not include 'static' in the path. "
+            f"Files are assumed to be in the static/ directory."
+        )
+
+    # If it starts with /, it's absolute - keep as is
+    if not path.startswith("/"):
+        return "/" + path
+    else:
+        return path
+
+
+def get_relative_static_prefix(file_path: Path, content_type_path: Path) -> str:
+    """Calculate the relative path prefix from a file to its content type's static/ folder.
+
+    Args:
+        file_path: Path to the content file (e.g., blog/layer/blog5.ipynb)
+        content_type_path: Path to the content type folder (e.g., blog/)
+
+    Returns:
+        Relative prefix to reach static/ (e.g., "./" or "../" or "../../")
+    """
+    # Get the depth: how many directories deep the file is from content_type_path
+    relative = file_path.parent.relative_to(content_type_path)
+    depth = len(relative.parts)
+
+    # Build the correct prefix
+    if depth == 0:
+        return "./"  # File is directly in content_type_path
+    else:
+        return "../" * depth

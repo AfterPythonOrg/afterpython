@@ -1,38 +1,13 @@
-# sv
+[afterpython]: https://github.com/AfterPythonOrg/afterpython
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+# AfterPython's Project Website Template
 
-## Creating a project
+This is a project website template for [afterpython].
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Usage
 
-```bash
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+1. Clone the repository
+2. Run `pnpm install` to install dependencies
+3. Run `pnpm dev` to start the development server
+4. Run `pnpm build` to build the project
+5. Run `pnpm preview` to preview the project

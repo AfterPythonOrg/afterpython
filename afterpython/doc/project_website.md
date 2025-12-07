@@ -17,7 +17,13 @@ On [PyPI], you typically see three urls under **Project Links**,
 and they are defined in the `[project.urls]` section of `pyproject.toml`.
 Most projects that are not backed by a company either omit the homepage field,
 or reuse the documentation URL as the homepage, even though it already has its own link.
-![PyPI homepage button](../static/homepage.png)
+
+:::{figure} ./static/homepage.png
+:width: 36%
+:alt: PyPI homepage button
+
+PyPI homepage button
+:::
 
 Here is where `afterpython` comes to the rescue:
 
@@ -29,12 +35,12 @@ Essentially, it **extends your documentation site into a fully featured website*
 ## Architecture
 :::{div}
 :class: dark:hidden
-![project website](../static/project_website.svg)
+![project website](./static/project_website.svg)
 :::
 
 :::{div}
 :class: hidden dark:block
-![project website dark](../static/project_website_dark.svg)
+![project website dark](./static/project_website_dark.svg)
 :::
 
 During `ap init`, `afterpython` creates a new directory `afterpython/_website/` and initializes it with [project-website-template], which uses [Svelte] and SvelteKit to create the project website and serve the HTML files built by `mystmd` in all of the content folders in `afterpython/` (e.g., `afterpython/doc/`, `afterpython/blog/`)

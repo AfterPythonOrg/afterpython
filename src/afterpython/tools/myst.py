@@ -103,6 +103,48 @@ def update_myst_yml(data_update: dict, path: Path, add_comments: bool = False):
     write_yaml(file_path, existing_data)
 
 
+def _write_index_file(content_type: tContentType):
+    """Create a placeholder index.md file for MyST to prevent first file from becoming index.
+
+    MyST treats the first file in TOC as index. This placeholder ensures all actual
+    content files get proper slugs. The generated index.html is deleted post-build
+    since SvelteKit owns the landing page route.
+
+    Note: This only creates the file. TOC modification is handled by the build process.
+
+    Raises:
+        FileExistsError: If index.md already exists (users shouldn't create this file).
+    """
+    if content_type == "doc":
+        return  # Doc doesn't need a placeholder index.md
+
+    content_path = ap.paths.afterpython_path / content_type
+    index_file = content_path / "index.md"
+
+    # Check if user created an index.md file
+    if index_file.exists():
+        raise FileExistsError(
+            f"\n"
+            f"Found existing 'index.md' in afterpython/{content_type}/\n"
+            f"\n"
+            f"The 'index.md' file is reserved for internal use by AfterPython.\n"
+            f"MyST treats the first file in TOC as index, which would conflict with\n"
+            f"SvelteKit (project-website-template)'s landing page route (/{content_type}).\n"
+            f"\n"
+            f"Please rename your file to something else (e.g., '{content_type}_intro.md')\n"
+            f"and update the reference in afterpython/{content_type}/myst.yml"
+        )
+
+    index_content = f"""---
+title: ← {content_type.capitalize()}
+---
+
+This is a placeholder index page. The actual {content_type} landing page is rendered by SvelteKit.
+"""
+    index_file.write_text(index_content)
+    return index_file
+
+
 def _write_welcome_file(content_type: tContentType):
     welcome_file = ap.paths.afterpython_path / content_type / "index.md"
     if welcome_file.exists():
@@ -156,9 +198,6 @@ def init_myst():
             },
             "site": {
                 "options": {
-                    "favicon": "../static/favicon.svg",
-                    "logo": "../static/logo.svg",
-                    "logo_dark": "../static/logo.svg",
                     "analytics_google": "{{ GOOGLE_ANALYTICS_ID }}",
                     # "twitter": "",
                 },

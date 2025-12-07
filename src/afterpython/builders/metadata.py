@@ -7,6 +7,8 @@ if TYPE_CHECKING:
 
 import json
 
+import click
+
 import afterpython as ap
 
 build_path = ap.paths.build_path
@@ -30,12 +32,14 @@ def convert_paths():
     with open(build_path / "metadata.json", "w") as f:
         json.dump(metadata, f, indent=2)
 
-    print("Completed path conversion in metadata.json")
+    click.echo("Completed path conversion in metadata.json")
 
 
 def build_metadata():
     """Build metadata.json using pyproject.toml"""
     from afterpython.tools.pyproject import read_metadata
+
+    click.echo("Building metadata.json...")
 
     metadata: StandardMetadata = read_metadata()
 

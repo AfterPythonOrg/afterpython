@@ -8,7 +8,6 @@ if TYPE_CHECKING:
 
     from afterpython._typing import NodeEnv
 
-import os
 import shutil
 import subprocess
 
@@ -17,11 +16,14 @@ from click.exceptions import Exit
 
 import afterpython as ap
 from afterpython.builders import (
-    add_molab_badge_to_jupyter_notebooks,
+    build_content_json,
+    build_jupyter_notebooks,
+    build_markdown,
     build_metadata,
+    create_placeholder_index_md_files,
+    delete_placeholder_index_md_files,
 )
 from afterpython.const import CONTENT_TYPES
-from afterpython.utils import find_node_env
 
 
 def determine_base_path() -> str:
@@ -69,22 +71,31 @@ def prebuild():
                 "Run 'ap init' first to set up your project."
             )
 
-    def _clean_build_directory():
-        print("Cleaning up build directory...")
+    def _clean_up_builds():
+        click.echo("Cleaning up builds...")
         build_path = ap.paths.build_path
-        if build_path.exists():
-            shutil.rmtree(build_path)
+        website_build_path = ap.paths.website_path / "build"
+        # clean up content builds in _website/static/{content_type}
+        website_static_path = ap.paths.website_path / "static"
+        content_build_paths = [
+            website_static_path / content_type for content_type in CONTENT_TYPES
+        ]
+        for path in [build_path, website_build_path, *content_build_paths]:
+            if path.exists():
+                shutil.rmtree(path)
         build_path.mkdir(parents=True, exist_ok=True)
 
     _check_initialized()
-    _clean_build_directory()
+    _clean_up_builds()
 
-    if os.getenv("AP_MOLAB_BADGE", "1") == "1":
-        for content_type in CONTENT_TYPES:
-            add_molab_badge_to_jupyter_notebooks(content_type)
+    delete_placeholder_index_md_files()
+    create_placeholder_index_md_files()
+    build_metadata()
+    build_markdown()
+    build_jupyter_notebooks()
 
 
-def postbuild():
+def postbuild(dev_build: bool = False):
     def _move_files(
         source: Path,
         destination: Path,
@@ -112,6 +123,9 @@ def postbuild():
             shutil.move(str(source), str(destination))
             print(f"Moved: {source} to {destination}")
 
+    build_content_json()
+    delete_placeholder_index_md_files()
+
     website_static = ap.paths.website_path / "static"
     website_static.mkdir(parents=True, exist_ok=True)
 
@@ -119,15 +133,24 @@ def postbuild():
         myst_build = ap.paths.afterpython_path / content_type / "_build"
         afterpython_content_build = ap.paths.build_path / content_type
         # Move myst builds from afterpython/{content_type}/_build to afterpython/_build/{content_type}
-        _move_files(myst_build, afterpython_content_build, is_copy=False)
-        # Copy afterpython/_build/{content_type}/html to afterpython/_website/static/{content_type}
-        _move_files(
-            afterpython_content_build / "html",
-            website_static / content_type,
-            is_copy=True,
-        )
+        _move_files(myst_build, afterpython_content_build, is_copy=True)
+        # for production build, copy afterpython/_build/{content_type}/html to afterpython/_website/static/{content_type}
+        if not dev_build:
+            _move_files(
+                afterpython_content_build / "html",
+                website_static / content_type,
+                is_copy=True,
+            )
+        # for dev build, copy the files (mainly images, e.g. thumbnails) in site/public/ to afterpython/_website/static/{content_type}/build
+        else:
+            _move_files(
+                afterpython_content_build / "site" / "public",
+                # add build/ to mimic the structure of the production build
+                website_static / content_type / "build",
+                is_copy=True,
+            )
 
-    # Copy all files from afterpython/_build to afterpython/_website/static/
+    # Copy all files (e.g. metadata.json, blog.json etc.) from afterpython/_build to afterpython/_website/static/
     _move_files(
         ap.paths.build_path,
         website_static,
@@ -151,15 +174,9 @@ def postbuild():
 )
 @click.pass_context
 @click.option(
-    "--dev",
-    is_flag=True,
-    hidden=True,  # Internal flag used by `ap dev`, not exposed to users
-    help="Development build - only build metadata for the landing page, skip content and production builds",
-)
-@click.option(
     "--execute", is_flag=True, help="Execute Jupyter notebooks for all content types"
 )
-def build(ctx, dev: bool, execute: bool):
+def build(ctx: click.Context, execute: bool):
     """Build the project website and all contents for production.
 
     This command builds MyST content (doc/blog/tutorial/example/guide) and the SvelteKit website.
@@ -169,7 +186,11 @@ def build(ctx, dev: bool, execute: bool):
 
     Use --execute to execute Jupyter notebooks for all content types.
     """
-    from afterpython.utils import handle_passthrough_help, has_content_for_myst
+    from afterpython.utils import (
+        find_node_env,
+        handle_passthrough_help,
+        has_content_for_myst,
+    )
 
     # Show both our options and myst's help and exit
     handle_passthrough_help(
@@ -187,46 +208,53 @@ def build(ctx, dev: bool, execute: bool):
         click.echo(f"Using BASE_PATH: {base_path}")
     else:
         click.echo("Using BASE_PATH: (empty - custom domain)")
-
-    click.echo("Building metadata.json...")
-    build_metadata()
+    node_env: NodeEnv = find_node_env()
 
     # myst's production build
-    if not dev:
-        node_env: NodeEnv = find_node_env()
-        for content_type in CONTENT_TYPES:
-            content_path = paths.afterpython_path / content_type
-            if not has_content_for_myst(content_path):
-                click.echo(f"Skipping {content_type}/ (no content files found)")
-                continue
+    for content_type in CONTENT_TYPES:
+        content_path = ap.paths.afterpython_path / content_type
+        myst_yml_path = content_path / "myst.yml"
 
-            click.echo(f"Building {content_type}/...")
-            # NOTE: needs to set BASE_URL so that the project website can link to the content pages correctly at e.g. localhost:5173/doc
-            base_url = f"{base_path}/{content_type}"
-            build_env = {**node_env, "BASE_URL": base_url, "BASE_PATH": base_path}
-            result = subprocess.run(
-                [
-                    "myst",
-                    "build",
-                    "--html",
-                    *(["--execute"] if execute else []),
-                    *ctx.args,
-                ],
-                cwd=content_path,
-                env=build_env,
-                check=False,
+        if not content_path.exists():
+            click.echo(f"{content_path} does not exist, skip building {content_type}/")
+            continue
+
+        if not myst_yml_path.exists():
+            click.echo(
+                f"No myst.yml found in {content_path}, skip building {content_type}/"
             )
-            if result.returncode != 0:
-                raise Exit(result.returncode)
+            continue
 
-    postbuild()
+        if not has_content_for_myst(content_path):
+            click.echo(f"Skipping {content_type}/ (no content files found)")
+            continue
 
-    # website's production build
-    if not dev:
-        click.echo("Building project website...")
-        website_env = {**node_env, "BASE_PATH": base_path}
+        click.echo(f"Building {content_type}/...")
+        # NOTE: needs to set BASE_URL (used by MyST) so that the project website can link to the content pages correctly at e.g. localhost:5173/doc
+        base_url = f"{base_path}/{content_type}"
+        build_env = {**node_env, "BASE_URL": base_url, "BASE_PATH": base_path}
         result = subprocess.run(
-            ["pnpm", "build"], cwd=paths.website_path, env=website_env, check=False
+            [
+                "myst",
+                "build",
+                "--html",
+                *(["--execute"] if execute else []),
+                *ctx.args,
+            ],
+            cwd=content_path,
+            env=build_env,
+            check=False,
         )
+
         if result.returncode != 0:
             raise Exit(result.returncode)
+
+    postbuild(dev_build=False)
+
+    click.echo("Building project website...")
+    website_env = {**node_env, "BASE_PATH": base_path}
+    result = subprocess.run(
+        ["pnpm", "build"], cwd=paths.website_path, env=website_env, check=False
+    )
+    if result.returncode != 0:
+        raise Exit(result.returncode)

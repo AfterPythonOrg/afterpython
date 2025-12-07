@@ -61,17 +61,17 @@ site:
     logo_url: https://afterpython.afterpython.org
     analytics_google: "{{ GOOGLE_ANALYTICS_ID }}"
   title: afterpython's Doc
-  nav:
-  - title: AfterPython.Org
-    url: https://afterpython.org
-  - title: Tutorials
-    url: https://afterpython.afterpython.org/tutorial
-  - title: Blogs
-    url: https://afterpython.afterpython.org/blog
-  - title: Examples
-    url: https://afterpython.afterpython.org/example
-  - title: Guides
-    url: https://afterpython.afterpython.org/guide
+  # nav:
+  # - title: AfterPython.Org
+  #   url: https://afterpython.org
+  # - title: Tutorials
+  #   url: https://afterpython.afterpython.org/tutorial
+  # - title: Blogs
+  #   url: https://afterpython.afterpython.org/blog
+  # - title: Examples
+  #   url: https://afterpython.afterpython.org/example
+  # - title: Guides
+  #   url: https://afterpython.afterpython.org/guide
   actions:
   - title: ⭐ Star
     url: https://github.com/AfterPythonOrg/afterpython

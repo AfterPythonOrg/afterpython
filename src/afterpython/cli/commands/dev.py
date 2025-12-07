@@ -11,6 +11,7 @@ import time
 import click
 from click.exceptions import Exit
 
+from afterpython.cli.commands.build import postbuild, prebuild
 from afterpython.const import CONTENT_TYPES
 from afterpython.utils import find_available_port, find_node_env
 
@@ -107,9 +108,6 @@ def dev(
 
     paths = ctx.obj["paths"]
 
-    # OPTIMIZE: should implement incremental build?
-    subprocess.run(["ap", "build", "--dev"])
-
     def cleanup_processes():
         """Clean up all MyST server processes"""
         click.echo("\nShutting down MyST servers...")
@@ -140,6 +138,9 @@ def dev(
         enabled_content_types = {ct for ct, flag in content_flags.items() if flag}
 
     try:
+        prebuild()
+
+        # myst development servers
         if enabled_content_types:
             # Clear .env.development before writing new ports
             env_file = paths.website_path / ".env.development"
@@ -185,6 +186,8 @@ def dev(
                 # Without this delay, multiple MyST servers may attempt to bind to the same internal port,
                 # causing "address already in use" errors.
                 time.sleep(3)
+
+        postbuild(dev_build=True)
 
         if not no_website:
             node_env: NodeEnv = find_node_env()

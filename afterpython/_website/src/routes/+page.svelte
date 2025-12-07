@@ -1,114 +1,141 @@
 <script lang="ts">
-  import type { PageProps } from './$types';
-  import MarkdownRenderer from '$components/MarkdownRenderer.svelte';
-  import StarIcon from '$components/StarIcon.svelte';
-  import { dev } from '$app/environment';
+	import type { PageProps } from './$types';
+	import MarkdownRenderer from '$components/MarkdownRenderer.svelte';
+	import StarIcon from '$components/StarIcon.svelte';
+	import { dev } from '$app/environment';
 	import { env } from '$env/dynamic/public';
 	import { resolve } from '$app/paths';
 
-  const { data: metadataJson }: PageProps = $props();
+	const { data }: PageProps = $props();
 
-  // Extract repository URL safely
-  const repositoryUrl: string | undefined = metadataJson.project_url?.find((url: string) =>
-    url.startsWith('repository,')
-  )?.split(', ')[1];
+	// Extract repository URL safely
+	const repositoryUrl = $derived(
+		data.project_url?.find((url: string) => url.startsWith('repository,'))?.split(', ')[1]
+	);
 
-  // Page-specific title
-  const pageTitle = metadataJson.name
-    ? `${metadataJson.name} - Home`
-    : 'Home';
+	// Page-specific title
+	const pageTitle = $derived(data.name ? `${data.name} - Home` : 'Home');
 </script>
 
 <svelte:head>
-  <title>{pageTitle}</title>
-  {#if metadataJson.summary}
-		<meta name="description" content={metadataJson.summary} />
+	<title>{pageTitle}</title>
+	{#if data.summary}
+		<meta name="description" content={data.summary} />
+		<!-- Open Graph -->
+		<meta property="og:title" content={pageTitle} />
+		<meta property="og:description" content={data.summary} />
+		<meta property="og:type" content="website" />
+		<meta property="og:image" content="/thumbnail.png" />
+		<!-- Twitter Card -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={pageTitle} />
+		<meta name="twitter:description" content={data.summary} />
 	{/if}
 </svelte:head>
 
-{#if metadataJson.metadataError}
-  <!-- Error state: metadata.json is missing -->
-  <section class="flex mt-[12vh] flex-col gap-6 items-center justify-center min-h-[60vh] text-center px-4">
-    <div class="w-full max-w-2xl px-6 py-8 bg-bg200 rounded-2xl shadow-lg border-2 border-pm500">
-      <h1 class="text-4xl font-bold text-pm500 mb-4">500</h1>
-      <p class="text-xl text-tx100 mb-2 text-left">
-        {metadataJson.metadataError}
-      </p>
-    </div>
-  </section>
+{#if data.metadataError}
+	<!-- Error state: metadata.json is missing -->
+	<section
+		class="mt-[12vh] flex min-h-[60vh] flex-col items-center justify-center gap-6 px-4 text-center"
+	>
+		<div class="w-full max-w-2xl rounded-2xl border-2 border-pm500 bg-bg200 px-6 py-8 shadow-lg">
+			<h1 class="mb-4 text-4xl font-bold text-pm500">500</h1>
+			<p class="mb-2 text-left text-xl text-tx100">
+				{data.metadataError}
+			</p>
+		</div>
+	</section>
 {:else}
-  <!-- Normal state: metadata loaded successfully -->
-  <section class="flex mt-[12vh] flex-col gap-6 items-center justify-center min-h-[60vh] text-center px-4">
-    <h1 class="text-6xl md:text-7xl font-bold tracking-tight text-tx50 flex flex-wrap justify-center gap-x-2">
-      {#each metadataJson.name.split(' ') as word, wordIndex}
-        <span class="inline-flex">
-          {#each word.split('') as char, charIndex}
-            <span
-              class="inline-block animate-slide-in opacity-0"
-              style="animation-delay: {(wordIndex * word.length + charIndex) * 0.05}s; animation-fill-mode: forwards;"
-            >
-              {char}
-            </span>
-          {/each}
-        </span>
-      {/each}
-    </h1>
-    <p class="text-xl md:text-2xl text-tx300 max-w-2xl">
-      {metadataJson.summary}
-    </p>
+	<!-- Normal state: metadata loaded successfully -->
+	<section
+		class="mt-[12vh] flex min-h-[60vh] flex-col items-center justify-center gap-6 px-4 text-center"
+	>
+		<h1
+			class="flex flex-wrap justify-center gap-x-2 text-6xl font-bold tracking-tight text-tx50 md:text-7xl"
+		>
+			{#each data.name.split(' ') as word, wordIndex}
+				<span class="inline-flex">
+					{#each word.split('') as char, charIndex}
+						<span
+							class="animate-slide-in inline-block opacity-0"
+							style="animation-delay: {(wordIndex * word.length + charIndex) *
+								0.05}s; animation-fill-mode: forwards;"
+						>
+							{char}
+						</span>
+					{/each}
+				</span>
+			{/each}
+		</h1>
+		<p class="max-w-2xl text-xl text-tx300 md:text-2xl">
+			{data.summary}
+		</p>
 
-    <div class="flex gap-4 flex-wrap justify-center">
-      {#if repositoryUrl}
-        <a
-          href={repositoryUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="group px-6 py-3 bg-yellow-400 dark:bg-yellow-400 text-gray-900 dark:text-gray-900 rounded-lg font-semibold hover:bg-yellow-500 dark:hover:bg-yellow-500 transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105"
-        >
-          <StarIcon size={20} filled={true} class="star-blink" />
-          Star on GitHub
-        </a>
-      {/if}
-      <button class="px-6 py-3 bg-pm500 text-white rounded-lg font-medium hover:bg-pm600 transition-colors">
-        <a
-          href={dev ? env.PUBLIC_DOC_URL : resolve("/doc")}
-          rel="external noopener noreferrer"
-        >
-          Go to Documentation
-        </a>
-      </button>
-    </div>
+		<div class="flex flex-wrap justify-center gap-4">
+			{#if repositoryUrl}
+				<a
+					href={repositoryUrl}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="group flex transform items-center gap-2 rounded-lg bg-yellow-400 px-6 py-3 font-semibold text-gray-900 shadow-lg transition-all duration-200 hover:scale-105 hover:bg-yellow-500 hover:shadow-xl dark:bg-yellow-400 dark:text-gray-900 dark:hover:bg-yellow-500"
+				>
+					<StarIcon size={20} filled={true} class="star-blink" />
+					Star on GitHub
+				</a>
+			{/if}
+			{#if data.contentTypes?.doc}
+				<button
+					class="rounded-lg bg-pm500 px-6 py-3 font-medium text-white transition-colors hover:bg-pm600"
+				>
+					<a
+						href={dev ? env.PUBLIC_DOC_URL : resolve('/doc')}
+						rel="external noopener noreferrer"
+					>
+						Go to Documentation
+					</a>
+				</button>
+			{/if}
+		</div>
 
-    {#if metadataJson.description}
-      <div class="w-full max-w-4xl px-6 py-8 bg-bg100 rounded-2xl shadow-lg border border-bg300 text-left">
-        <MarkdownRenderer content={metadataJson.description} />
-      </div>
-    {/if}
-  </section>
+		{#if data.description}
+			<div
+				class="w-full max-w-4xl rounded-2xl border border-bg300 bg-bg100 px-6 py-8 text-left shadow-lg"
+			>
+				<MarkdownRenderer content={data.description} />
+			</div>
+		{/if}
+	</section>
 {/if}
 
 <style>
-  @keyframes star-blink {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.6; transform: scale(1.2); }
-  }
+	@keyframes star-blink {
+		0%,
+		100% {
+			opacity: 1;
+			transform: scale(1);
+		}
+		50% {
+			opacity: 0.6;
+			transform: scale(1.2);
+		}
+	}
 
-  :global(.star-blink) {
-    animation: star-blink 1.5s ease-in-out infinite;
-  }
+	:global(.star-blink) {
+		animation: star-blink 1.5s ease-in-out infinite;
+	}
 
-  @keyframes slide-in {
-    0% {
-      opacity: 0;
-      transform: translateX(100px) rotate(90deg);
-    }
-    100% {
-      opacity: 1;
-      transform: translateX(0) rotate(0deg);
-    }
-  }
+	@keyframes slide-in {
+		0% {
+			opacity: 0;
+			transform: translateX(100px) rotate(90deg);
+		}
+		100% {
+			opacity: 1;
+			transform: translateX(0) rotate(0deg);
+		}
+	}
 
-  .animate-slide-in {
-    animation: slide-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
+	.animate-slide-in {
+		animation: slide-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+	}
 </style>
