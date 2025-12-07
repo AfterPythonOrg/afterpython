@@ -41,6 +41,10 @@ url = "https://your-company.com"
 
 [website]
 url = "https://your-project-website.com"
+favicon = "favicon.svg"
+logo = "logo.svg"
+logo_dark = "logo.svg"
+thumbnail = "thumbnail.png"
 ```
 
 ---

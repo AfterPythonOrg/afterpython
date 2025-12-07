@@ -74,9 +74,78 @@ For example, to change the landing page, which by default displays the `README.m
 All static files (e.g. `logo.svg`, `favicon.svg`, images, css files, etc.) should be put in the `afterpython/static/` directory.
 They will be automatically copied to the `afterpython/_website/static/` directory during `ap build`.
 
+#### Content-Type-Specific Static Files
+In addition to the global `afterpython/static/` directory, each content type can have its own `static/` folder for content-specific assets:
+
+- `afterpython/blog/static/` - Static files specific to blog posts (e.g., thumbnail images, blog-specific graphics)
+- `afterpython/tutorial/static/` - Static files specific to tutorials
+- `afterpython/doc/static/` - Static files specific to documentation
+
+This organization helps keep content-related assets close to their source files. For example, if you have thumbnail images for your blog posts, place them in `afterpython/blog/static/` rather than mixing them with global assets in `afterpython/static/`.
+
 ---
-## Work in Progress 🚧
-## Built-in Features
+## Content Type Configuration
+Each content type (blog, tutorial, etc.) has a listing page that displays all posts of that type. You can customize these listing pages in `afterpython.toml`.
+
+:::{note}
+This configuration applies to all non-doc content types. Documentation (`doc`) does not have a listing page, so these settings don't apply to it.
+:::
+
+### Default Thumbnails
+Set a default thumbnail image for all posts within a content type:
+
+```toml
+[website.blog]
+thumbnail = "blog_default_thumbnail.png"
+```
+
+The thumbnail path is **relative to the content type's static folder**. In this example, `afterpython` will look for `afterpython/blog/static/blog_default_thumbnail.png`.
+
+This default thumbnail will be used for any blog post that doesn't specify its own thumbnail.
+
+:::{tip} Override Thumbnails Per Post
+You can override the default thumbnail for individual posts using MyST [frontmatter](https://mystmd.org/guide/frontmatter#available-frontmatter-fields). Add this to the top of your markdown file:
+
+```markdown
+---
+title: My Blog Post Title
+description: A brief description of this post
+thumbnail: custom_thumbnail.png  # Specific thumbnail for this post
+---
+```
+
+This also works for Jupyter Notebooks - just add the frontmatter in the first cell as markdown.
+:::
+
+### Featured Post
+Specify which post appears in the featured/hero section of the listing page:
+
+```toml
+[website.blog]
+featured_post = "blog1.md"
+```
+
+This will display `blog1.md` prominently in the hero section when users visit the blog listing page.
+
+### Example Configuration
+Here's a complete example for blog posts:
+
+```toml
+[website.blog]
+thumbnail = "blog_default_thumbnail.png"  # Default thumbnail for all blog posts
+featured_post = "announcing-v1.md"        # Featured post in hero section
+```
+
+The same configuration works for other content types:
+
+```toml
+[website.tutorial]
+thumbnail = "tutorial_default_thumbnail.png"
+featured_post = "getting-started.md"
+```
+
+---
+## 🚧 Built-in Features
 - full-text search using [PageFind]
 - AI chatbot using [WebLLM]
 
