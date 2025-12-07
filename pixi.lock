@@ -3194,8 +3194,8 @@ packages:
   timestamp: 1650670423406
 - pypi: ./
   name: afterpython
-  version: 0.1.0rc0
-  sha256: bd02449f91c04b56d589d4d1d205d0e4808ededb9230859b1e23683c1be49090
+  version: 0.1.0
+  sha256: 4229c9ab599f800b96ce5d00dd4ecf85416776de7a5b21972ed4dd44ff37f20e
   requires_dist:
   - click>=8.3.1
   - trogon>=0.6.0
