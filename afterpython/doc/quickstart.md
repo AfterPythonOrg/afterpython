@@ -15,6 +15,15 @@ uv add --dev afterpython
 ap init
 ```
 
+:::{tip} Troubleshooting
+For some reason, `mystmd` uses restrictive version constraints `"platformdirs~=4.2.2"` and `"nodeenv~=1.9.1"`.
+If you are having issues installing `afterpython` because of these version constraints, you can override them by adding the following to your `pyproject.toml` file:
+```toml
+[tool.uv]
+override-dependencies = ["platformdirs>=4.5.0", "nodeenv>=1.9.1"]
+```
+:::
+
 After running `ap init`, the `afterpython/` directory is created and you can start writing content right away.
 
 The structure of `afterpython/` is as follows:

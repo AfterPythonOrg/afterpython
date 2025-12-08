@@ -42,12 +42,16 @@ pre-commit = ">=4.5.0"
 commitizen = ">=4.10.0"
 # python-semantic-release = ">=10.5.2"
 
+# [pypi-options.dependency-overrides]
+# platformdirs = ">=4.5.0"
+# nodeenv = ">=1.9.1"
+
 [environments]
 default = ["py311", "dev", "optional"]
-py311 = ["py311", "dev", "optional", "test"]
-py312 = ["py312", "dev", "optional", "test"]
-py313 = ["py313", "dev", "optional", "test"]
-py314 = ["py314", "dev", "optional", "test"]
+py311 = ["py311", "test", "optional"]
+py312 = ["py312", "test", "optional"]
+py313 = ["py313", "test", "optional"]
+py314 = ["py314", "test", "optional"]
 
 [feature.optional.pypi-dependencies]
 

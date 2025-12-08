@@ -60,9 +60,8 @@ documentation = "https://afterpython.afterpython.org/doc"
 ap = "afterpython.main:run_cli"
 pcu = "afterpython.main:run_pcu"
 
-[tool.uv]
-# override the restrictive version constraints "platformdirs~=4.2.2", "nodeenv~=1.9.1" in package `mystmd`
-override-dependencies = ["platformdirs>=4.5.0", "nodeenv>=1.9.1"]
+# [tool.uv]
+# override-dependencies = ["platformdirs>=4.5.0", "nodeenv>=1.9.1"]
 
 [build-system]
 requires = ["uv_build>=0.9.16,<0.10.0"]
