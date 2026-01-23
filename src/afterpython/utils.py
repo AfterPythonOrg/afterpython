@@ -312,3 +312,54 @@ def is_website_initialized() -> bool:
     package_json = website_path / "package.json"
 
     return website_path.exists() and package_json.exists()
+
+
+def ensure_website_gitignore_rules() -> None:
+    """Ensure website-related gitignore rules are present in the project's .gitignore.
+
+    Adds the following rules if they don't exist:
+    - **/_build/ (ignore all build directories)
+    - !afterpython/_website/src/lib/ (un-ignore website source for customization)
+    - afterpython/_website.backup/ (ignore backup created by ap update website)
+    """
+    import afterpython as ap
+
+    gitignore_path = ap.paths.user_path / ".gitignore"
+
+    # Rules that should be present
+    required_rules = [
+        "**/_build/",
+        "!afterpython/_website/src/lib/",
+        "afterpython/_website.backup/",
+    ]
+
+    # Read existing gitignore or create empty list
+    if gitignore_path.exists():
+        existing_lines = gitignore_path.read_text().splitlines()
+    else:
+        existing_lines = []
+
+    # Find which rules are missing
+    missing_rules = []
+    for rule in required_rules:
+        # Check if rule exists (exact match or as part of a line)
+        if not any(rule in line for line in existing_lines):
+            missing_rules.append(rule)
+
+    # Add missing rules if any
+    if missing_rules:
+        # Ensure file ends with newline if it exists and has content
+        content = gitignore_path.read_text() if gitignore_path.exists() else ""
+        if content and not content.endswith("\n"):
+            content += "\n"
+
+        # Add a section header if we're adding rules
+        if content:
+            content += "\n"
+        content += "# AfterPython website rules\n"
+        content += "\n".join(missing_rules) + "\n"
+
+        gitignore_path.write_text(content)
+        click.echo(f"Added website-related rules to {gitignore_path}")
+    else:
+        click.echo("Website gitignore rules already present")

@@ -126,7 +126,7 @@ update.add_command(dependencies, name="deps")  # alias for "dependencies"
 )
 def website(ctx, no_backup: bool):
     """Update project website template to the latest version"""
-    from afterpython.utils import find_node_env
+    from afterpython.utils import ensure_website_gitignore_rules, find_node_env
 
     website_template_repo = "AfterPythonOrg/project-website-template"
 
@@ -166,6 +166,9 @@ def website(ctx, no_backup: bool):
         )
         if result.returncode != 0:
             raise Exit(result.returncode)
+
+        # Ensure gitignore rules are present
+        ensure_website_gitignore_rules()
     except Exception as e:
         click.echo(f"✗ Error updating project website template: {e}", err=True)
         if not no_backup:
