@@ -94,7 +94,7 @@ def dev(
     with custom Vite options in the afterpython/_website directory.
     """
 
-    from afterpython.utils import handle_passthrough_help
+    from afterpython.utils import handle_passthrough_help, is_website_initialized
 
     # Show both our options and myst's help and exit
     handle_passthrough_help(
@@ -102,6 +102,13 @@ def dev(
         ["myst", "start"],
         show_underlying=True,
     )
+
+    if not is_website_initialized():
+        click.echo(
+            "Website has not been initialized. Skipping dev server.\n"
+            "Run 'ap update website' to initialize the website."
+        )
+        return
 
     # Track all MyST processes for cleanup
     myst_processes = []

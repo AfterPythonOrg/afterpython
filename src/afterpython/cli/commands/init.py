@@ -46,8 +46,13 @@ def init_py_typed():
     is_flag=True,
     help="Automatically answer yes to all prompts",
 )
+@click.option(
+    "--skip-website",
+    is_flag=True,
+    help="Skip website template initialization",
+)
 @click.pass_context
-def init(ctx, yes):
+def init(ctx, yes, skip_website: bool):
     """Initialize AfterPython project structure and website template"""
     from afterpython.tools._afterpython import init_afterpython
     from afterpython.tools.commitizen import init_commitizen
@@ -73,9 +78,9 @@ def init(ctx, yes):
 
     init_myst()
 
-    # TODO: init faq.yml
-
-    init_website()
+    if not skip_website:
+        # TODO: init faq.yml
+        init_website()
 
     # TODO: add type checking related stuff here
     init_py_typed()

@@ -190,6 +190,7 @@ def build(ctx: click.Context, execute: bool):
         find_node_env,
         handle_passthrough_help,
         has_content_for_myst,
+        is_website_initialized,
     )
 
     # Show both our options and myst's help and exit
@@ -198,6 +199,13 @@ def build(ctx: click.Context, execute: bool):
         ["myst", "build"],
         show_underlying=True,
     )
+
+    if not is_website_initialized():
+        click.echo(
+            "Website has not been initialized. Skipping website build.\n"
+            "Run 'ap update website' to initialize the website."
+        )
+        return
 
     paths = ctx.obj["paths"]
     prebuild()

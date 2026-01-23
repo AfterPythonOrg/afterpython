@@ -297,3 +297,18 @@ def get_relative_static_prefix(file_path: Path, content_type_path: Path) -> str:
         return "./"  # File is directly in content_type_path
     else:
         return "../" * depth
+
+
+def is_website_initialized() -> bool:
+    """Check if the website has been initialized.
+
+    Returns:
+        True if the website is initialized (afterpython/_website exists and has package.json)
+        False otherwise
+    """
+    import afterpython as ap
+
+    website_path = ap.paths.website_path
+    package_json = website_path / "package.json"
+
+    return website_path.exists() and package_json.exists()
