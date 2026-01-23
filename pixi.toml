@@ -24,7 +24,7 @@ gh = ">=2.83.1"
 # `pixi config set pinning-strategy latest-up` removes the upper bound on the versions of the dependencies
 [pypi-dependencies]
 afterpython = { path = ".", editable = true }
-click = ">=8.2.2"
+click = ">=8.2.1"
 trogon = ">=0.6.0"
 httpx = ">=0.28.1"
 tomlkit = ">=0.13.3"

@@ -32,7 +32,7 @@ classifiers = [
 ]
 requires-python = ">=3.11"
 dependencies = [
-    "click>=8.2.2",
+    "click>=8.2.1",
     "trogon>=0.6.0",
     "httpx>=0.28.1",
     "tomlkit>=0.13.3",
