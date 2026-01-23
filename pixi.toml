@@ -4,7 +4,7 @@ channels = ["conda-forge"]
 name = "afterpython"
 platforms = ["win-64", "linux-64", "osx-arm64", "osx-64"]
 # updating this needs to also update the version in the ci.yml and templates/ci-workflow-template.yml files
-requires-pixi = ">=0.60"  # command: pixi workspace requires-pixi set ">=0.60"
+requires-pixi = ">=0.63.2"  # command: pixi workspace requires-pixi set ">=0.63.2"
 
 [tasks]
 
@@ -18,13 +18,13 @@ depends-on = [
 
 [dependencies]
 python = ">=3.11.14"
-uv = ">=0.9.16"
+uv = ">=0.9.26"
 gh = ">=2.83.1"
 
 # `pixi config set pinning-strategy latest-up` removes the upper bound on the versions of the dependencies
 [pypi-dependencies]
 afterpython = { path = ".", editable = true }
-click = ">=8.3.1"
+click = ">=8.2.2"
 trogon = ">=0.6.0"
 httpx = ">=0.28.1"
 tomlkit = ">=0.13.3"
@@ -35,11 +35,11 @@ python-dotenv = ">=1.2.1"
 pyproject-metadata = ">=0.10.0"
 # jupytext = ">=1.18.1"
 # jinja2 = ">=3.1.6"
-mystmd = ">=1.7.0"
+mystmd = ">=1.8.0"
 pdoc = ">=16.0.0"
-ruff = ">=0.14.8"
-pre-commit = ">=4.5.0"
-commitizen = ">=4.10.0"
+ruff = ">=0.14.14"
+pre-commit = ">=4.5.1"
+commitizen = ">=4.12.1"
 # python-semantic-release = ">=10.5.2"
 
 # [pypi-options.dependency-overrides]
