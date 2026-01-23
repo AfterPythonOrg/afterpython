@@ -1970,8 +1970,8 @@ packages:
   timestamp: 1650670423406
 - pypi: ./
   name: afterpython
-  version: 0.1.4
-  sha256: 5763eb963cdc7221e216317f5ffb26c67eed4c1257befdb7834631d2aa6cab24
+  version: 0.2.0
+  sha256: 7692d5d09d0cf954157bbe45a2c0c33bff204460164016014b73bdbcea3580ce
   requires_dist:
   - click>=8.2.1
   - trogon>=0.6.0
