@@ -33,7 +33,7 @@ jobs:
       - name: Install dependencies
         # Install the package with uv in system mode
         # This installs ruff and other tools defined in dependencies
-        run: uv pip install --system .
+        run: uv pip install --system . --group dev
 
       - name: Run ruff check
         run: ruff check --config ./afterpython/ruff.toml .
@@ -189,9 +189,18 @@ jobs:
         run: uv pip install --system dist/*.whl
 
       - name: Verify installation
-        # Confirm the CLI entry point works
-        # This ensures the package is usable after installation
-        run: ap --help
+        # Generic verification: assume project.name maps to import name
+        # by replacing '-' with '_'. If a project breaks this rule, CI fails.
+        run: |
+          PROJECT_NAME="$(python - <<'PY'
+          import tomllib
+          with open("pyproject.toml", "rb") as f:
+              data = tomllib.load(f)
+          print(data["project"]["name"])
+          PY
+          )"
+          IMPORT_NAME="${PROJECT_NAME//-/_}"
+          python -c "import ${IMPORT_NAME}"
 
   # Job 5: Type Check
   # typecheck:
