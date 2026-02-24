@@ -51,6 +51,11 @@ dependencies = [
     # "python-semantic-release>=10.5.2",
 ]
 
+[dependency-groups]
+dev = [
+    "afterpython>=0.2.1",
+]
+
 [project.urls]
 homepage = "https://afterpython.afterpython.org"
 repository = "https://github.com/AfterPythonOrg/afterpython"
@@ -70,3 +75,6 @@ build-backend = "uv_build"
 [tool.uv.build-backend]
 module-name = "afterpython"
 module-root = "src"
+
+[tool.uv.sources]
+afterpython = { workspace = true }
