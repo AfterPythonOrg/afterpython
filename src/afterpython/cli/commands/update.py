@@ -31,11 +31,19 @@ def update():
     is_flag=True,
     help="Also update pre-commit hooks and pixi dependencies",
 )
-def dependencies(upgrade: bool, all: bool):
+@click.option(
+    "--exclude",
+    "exclude",
+    multiple=True,
+    metavar="PACKAGE",
+    help="Package to exclude from upgrade (can be passed multiple times)",
+)
+def dependencies(upgrade: bool, all: bool, exclude: tuple[str, ...]):
     """Check and update project dependencies to latest versions"""
     from afterpython.pcu import get_dependencies, update_dependencies
     from afterpython.utils import has_pixi, has_uv
 
+    excluded = set(exclude)
     dependencies: Dependencies = get_dependencies()
     has_at_least_one_update = False
     for dep_type in dependencies:
@@ -55,11 +63,15 @@ def dependencies(upgrade: bool, all: bool):
             for dep in deps:
                 msg = f"  {dep.requirement.name}: {dep.min_version}"
                 has_update = dep.min_version != dep.latest_version
+                is_excluded = dep.requirement.name in excluded
                 if has_update:
-                    has_at_least_one_update = True
+                    if not is_excluded:
+                        has_at_least_one_update = True
                     msg += (
                         f" → {click.style(dep.latest_version, fg='green', bold=True)}"
                     )
+                if is_excluded:
+                    msg += f" {click.style('(excluded)', fg='yellow')}"
                 if category_name:
                     msg += f" ({category_name})"
                 click.echo(msg)
@@ -67,6 +79,15 @@ def dependencies(upgrade: bool, all: bool):
         click.echo(f"\n{click.style('No dependencies to update.', bold=True)}")
         return
     if has_at_least_one_update and upgrade:
+        if excluded:
+            for dep_type in dependencies:
+                for category, deps in dependencies[dep_type].items():
+                    dependencies[dep_type][category] = [
+                        dep._replace(latest_version=dep.min_version)
+                        if dep.requirement.name in excluded
+                        else dep
+                        for dep in deps
+                    ]
         update_dependencies(dependencies)  # write the latest versions to pyproject.toml
         if has_uv():
             click.echo("Upgrading dependencies with uv...")
@@ -89,13 +110,16 @@ def dependencies(upgrade: bool, all: bool):
             click.echo(
                 "uv not found. Updated pyproject.toml only (packages not installed)."
             )
-    if all:
+    if upgrade and all:
         subprocess.run(["ap", "pre-commit", "autoupdate"])
         click.echo("All pre-commit hooks updated successfully.")
         if has_pixi():
             click.echo("Upgrading dependencies with pixi...")
+            pixi_exclude_args = ["--exclude", "python"]
+            for pkg in excluded:
+                pixi_exclude_args += ["--exclude", pkg]
             result = subprocess.run(
-                ["pixi", "upgrade", "--exclude", "python"], check=False
+                ["pixi", "upgrade", *pixi_exclude_args], check=False
             )
             if result.returncode != 0:
                 raise Exit(result.returncode)

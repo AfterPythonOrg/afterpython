@@ -1,11 +1,13 @@
 # AfterPython: Python Package Maintenance Toolkit and Project Website Generator
 
 [![afterpython](https://afterpython.org/shield.svg)](https://afterpython.org)
-![PyPI downloads](https://img.shields.io/pypi/dm/afterpython)
-[![PyPI](https://img.shields.io/pypi/v/afterpython.svg)](https://pypi.org/project/afterpython)
-![PyPI - Support Python Versions](https://img.shields.io/pypi/pyversions/afterpython)
+[![Downloads](https://static.pepy.tech/badge/afterpython/month)](https://pepy.tech/project/afterpython)
+[![PyPI](https://img.shields.io/pypi/v/afterpython.svg?cacheSeconds=300)](https://pypi.org/project/afterpython)
+![PyPI - Support Python Versions](https://img.shields.io/pypi/pyversions/afterpython?cacheSeconds=300)
 [![Discussions](https://img.shields.io/badge/Discussions-Let's%20Chat-green)](https://github.com/AfterPythonOrg/afterpython/discussions)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/AfterPythonOrg/afterpython)
+[![View Code Wiki](https://assets.codewiki.google/readme-badge/static.svg)](https://codewiki.google/github.com/afterpythonorg/afterpython?utm_source=badge&utm_medium=github&utm_campaign=github.com/afterpythonorg/afterpython)
+<!-- ![PyPI downloads](https://img.shields.io/pypi/dm/afterpython) -->
 <!-- [![Pixi Badge](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json)](https://pixi.sh) -->
 
 

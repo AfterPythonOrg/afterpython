@@ -35,19 +35,19 @@ dependencies = [
     "click>=8.2.1",
     "trogon>=0.6.0",
     "httpx>=0.28.1",
-    "tomlkit>=0.13.3",
-    "ruamel-yaml>=0.18.16",
-    "gitpython>=3.1.45",
+    "tomlkit>=0.14.0",
+    "ruamel-yaml>=0.19.1",
+    "gitpython>=3.1.49",
     # "pygithub>=2.8.1",
-    "python-dotenv>=1.2.1",
-    "pyproject-metadata>=0.10.0",
+    "python-dotenv>=1.2.2",
+    "pyproject-metadata>=0.11.0",
     # "jupytext>=1.18.1",
     # "jinja2>=3.1.6",
-    "mystmd>=1.8.0",
+    "mystmd>=1.9.0",
     "pdoc>=16.0.0",
-    "ruff>=0.14.14",
-    "pre-commit>=4.5.1",
-    "commitizen>=4.12.1",
+    "ruff>=0.15.12",
+    "pre-commit>=4.6.0",
+    "commitizen>=4.13.10",
     # "python-semantic-release>=10.5.2",
 ]
 
@@ -69,7 +69,7 @@ pcu = "afterpython.main:run_pcu"
 # override-dependencies = ["platformdirs>=4.5.0", "nodeenv>=1.9.1"]
 
 [build-system]
-requires = ["uv_build>=0.9.26,<0.10.0"]
+requires = ["uv_build>=0.11.8,<0.12.0"]
 build-backend = "uv_build"
 
 [tool.uv.build-backend]
@@ -77,4 +77,7 @@ module-name = "afterpython"
 module-root = "src"
 
 [tool.uv.sources]
-afterpython = { workspace = true }
+afterpython = { path = ".", editable = true }
+
+[tool.pyright]
+typeCheckingMode = "basic"

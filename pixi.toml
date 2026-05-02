@@ -18,28 +18,27 @@ depends-on = [
 
 [dependencies]
 python = ">=3.11.14"
-uv = ">=0.9.26"
-gh = ">=2.83.1"
+uv = ">=0.11.8"
+gh = ">=2.92.0"
 
 # `pixi config set pinning-strategy latest-up` removes the upper bound on the versions of the dependencies
 [pypi-dependencies]
-afterpython = { path = ".", editable = true }
 click = ">=8.2.1"
 trogon = ">=0.6.0"
 httpx = ">=0.28.1"
-tomlkit = ">=0.13.3"
-ruamel-yaml = ">=0.18.16"
-gitpython = ">=3.1.45"
+tomlkit = ">=0.14.0"
+ruamel-yaml = ">=0.19.1"
+gitpython = ">=3.1.49"
 # pygithub = ">=2.8.1"
-python-dotenv = ">=1.2.1"
-pyproject-metadata = ">=0.10.0"
+python-dotenv = ">=1.2.2"
+pyproject-metadata = ">=0.11.0"
 # jupytext = ">=1.18.1"
 # jinja2 = ">=3.1.6"
-mystmd = ">=1.8.0"
+mystmd = ">=1.9.0"
 pdoc = ">=16.0.0"
-ruff = ">=0.14.14"
-pre-commit = ">=4.5.1"
-commitizen = ">=4.12.1"
+ruff = ">=0.15.12"
+pre-commit = ">=4.6.0"
+commitizen = ">=4.13.10"
 # python-semantic-release = ">=10.5.2"
 
 # [pypi-options.dependency-overrides]
@@ -56,11 +55,12 @@ py314 = ["py314", "test", "optional"]
 [feature.optional.pypi-dependencies]
 
 [feature.dev.pypi-dependencies]
-notebook = ">=7.5.0"
+afterpython = { path = ".", editable = true }
+notebook = ">=7.5.6"
 
 [feature.test.pypi-dependencies]
-pytest = ">=9.0.2"
-pytest-cov = ">=7.0.0"
+pytest = ">=9.0.3"
+pytest-cov = ">=7.1.0"
 pytest-mock = ">=3.15.1"
 pytest-xdist = ">=3.8.0"
 [feature.test.tasks]
