@@ -4,7 +4,7 @@ channels = ["conda-forge"]
 name = "afterpython"
 platforms = ["win-64", "linux-64", "osx-arm64", "osx-64"]
 # updating this needs to also update the version in the ci.yml and templates/ci-workflow-template.yml files
-requires-pixi = ">=0.63.2"  # command: pixi workspace requires-pixi set ">=0.63.2"
+requires-pixi = ">=0.67.2"  # command: pixi workspace requires-pixi set ">=0.67.2"
 
 [tasks]
 
