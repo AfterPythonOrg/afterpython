@@ -30,10 +30,8 @@ jobs:
         with:
           version: "latest"
 
-      - name: Install dependencies
-        # Install the package with uv in system mode
-        # This installs ruff and other tools defined in dependencies
-        run: uv pip install --system --group dev
+      - name: Install ruff
+        run: uv pip install --system ruff
 
       - name: Run ruff check
         run: ruff check --config ./afterpython/ruff.toml .
