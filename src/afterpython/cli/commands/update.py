@@ -28,6 +28,7 @@ def update():
 )
 @click.option(
     "--all",
+    "all_",
     is_flag=True,
     help="Also update pre-commit hooks and pixi dependencies",
 )
@@ -38,7 +39,7 @@ def update():
     metavar="PACKAGE",
     help="Package to exclude from upgrade (can be passed multiple times)",
 )
-def dependencies(upgrade: bool, all: bool, exclude: tuple[str, ...]):
+def dependencies(upgrade: bool, all_: bool, exclude: tuple[str, ...]):
     """Check and update project dependencies to latest versions"""
     from afterpython.pcu import get_dependencies, update_dependencies
     from afterpython.utils import has_pixi, has_uv
@@ -110,7 +111,7 @@ def dependencies(upgrade: bool, all: bool, exclude: tuple[str, ...]):
             click.echo(
                 "uv not found. Updated pyproject.toml only (packages not installed)."
             )
-    if upgrade and all:
+    if upgrade and all_:
         subprocess.run(["ap", "pre-commit", "autoupdate"])
         click.echo("All pre-commit hooks updated successfully.")
         if has_pixi():
@@ -139,6 +140,61 @@ def dependencies(upgrade: bool, all: bool, exclude: tuple[str, ...]):
 
 
 update.add_command(dependencies, name="deps")  # alias for "dependencies"
+
+
+@update.command()
+@click.option("--deploy", is_flag=True, help="Update .github/workflows/deploy.yml")
+@click.option("--ci", is_flag=True, help="Update .github/workflows/ci.yml")
+@click.option("--release", is_flag=True, help="Update .github/workflows/release.yml")
+@click.option("--dependabot", is_flag=True, help="Update .github/dependabot.yml")
+@click.option(
+    "--all",
+    "all_",
+    is_flag=True,
+    help="Update every supported workflow file",
+)
+@click.option(
+    "--no-backup",
+    is_flag=True,
+    help="Skip creating .backup copies of existing workflow files",
+)
+def workflows(
+    deploy: bool,
+    ci: bool,
+    release: bool,
+    dependabot: bool,
+    all_: bool,
+    no_backup: bool,
+):
+    """Update GitHub Actions workflow files (deploy, ci, release, dependabot)
+
+    Existing files are backed up to <file>.backup before being overwritten
+    so user customizations (matrix tweaks, extra steps, etc.) aren't lost.
+    """
+    from afterpython.tools.github_actions import (
+        VALID_WORKFLOWS,
+        update_workflow_file,
+    )
+
+    selected_flags = {
+        "deploy": deploy,
+        "ci": ci,
+        "release": release,
+        "dependabot": dependabot,
+    }
+    individual = [name for name, picked in selected_flags.items() if picked]
+
+    if all_ and individual:
+        raise click.UsageError("Pass --all or individual workflow flags, not both.")
+    if not all_ and not individual:
+        raise click.UsageError(
+            "Specify which workflows to update with flags "
+            "(e.g. --deploy --ci) or pass --all."
+        )
+
+    selected = VALID_WORKFLOWS if all_ else individual
+    for name in selected:
+        update_workflow_file(name, backup=not no_backup)
 
 
 @update.command()
