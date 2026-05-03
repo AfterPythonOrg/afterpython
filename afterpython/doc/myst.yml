@@ -18,7 +18,7 @@ project:
     title: 'AfterPython.Org'
     url: https://afterpython.org
   # To autogenerate a Table of Contents, run "myst init --write-toc"
-  copyright: © AfterPython.Org 2025. All rights reserved.
+  copyright: © AfterPython.Org 2026. All rights reserved.
   # title:
   description: CLI tool to streamline Python package maintenance and generate a dedicated project website
   keywords:
@@ -50,11 +50,12 @@ project:
     - file: references/roadmap.md
   - file: CONTRIBUTING.md
   title: ''
+  thumbnail: ../static/thumbnail.png
 site:
   template: book-theme
 # See options at: https://mystmd.org/guide/website-templates#site-options
   options:
-    favicon: ../static/favicon.svg
+    favicon: ../static/favicon.ico
     logo: ../static/logo.svg
     logo_dark: ../static/logo.svg
     logo_text: afterpython

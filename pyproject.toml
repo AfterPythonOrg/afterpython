@@ -44,16 +44,11 @@ dependencies = [
     # "jupytext>=1.18.1",
     # "jinja2>=3.1.6",
     "mystmd>=1.9.0",
-    "pdoc>=16.0.0",
+    "great-docs>=0.9",
     "ruff>=0.15.12",
     "pre-commit>=4.6.0",
     "commitizen>=4.13.10",
     # "python-semantic-release>=10.5.2",
-]
-
-[dependency-groups]
-dev = [
-    "afterpython>=0.2.1",
 ]
 
 [project.urls]

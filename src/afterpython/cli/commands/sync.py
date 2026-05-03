@@ -58,6 +58,10 @@ def sync():
         website_favicon = normalize_static_path(
             str(_from_tomlkit(afterpython.get("website", {})).get("favicon", ""))
         )
+        if website_favicon and not website_favicon.lower().endswith(".ico"):
+            raise ValueError(
+                f"Invalid favicon '{website_favicon}': mystmd only supports .ico files."
+            )
         website_logo = normalize_static_path(
             str(_from_tomlkit(afterpython.get("website", {})).get("logo", ""))
         )
@@ -100,6 +104,8 @@ def sync():
     # based on the current values in pyproject.toml and afterpython.toml
     for content_type in CONTENT_TYPES:
         path = ap.paths.afterpython_path / content_type
+        if not (path / "myst.yml").exists():
+            continue
         # nav_bar_per_content_type = [
         #     item for item in nav_bar if item["title"] != content_type.capitalize() + "s"
         # ]
