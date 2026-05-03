@@ -123,6 +123,7 @@ def init_afterpython():
             "logo": "logo.svg",
             "logo_dark": "logo.svg",
             "thumbnail": "thumbnail.png",
+            "announcement": "",
         },
     }
     update_afterpython(default_data)

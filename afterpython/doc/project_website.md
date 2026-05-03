@@ -171,6 +171,16 @@ Both `question` and `answer` accept Markdown — inline code, links, lists, fenc
 
 Categories are displayed in the order they first appear in `faq.yml`, so order your questions to control category order.
 
+### Announcement Banner
+Set `announcement` under `[website]` in `afterpython.toml` to display a banner at the top of the home page on the project website. Markdown is supported (inline code, links, **bold**, emoji), so you can link to a release, blog post, or external page.
+
+```toml
+[website]
+announcement = "🎉 v2.0 is out — [read the changelog](/blog/v2-release)"
+```
+
+For longer messages, use a triple-quoted string. Keep it concise — the banner is meant for a one-glance heads-up, not a full announcement post. Leave it as `""` to hide the banner.
+
 ### API Reference
 [great-docs]  will be used to build the API Reference section on the project website.
 
