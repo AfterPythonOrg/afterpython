@@ -4,7 +4,7 @@
 [pre-commit]: https://pre-commit.com
 [pagefind]: https://pagefind.app
 [SemVer]: https://semver.org
-[pdoc]: https://pdoc.dev/
+[great-docs]: https://posit-dev.github.io/great-docs/
 [GitHub Actions]: https://github.com/features/actions
 [PyTorch]: https://pytorch.org
 [Scikit-Learn]: https://scikit-learn.org
@@ -47,7 +47,7 @@ ap tui
 - [project-website-template]
 - [pre-commit]
 - [GitHub Actions]
-- [pdoc]
+- [great-docs]
 - [commitizen]
 - [uv]
 - [ruff]

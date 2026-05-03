@@ -1,6 +1,6 @@
 [project-website-template]: https://github.com/AfterPythonOrg/project-website-template
 [MyST]: https://mystmd.org
-[pdoc]: https://pdoc.dev/docs/pdoc.html
+[great-docs]: https://posit-dev.github.io/great-docs/
 [PyPI]: https://pypi.org/
 [WebLLM]: https://webllm.mlc.ai/
 [PageFind]: https://pagefind.app/
@@ -150,7 +150,7 @@ featured_post = "getting-started.md"
 - AI chatbot using [WebLLM]
 
 ### API Reference
-[pdoc]  will be used to build the API Reference section on the project website.
+[great-docs]  will be used to build the API Reference section on the project website.
 
 ### FAQs
 `faq.yml` will be used as content for the FAQs section on the project website.
