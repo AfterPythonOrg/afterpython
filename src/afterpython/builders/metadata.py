@@ -36,15 +36,26 @@ def convert_paths():
 
 
 def build_metadata():
-    """Build metadata.json using pyproject.toml"""
+    """Build metadata.json using pyproject.toml + afterpython.toml.
+
+    Adds an `announcement` field (markdown string) sourced from
+    `[website].announcement` in afterpython.toml, so the frontend can render
+    a top-of-site banner. Empty/missing announcement → empty string.
+    """
+    from afterpython._io.toml import _from_tomlkit
+    from afterpython.tools._afterpython import read_afterpython
     from afterpython.tools.pyproject import read_metadata
 
     click.echo("Building metadata.json...")
 
     metadata: StandardMetadata = read_metadata()
+    metadata_json = metadata.as_json()
 
-    # Write to metadata.json
+    afterpython = read_afterpython()
+    website = _from_tomlkit(afterpython.get("website", {}))
+    metadata_json["announcement"] = str(website.get("announcement", "")).strip()
+
     with open(build_path / "metadata.json", "w") as f:
-        json.dump(metadata.as_json(), f, indent=2)
+        json.dump(metadata_json, f, indent=2)
 
     convert_paths()

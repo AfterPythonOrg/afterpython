@@ -9,6 +9,7 @@ favicon = "favicon.ico"
 logo = "logo.svg"
 logo_dark = "logo.svg"
 thumbnail = "thumbnail.png"  # thumbnail for the website, also used as default thumbnail for all content types, e.g. blog posts, tutorials, examples, and guides
+announcement = ""
 
 # [website.blog]
 # thumbnail = "blog_default_thumbnail.png"  # inside blog/static/ folder, default thumbnail for blog posts
