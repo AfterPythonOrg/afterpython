@@ -1,3 +1,4 @@
+# VIBE-CODED
 """Publish raw markdown alongside rendered HTML.
 
 For every page the website serves at `/{type}/{slug}`, also publish the source

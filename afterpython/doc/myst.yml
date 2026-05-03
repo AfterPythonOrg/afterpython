@@ -48,6 +48,7 @@ project:
     children:
     - file: references/environment_variables.md
     - file: references/roadmap.md
+  - file: llms_txt.md
   - file: CONTRIBUTING.md
   title: ''
   thumbnail: ../static/thumbnail.png

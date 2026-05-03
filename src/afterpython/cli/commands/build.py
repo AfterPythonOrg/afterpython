@@ -18,6 +18,7 @@ import afterpython as ap
 from afterpython.builders import (
     build_content_json,
     build_jupyter_notebooks,
+    build_llms_txt,
     build_markdown,
     build_metadata,
     build_url_md,
@@ -168,6 +169,10 @@ def postbuild(dev_build: bool = False):
     # Publish raw markdown alongside rendered HTML so each page is fetchable
     # at /{type}/{slug}.md for LLMs / AI agents (Mintlify-style).
     build_url_md()
+
+    # Generate llms.txt — a single catalog of the site for AI agents (depends
+    # on url_md outputs since llms.txt links point at /{type}/{slug}.md).
+    build_llms_txt()
 
 
 @click.command(
