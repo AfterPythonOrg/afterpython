@@ -20,6 +20,7 @@ from afterpython.builders import (
     build_jupyter_notebooks,
     build_markdown,
     build_metadata,
+    build_url_md,
     create_placeholder_index_md_files,
     delete_placeholder_index_md_files,
 )
@@ -163,6 +164,10 @@ def postbuild(dev_build: bool = False):
 
     # Copy all static files from afterpython/static/ to afterpython/_website/static/
     _move_files(ap.paths.static_path, website_static, is_copy=True)
+
+    # Publish raw markdown alongside rendered HTML so each page is fetchable
+    # at /{type}/{slug}.md for LLMs / AI agents (Mintlify-style).
+    build_url_md()
 
 
 @click.command(
