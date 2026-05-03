@@ -1,0 +1,53 @@
+# Exercises:
+# - Plain text, inline code, bold/italic, links, lists, multi-line code blocks
+# - Items with and without `category`
+# - Multiple items sharing a category (to test grouping)
+# - First-appearance category ordering: "Getting Started" -> "Usage" -> "Troubleshooting"
+
+- question: What is AfterPython?
+  answer: AfterPython is a CLI that automates Python project maintenance and generates a project website from your `afterpython/` content folder.
+
+- question: How do I install it?
+  answer: Run `pip install afterpython`, then `ap init` inside your project root. See the **[quickstart](/doc/quickstart)** for the full walkthrough.
+  category: Getting Started
+
+- question: What does `ap init` set up for me?
+  answer: |
+    `ap init` configures:
+    - Pre-commit hooks (ruff, mypy)
+    - Conventional commits via *commitizen*
+    - Semantic-release for versioning
+    - The project website scaffold under `afterpython/`
+  category: Getting Started
+
+- question: How do I run the dev server?
+  answer: |
+    Use `ap dev` from your project root:
+
+    ```bash
+    cd my-project
+    ap dev
+    ```
+
+    This boots the SvelteKit template at `http://localhost:5173`.
+  category: Usage
+
+- question: Can I write content in Jupyter notebooks?
+  answer: Yes — `.ipynb` files in `afterpython/tutorials/` or `afterpython/blog/` are auto-converted. *Marimo* notebooks and **MyST Markdown** are also supported.
+  category: Usage
+
+- question: "Why does `ap build` fail with: `No pyproject.toml found`?"
+  answer: |
+    AfterPython locates the project root by walking up from your current directory looking for `pyproject.toml`. Make sure:
+
+    1. You're inside a Python project
+    2. `pyproject.toml` exists at or above your `cwd`
+    3. You haven't accidentally `cd`'d into a sibling directory
+  category: Troubleshooting
+
+- question: Does this work without a GitHub repository?
+  answer: Yes. The website builds fine locally; only `ap release` and GitHub Pages deploys require a remote.
+
+- question: How do I customize the website's styling?
+  answer: |
+    The frontend is a SvelteKit app under `afterpython/_website/`. Edit `src/app.css` or any component in `src/lib/components/`. The template uses **Tailwind CSS v4** — see the [Tailwind docs](https://tailwindcss.com/docs).

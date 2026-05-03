@@ -145,15 +145,34 @@ featured_post = "getting-started.md"
 ```
 
 ---
-## 🚧 Built-in Features
+## Built-in Features
 - full-text search using [PageFind]
-- AI chatbot using [WebLLM]
+- 🚧 AI chatbot using [WebLLM]
+
+### FAQs
+`afterpython/faq.yml` is rendered as the FAQs section on the project website. Each item needs a `question` and `answer`; `category` is optional.
+
+```yaml
+- question: How do I install it?
+  answer: Run `pip install afterpython`, then `ap init`.
+  category: Getting Started
+
+- question: Can I write content in Jupyter notebooks?
+  answer: |
+    Yes — `.ipynb` files in `afterpython/tutorials/` are auto-converted.
+    See the **[quickstart](/doc/quickstart)** for details.
+  category: Getting Started
+
+- question: Is AfterPython free?
+  answer: Yes, it is free and open source.
+```
+
+Both `question` and `answer` accept Markdown — inline code, links, lists, fenced code blocks, etc.
+
+Categories are displayed in the order they first appear in `faq.yml`, so order your questions to control category order.
 
 ### API Reference
 [great-docs]  will be used to build the API Reference section on the project website.
-
-### FAQs
-`faq.yml` will be used as content for the FAQs section on the project website.
 
 ### Google Analytics
 add google analytics support for the entire website

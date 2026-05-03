@@ -30,7 +30,7 @@
 
 ## Problem
 Going from **writing Python code to publishing and maintaining a package** is **time-consuming**.
-First-time maintainers must learn multiple tools and concepts, e.g. [MyST], [SemVer], CI/CD ([pre-commit] hooks, GitHub workflows), and they often spending hours just to deploy a documentation site whereas well-resourced projects like [PyTorch] and [Scikit-Learn] have **dedicated websites** that serve as their project hubs.
+First-time maintainers must learn multiple tools and concepts, e.g. [MyST], [SemVer], CI/CD ([pre-commit] hooks, GitHub workflows), and they often spend hours just to deploy a documentation site whereas well-resourced projects like [PyTorch] and [Scikit-Learn] have **dedicated websites** that serve as their project hubs.
 
 
 ## Solution
@@ -45,8 +45,8 @@ First-time maintainers must learn multiple tools and concepts, e.g. [MyST], [Sem
 - [x] Go from writing to **website deployment in minutes** — no need to learn any of the underlying tools
 - [x] Centralize all your content in a modern, **unified project website** — from documentation to blog posts
 - [x] Zero-config orchestration — Pre-configured modern tooling with sane defaults (see [Tech Stack](#tech-stack)), so you can start maintaining packages immediately **without learning each tool**
+- [x] **⚡ Full-text search** across **ALL** your content in your website — docs, blogs, tutorials, everything
 - [ ] Export content as PDF — for example, combine all blog posts into a single PDF file
-- [ ] **⚡ Full-text search** across **ALL** your content in your website — docs, blogs, tutorials, everything
 - [ ] **🤖 Embedded AI Chatbot** that answers questions directly using an in-browser LLM — at no cost
 
 ---

@@ -17,6 +17,7 @@ from click.exceptions import Exit
 import afterpython as ap
 from afterpython.builders import (
     build_content_json,
+    build_faq_json,
     build_jupyter_notebooks,
     build_llms_txt,
     build_markdown,
@@ -93,6 +94,7 @@ def prebuild():
     delete_placeholder_index_md_files()
     create_placeholder_index_md_files()
     build_metadata()
+    build_faq_json()
     build_markdown()
     build_jupyter_notebooks()
 

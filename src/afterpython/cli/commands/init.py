@@ -16,6 +16,15 @@ def init_ruff_toml():
     click.echo(f"Created {ruff_toml_path}")
 
 
+def init_faq():
+    faq_path = ap.paths.afterpython_path / "faq.yml"
+    if faq_path.exists():
+        click.echo(f"FAQ file already exists at {faq_path}")
+        return
+    faq_path.touch()
+    click.echo(f"Created {faq_path}")
+
+
 def init_py_typed():
     from afterpython.tools.pyproject import find_package_directory
 
@@ -115,7 +124,7 @@ def init_website_subcommand():
     from afterpython.tools.github_actions import create_workflow
     from afterpython.tools.myst import init_myst
 
-    # TODO: init faq.yml
+    init_faq()
     init_myst()
     click.echo(f"Initializing project website template in {ap.paths.website_path}...")
     subprocess.run(["ap", "update", "website"])

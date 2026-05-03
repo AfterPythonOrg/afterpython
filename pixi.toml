@@ -57,6 +57,7 @@ py314 = ["py314", "test", "optional"]
 [feature.dev.pypi-dependencies]
 afterpython = { path = ".", editable = true }
 notebook = ">=7.5.6"
+marimo = { version = ">=0.23.4", extras = ["recommended", "lsp"] }
 
 [feature.test.pypi-dependencies]
 pytest = ">=9.0.3"
