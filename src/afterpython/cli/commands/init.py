@@ -16,11 +16,6 @@ def init_ruff_toml():
     click.echo(f"Created {ruff_toml_path}")
 
 
-def init_website():
-    click.echo(f"Initializing project website template in {ap.paths.website_path}...")
-    subprocess.run(["ap", "update", "website"])
-
-
 def init_py_typed():
     from afterpython.tools.pyproject import find_package_directory
 
@@ -39,7 +34,7 @@ def init_py_typed():
     click.echo(f"Created {py_typed_path}")
 
 
-@click.command()
+@click.group(invoke_without_command=True)
 @click.option(
     "--yes",
     "-y",
@@ -49,18 +44,20 @@ def init_py_typed():
 @click.option(
     "--skip-website",
     is_flag=True,
-    help="Skip website template initialization",
+    help="Skip website template initialization (run `ap init website` later to add it)",
 )
 @click.pass_context
 def init(ctx, yes, skip_website: bool):
     """Initialize AfterPython project structure and website template"""
+    if ctx.invoked_subcommand is not None:
+        return
+
     from afterpython.tools._afterpython import init_afterpython
     from afterpython.tools.commitizen import init_commitizen
     from afterpython.tools.github_actions import (
         create_dependabot,
         create_workflow,
     )
-    from afterpython.tools.myst import init_myst
     from afterpython.tools.pre_commit import init_pre_commit
     from afterpython.tools.pyproject import init_pyproject
 
@@ -77,10 +74,7 @@ def init(ctx, yes, skip_website: bool):
     init_afterpython()
 
     if not skip_website:
-        # TODO: init faq.yml
-        init_myst()
-        init_website()
-        create_workflow("deploy")
+        subprocess.run(["ap", "init", "website"])
 
     # TODO: add type checking related stuff here
     init_py_typed()
@@ -109,3 +103,20 @@ def init(ctx, yes, skip_website: bool):
         default=True,
     ):
         create_dependabot()
+
+
+@init.command("website")
+def init_website_subcommand():
+    """Initialize project website (MyST config, template, deploy workflow)
+
+    Use this if you ran `ap init --skip-website` and now want to add
+    the website to an existing AfterPython project.
+    """
+    from afterpython.tools.github_actions import create_workflow
+    from afterpython.tools.myst import init_myst
+
+    # TODO: init faq.yml
+    init_myst()
+    click.echo(f"Initializing project website template in {ap.paths.website_path}...")
+    subprocess.run(["ap", "update", "website"])
+    create_workflow("deploy")
