@@ -76,16 +76,15 @@ def init(ctx, yes, skip_website: bool):
 
     init_afterpython()
 
-    init_myst()
-
     if not skip_website:
         # TODO: init faq.yml
+        init_myst()
         init_website()
+        create_workflow("deploy")
 
     # TODO: add type checking related stuff here
     init_py_typed()
 
-    create_workflow("deploy")
     create_workflow("ci")
 
     if yes or click.confirm(
