@@ -9,7 +9,7 @@
 		projectName?: string;
 		repositoryUrl?: string;
 		projectSummary?: string;
-		contentTypes?: Record<ContentType | 'doc', boolean>;
+		contentTypes?: Record<ContentType | 'doc' | 'faq', boolean>;
 	};
 
 	let { projectName, repositoryUrl, projectSummary, contentTypes }: FooterProps = $props();

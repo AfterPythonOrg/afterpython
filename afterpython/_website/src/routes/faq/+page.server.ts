@@ -1,3 +1,4 @@
+import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const prerender = true;
@@ -13,6 +14,6 @@ export const load: PageServerLoad = async () => {
 		const faq = await import('$static/faq.json');
 		return { faq: (faq.default ?? faq) as FaqItem[] };
 	} catch {
-		return { faq: [] as FaqItem[] };
+		throw error(404, 'FAQs are not available for this project.');
 	}
 };

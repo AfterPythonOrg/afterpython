@@ -33,6 +33,9 @@ export const load: LayoutServerLoad = async () => {
 		// Special handling for doc - check if directory exists instead of JSON
 		contentTypes.doc = checkDocExists();
 
+		// FAQ is sourced from static/faq.json but isn't part of CONTENT_TYPES
+		contentTypes.faq = await checkContentType('faq');
+
 		return {
 			...metadata.default,
 			metadataError: null,
@@ -41,7 +44,7 @@ export const load: LayoutServerLoad = async () => {
 	} catch {
 		// metadata.json is missing or invalid - return minimal data to keep layout working
 		const emptyContentTypes = Object.fromEntries(
-			[...CONTENT_TYPES, 'doc'].map((type) => [type, false])
+			[...CONTENT_TYPES, 'doc', 'faq'].map((type) => [type, false])
 		);
 		
 		return {
