@@ -25,6 +25,7 @@ from afterpython.cli.commands.pre_commit import pre_commit
 from afterpython.cli.commands.preview import preview
 from afterpython.cli.commands.release import release
 from afterpython.cli.commands.remove import remove
+from afterpython.cli.commands.serve import serve
 from afterpython.cli.commands.start import blog, doc, example, guide, start, tutorial
 from afterpython.cli.commands.sync import sync
 from afterpython.cli.commands.update import update
@@ -118,6 +119,7 @@ afterpython_group.add_command(tutorial)
 afterpython_group.add_command(example)
 afterpython_group.add_command(guide)
 afterpython_group.add_command(preview)
+afterpython_group.add_command(serve)
 afterpython_group.add_command(clean)
 afterpython_group.add_command(pre_commit)
 afterpython_group.add_command(pre_commit, name="pc")
