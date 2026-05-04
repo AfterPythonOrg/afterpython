@@ -124,6 +124,7 @@ def init_afterpython():
             "logo_dark": "logo.svg",
             "thumbnail": "thumbnail.png",
             "announcement": "",
+            "readme_py": "wasm",
         },
     }
     update_afterpython(default_data)

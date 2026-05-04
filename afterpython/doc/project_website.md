@@ -146,8 +146,24 @@ featured_post = "getting-started.md"
 
 ---
 ## Built-in Features
-- full-text search using [PageFind]
-- 🚧 AI chatbot using [WebLLM]
+
+### Search
+A search bar in the navigation lets users search across all of your content (docs, blog posts, tutorials, etc.) at once. Powered by [PageFind] — fully client-side, no server needed.
+
+### README.py
+Drop a marimo notebook at `afterpython/README.py` to replace the markdown `README.md` rendering in the home page's central section. AfterPython detects the file, exports it to HTML, and embeds it on the landing page.
+
+Choose the export mode in `afterpython.toml`:
+
+```toml
+[website]
+readme_py = "wasm"  # or "static"
+```
+
+- **`wasm`** (default) — interactive. Cells run in the browser via Pyodide. Great for live demos of your package, but adds a ~10MB+ Pyodide download on first visit. Won't work for packages with C extensions that aren't ported to Pyodide.
+- **`static`** — pre-rendered HTML, no runtime. Lighter, but cells can't execute. AfterPython adds an "Open in molab" badge so users can still run the notebook on a real Python server hosted by marimo.
+
+`README.md` is still required (PyPI uses it for the long description) and is shown if `README.py` is absent or isn't a marimo notebook.
 
 ### FAQs
 `afterpython/faq.yml` is rendered as the FAQs section on the project website. Each item needs a `question` and `answer`; `category` is optional.
@@ -181,10 +197,12 @@ announcement = "🎉 v2.0 is out — [read the changelog](/blog/v2-release)"
 
 For longer messages, use a triple-quoted string. Keep it concise — the banner is meant for a one-glance heads-up, not a full announcement post. Leave it as `""` to hide the banner.
 
-### API Reference
+### 🚧 AI chatbot using [WebLLM]
+
+### 🚧 API Reference
 [great-docs]  will be used to build the API Reference section on the project website.
 
-### Google Analytics
+### 🚧 Google Analytics
 add google analytics support for the entire website
 
 ### Compatibility

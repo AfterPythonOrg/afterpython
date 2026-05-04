@@ -15,6 +15,7 @@ on:
       - 'afterpython/_website/**'
       - 'afterpython/authors.yml'
       - 'afterpython/faq.yml'
+      - 'afterpython/README.py'
       - '.github/workflows/deploy.yml'
   workflow_dispatch:  # Allow manual deployment from Actions tab
 

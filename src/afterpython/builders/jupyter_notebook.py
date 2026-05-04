@@ -5,22 +5,9 @@ from pathlib import Path
 import click
 
 import afterpython as ap
+from afterpython.builders.marimo_notebook import _create_molab_url, _get_molab_badge
 from afterpython.const import CONTENT_TYPES
 from afterpython.tools.pyproject import read_metadata
-
-
-def _get_molab_badge() -> str:
-    return "https://marimo.io/molab-shield.svg"
-
-
-def _create_molab_url(github_url: str, content_path: Path):
-    """Create a molab URL for a given content type and notebook path.
-    Args:
-        github_url: str, e.g. "https://github.com/AfterPythonOrg/afterpython"
-        content_path: str, e.g. "tutorial/test.ipynb"
-    """
-    github_url = github_url.replace("https://github.com/", "github/")
-    return f"https://molab.marimo.io/{github_url}/blob/main/afterpython/{content_path.as_posix()}"
 
 
 def _read_notebook(notebook_path: Path, content_path: Path) -> dict | None:

@@ -24,8 +24,14 @@ def write_pyproject(data: TOMLDocument):
 
 
 def read_metadata() -> StandardMetadata:
-    """Read metadata from pyproject.toml"""
-    return StandardMetadata.from_pyproject(read_pyproject())
+    """Read metadata from pyproject.toml.
+
+    Pass `project_dir` so relative paths (e.g. `readme = "README.md"`) resolve
+    against the project root rather than the caller's CWD.
+    """
+    return StandardMetadata.from_pyproject(
+        read_pyproject(), project_dir=ap.paths.user_path
+    )
 
 
 def find_package_directory() -> Path:
