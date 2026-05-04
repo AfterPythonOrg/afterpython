@@ -24,20 +24,21 @@ def build_faq_json():
         click.echo("No faq.yml found, skip building faq.json")
         return
 
-    click.echo("Building faq.json...")
-
     raw = read_yaml(faq_yml_path)
     if raw is None:
-        items: list[dict] = []
-    else:
-        items = [
-            {
-                "question": str(item["question"]),
-                "answer": str(item["answer"]),
-                "category": str(item["category"]) if item.get("category") else "",
-            }
-            for item in raw
-        ]
+        click.echo("faq.yml is empty, skip building faq.json")
+        return
+
+    click.echo("Building faq.json...")
+
+    items = [
+        {
+            "question": str(item["question"]),
+            "answer": str(item["answer"]),
+            "category": str(item["category"]) if item.get("category") else "",
+        }
+        for item in raw
+    ]
 
     with open(build_path / "faq.json", "w") as f:
         json.dump(items, f, indent=2)
