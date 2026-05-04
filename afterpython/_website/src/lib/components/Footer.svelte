@@ -26,15 +26,7 @@
 				{#if projectName}
 					<div class="mb-3 flex items-center gap-2">
 						{#if repositoryUrl}
-							<a
-								href={repositoryUrl}
-								target="_blank"
-								rel="noopener noreferrer"
-								class="text-tx300 transition-colors hover:text-tx50"
-								aria-label="GitHub Repository"
-							>
-								<GitHubIcon size={18} />
-							</a>
+							<GitHubIcon size={18} url={repositoryUrl} />
 						{/if}
 						<h3 class="text-lg font-semibold text-tx50">{projectName}</h3>
 					</div>

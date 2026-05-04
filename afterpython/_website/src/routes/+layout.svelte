@@ -4,6 +4,8 @@
 	import ThemeToggle from '$components/ThemeToggle.svelte';
 	import Logo from '$components/Logo.svelte';
 	import Footer from '$components/Footer.svelte';
+	import SearchBar from '$components/SearchBar.svelte';
+	import GitHubIcon from '$components/GitHubIcon.svelte';
 	import { dev } from '$app/environment';
 	import { env } from '$env/dynamic/public';
 	import { resolve } from '$app/paths';
@@ -59,6 +61,9 @@
 						<a href={resolve('/blog')} data-sveltekit-preload-data>Blog</a>
 					</li>
 				{/if}
+				<li>
+					<a href={resolve('/faq')} data-sveltekit-preload-data>FAQs</a>
+				</li>
 				<!-- <li>
 					<a href={'/exercises'}>Exercises</a>
 				</li>
@@ -69,7 +74,11 @@
 					<a href={'/community'}>Community</a>
 				</li> -->
 			</ul>
-			<ThemeToggle />
+			<div class="flex items-center gap-2">
+				<SearchBar />
+				<GitHubIcon size={18} url={repositoryUrl} />
+				<ThemeToggle />
+			</div>
 		</div>
 	</nav>
 
