@@ -75,7 +75,7 @@ def bump(ctx, release: bool, pre: bool):
 
         # by default, bump dev-release version
         if version.is_devrelease and not pre:
-            devrelease_number = int(version.dev)
+            devrelease_number = int(version.dev) if version.dev is not None else 0
             if "--devrelease" not in ctx.args:
                 args = ["--devrelease", str(devrelease_number + 1), *ctx.args]
         # exclude e.g. 0.1.0.dev1 which is both dev-release and pre-release (with version.pre = None)
