@@ -18,7 +18,7 @@ depends-on = [
 
 [dependencies]
 python = ">=3.11.14"
-uv = ">=0.11.8"
+uv = ">=0.11.12"
 gh = ">=2.92.0"
 
 # `pixi config set pinning-strategy latest-up` removes the upper bound on the versions of the dependencies
@@ -28,14 +28,14 @@ trogon = ">=0.6.0"
 httpx = ">=0.28.1"
 tomlkit = ">=0.14.0"
 ruamel-yaml = ">=0.19.1"
-gitpython = ">=3.1.49"
+gitpython = ">=3.1.50"
 # pygithub = ">=2.8.1"
 python-dotenv = ">=1.2.2"
 pyproject-metadata = ">=0.11.0"
 jupytext = ">=1.19.1"
 # jinja2 = ">=3.1.6"
 mystmd = ">=1.9.0"
-great-docs = ">=0.9"
+great-docs = ">=0.10.0"
 ruff = ">=0.15.12"
 pre-commit = ">=4.6.0"
 commitizen = ">=4.13.10"
@@ -57,7 +57,7 @@ py314 = ["py314", "test", "optional"]
 [feature.dev.pypi-dependencies]
 afterpython = { path = ".", editable = true }
 notebook = ">=7.5.6"
-marimo = { version = ">=0.23.4", extras = ["recommended", "lsp"] }
+marimo = { version = ">=0.23.5", extras = ["recommended", "lsp"] }
 
 [feature.test.pypi-dependencies]
 pytest = ">=9.0.3"

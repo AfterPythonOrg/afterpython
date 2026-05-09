@@ -23,7 +23,7 @@ repos:
     stages:
     - pre-commit
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.14.8
+  rev: v0.15.12
   hooks:
   - id: ruff-check
     stages:
@@ -38,7 +38,7 @@ repos:
     - --config
     - ./afterpython/ruff.toml
 - repo: https://github.com/commitizen-tools/commitizen
-  rev: v4.10.0
+  rev: v4.13.10
   hooks:
   - id: commitizen
     stages:

@@ -37,14 +37,14 @@ dependencies = [
     "httpx>=0.28.1",
     "tomlkit>=0.14.0",
     "ruamel-yaml>=0.19.1",
-    "gitpython>=3.1.49",
+    "gitpython>=3.1.50",
     # "pygithub>=2.8.1",
     "python-dotenv>=1.2.2",
     "pyproject-metadata>=0.11.0",
     "jupytext>=1.19.1",
     # "jinja2>=3.1.6",
     "mystmd>=1.9.0",
-    "great-docs>=0.9",
+    "great-docs>=0.10.0",
     "ruff>=0.15.12",
     "pre-commit>=4.6.0",
     "commitizen>=4.13.10",
@@ -64,7 +64,7 @@ pcu = "afterpython.main:run_pcu"
 # override-dependencies = ["platformdirs>=4.5.0", "nodeenv>=1.9.1"]
 
 [build-system]
-requires = ["uv_build>=0.11.8,<0.12.0"]
+requires = ["uv_build>=0.11.12,<0.12.0"]
 build-backend = "uv_build"
 
 [tool.uv.build-backend]
