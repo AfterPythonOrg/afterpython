@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
+	import { untrack, type Snippet } from 'svelte';
 
 	type AccordionProps = {
 		open?: boolean;
@@ -10,7 +10,7 @@
 
 	let { open = false, header, children, class: className = '' }: AccordionProps = $props();
 
-	let isOpen = $state(open);
+	let isOpen = $state(untrack(() => open));
 </script>
 
 <div class="border-b border-bg300 {className}">

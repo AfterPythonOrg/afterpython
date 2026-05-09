@@ -24,6 +24,7 @@ from afterpython.builders import (
     build_marimo_readme,
     build_markdown,
     build_metadata,
+    build_pdoc,
     build_url_md,
     create_placeholder_index_md_files,
     delete_placeholder_index_md_files,
@@ -66,6 +67,22 @@ def determine_base_path() -> str:
     return f"/{repo_name}"
 
 
+def _read_api_reference() -> bool:
+    """Read `[website].api_reference` from afterpython.toml. Defaults to False.
+
+    Off-by-default means freshly `ap init`'d projects don't blow up on
+    `ap build` before their package is import-ready or has docstrings —
+    pdoc errors are opt-in surface. Users enable the API reference by
+    setting the field to true.
+    """
+    from afterpython._io.toml import _from_tomlkit
+    from afterpython.tools._afterpython import read_afterpython
+
+    afterpython = read_afterpython()
+    website = _from_tomlkit(afterpython.get("website", {}))
+    return bool(website.get("api_reference", False))
+
+
 def prebuild():
     def _check_initialized():
         # Check if 'ap init' has been run
@@ -85,7 +102,15 @@ def prebuild():
         content_build_paths = [
             website_static_path / content_type for content_type in CONTENT_TYPES
         ]
-        for path in [build_path, website_build_path, *content_build_paths]:
+        # Also wipe the API reference static dir so a `--skip-api` build doesn't
+        # leave stale pages from a prior run live on the deployed site.
+        api_static_path = website_static_path / "api_reference"
+        for path in [
+            build_path,
+            website_build_path,
+            api_static_path,
+            *content_build_paths,
+        ]:
             if path.exists():
                 shutil.rmtree(path)
         build_path.mkdir(parents=True, exist_ok=True)
@@ -209,7 +234,11 @@ def postbuild(dev_build: bool = False):
 def build(ctx: click.Context, execute: bool):
     """Build the project website and all contents for production.
 
-    This command builds MyST content (doc/blog/tutorial/example/guide) and the SvelteKit website.
+    This command builds MyST content (doc/blog/tutorial/example/guide), the API
+    reference (via pdoc), and the SvelteKit website.
+
+    The API reference is opt-in via `[website].api_reference = true` in
+    afterpython.toml — by default it is skipped.
 
     Any extra arguments are passed to the 'myst build --html' command for each content type.
     See "myst build --help" for more details.
@@ -240,12 +269,18 @@ def build(ctx: click.Context, execute: bool):
     paths = ctx.obj["paths"]
     prebuild()
 
-    # Determine BASE_PATH based on website URL configuration
+    # Determine BASE_PATH based on website URL configuration. Computed
+    # before build_pdoc() so it can wire pdoc's logo-link back to the
+    # project website root.
     base_path = determine_base_path()
     if base_path:
         click.echo(f"Using BASE_PATH: {base_path}")
     else:
         click.echo("Using BASE_PATH: (empty - custom domain)")
+
+    if _read_api_reference():
+        build_pdoc(base_path=base_path)
+
     node_env: NodeEnv = find_node_env()
 
     # myst's production build

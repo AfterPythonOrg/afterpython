@@ -1,3 +1,4 @@
+from afterpython.builders.build_pdoc import build_pdoc
 from afterpython.builders.content_json import build_content_json
 from afterpython.builders.faq_json import build_faq_json
 from afterpython.builders.index_md import (
@@ -19,6 +20,7 @@ __all__ = (
     "build_marimo_readme",
     "build_markdown",
     "build_metadata",
+    "build_pdoc",
     "build_url_md",
     "create_placeholder_index_md_files",
     "delete_placeholder_index_md_files",

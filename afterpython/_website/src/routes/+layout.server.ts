@@ -19,6 +19,13 @@ function checkDocExists(): boolean {
 	return existsSync(resolve('static', 'doc'));
 }
 
+function checkApiReferenceExists(): boolean {
+	// pdoc-generated static HTML lives in static/api_reference/.
+	// Present when `ap build` ran without --skip-api; absent during `ap dev`
+	// (cleanup wipes it) and after `ap build --skip-api`.
+	return existsSync(resolve('static', 'api_reference'));
+}
+
 export const load: LayoutServerLoad = async () => {
 	try {
 		// Dynamic import to handle missing file gracefully
@@ -32,6 +39,7 @@ export const load: LayoutServerLoad = async () => {
 
 		// Special handling for doc - check if directory exists instead of JSON
 		contentTypes.doc = checkDocExists();
+		contentTypes.api_reference = checkApiReferenceExists();
 
 		// FAQ is sourced from static/faq.json but isn't part of CONTENT_TYPES
 		contentTypes.faq = await checkContentType('faq');
@@ -44,7 +52,7 @@ export const load: LayoutServerLoad = async () => {
 	} catch {
 		// metadata.json is missing or invalid - return minimal data to keep layout working
 		const emptyContentTypes = Object.fromEntries(
-			[...CONTENT_TYPES, 'doc', 'faq'].map((type) => [type, false])
+			[...CONTENT_TYPES, 'doc', 'faq', 'api_reference'].map((type) => [type, false])
 		);
 		
 		return {

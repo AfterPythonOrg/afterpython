@@ -11,6 +11,7 @@ logo_dark = "logo.svg"
 thumbnail = "thumbnail.png"  # thumbnail for the website, also used as default thumbnail for all content types, e.g. blog posts, tutorials, examples, and guides
 announcement = ""
 readme_py = "wasm"  # marimo html export format: "wasm" or "static"
+api_reference = false  # set to true to enable the pdoc-generated API reference
 
 # [website.blog]
 # thumbnail = "blog_default_thumbnail.png"  # inside blog/static/ folder, default thumbnail for blog posts

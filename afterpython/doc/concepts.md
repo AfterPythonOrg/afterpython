@@ -45,6 +45,7 @@ favicon = "favicon.svg"
 logo = "logo.svg"
 logo_dark = "logo.svg"
 thumbnail = "thumbnail.png"
+api_reference = false  # set to true to enable the pdoc-generated API reference
 ```
 
 ---

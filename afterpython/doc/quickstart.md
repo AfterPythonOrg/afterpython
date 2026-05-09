@@ -81,6 +81,10 @@ To build for production, run `ap build`.
 
 run `ap preview` to preview the production build of the project website.
 
+:::{note} API reference is opt-in
+By default, `ap build` does **not** generate an API reference for your package. To enable it, set `api_reference = true` under `[website]` in `afterpython.toml`. See [](project_website.md#api-reference) for details.
+:::
+
 
 ---
 ## Deploy

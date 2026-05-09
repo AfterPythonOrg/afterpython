@@ -41,6 +41,17 @@
 						</a>
 					</li>
 				{/if}
+				{#if data.contentTypes?.api_reference}
+					<li>
+						<a
+							href="{resolve('/api_reference')}/"
+							target="_blank"
+							rel="external noopener noreferrer"
+						>
+							API Reference
+						</a>
+					</li>
+				{/if}
 				{#if (dev ? env.PUBLIC_TUTORIAL_URL : data.contentTypes?.tutorial)}
 					<li>
 						<a href={resolve('/tutorial')} data-sveltekit-preload-data>Tutorials</a>
