@@ -119,7 +119,7 @@ def init_afterpython():
         },
         "website": {
             "url": "",
-            "favicon": "favicon.svg",
+            "favicon": "favicon.ico",
             "logo": "logo.svg",
             "logo_dark": "logo.svg",
             "thumbnail": "thumbnail.png",

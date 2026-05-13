@@ -251,7 +251,10 @@ def website(ctx, no_backup: bool):
         ensure_website_gitignore_rules()
     except Exception as e:
         click.echo(f"✗ Error updating project website template: {e}", err=True)
-        if not no_backup:
+        # On a fresh `ap init`, website_path didn't exist beforehand, so no backup
+        # was created — skip restore in that case rather than crashing with
+        # FileNotFoundError, which would mask the real error above.
+        if not no_backup and backup_path.exists():
             click.echo("Restoring from backup...")
             if website_path.exists():
                 shutil.rmtree(website_path)

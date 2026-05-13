@@ -182,7 +182,9 @@ def init_myst():
 
     # find any existing node.js version and use it, if no, install the Node.js version specified in NODEENV_VERSION
     node_env: NodeEnv = find_node_env()
-    subprocess.run(["npm", "install", "-g", "pnpm"], env=node_env, check=True)
+    # Pin to pnpm major version — `npm install -g pnpm` (unpinned) caused a
+    # silent 9→10 jump that broke `ap init` via ERR_PNPM_IGNORED_BUILDS.
+    subprocess.run(["npm", "install", "-g", "pnpm@11"], env=node_env, check=True)
     for content_type in CONTENT_TYPES:
         path = ap.paths.afterpython_path / content_type
         print(f"Initializing MyST Markdown (mystmd) in {path.name}/ directory ...")
