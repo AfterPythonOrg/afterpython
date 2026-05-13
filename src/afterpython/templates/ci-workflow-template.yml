@@ -155,15 +155,21 @@ jobs:
         run: |
           uv_result="${{ needs.test-uv.result }}"
           pixi_result="${{ needs.test-pixi.result }}"
-          # One should succeed, the other should be skipped
-          if [ "$uv_result" == "success" ] || [ "$uv_result" == "skipped" ]; then
-            if [ "$pixi_result" == "success" ] || [ "$pixi_result" == "skipped" ]; then
-              echo "All tests passed!"
-              exit 0
-            fi
+          # Invariant: exactly one track runs (use_pixi gate) and must succeed;
+          # the other is skipped. Any other combination — both skipped (detect
+          # job died), both succeeded (broken gating), or anything failing —
+          # is red. The "no tests yet" case is handled inside the running track
+          # (pytest step exits 0), so it reports success here, not skipped.
+          if [ "$uv_result" == "success" ] && [ "$pixi_result" == "skipped" ]; then
+            echo "All tests passed (uv track)."
+            exit 0
+          elif [ "$pixi_result" == "success" ] && [ "$uv_result" == "skipped" ]; then
+            echo "All tests passed (pixi track)."
+            exit 0
+          else
+            echo "Tests did not pass cleanly: uv=$uv_result, pixi=$pixi_result"
+            exit 1
           fi
-          echo "Tests failed: uv=$uv_result, pixi=$pixi_result"
-          exit 1
 
   # Job 4: Build Verification
   # Ensures the package can be built successfully
