@@ -92,10 +92,20 @@ jobs:
           uv pip install --system . --group test || uv pip install --system .
 
       - name: Run tests with pytest
-        # Run pytest with verbose output
-        # Exit code 5 (no tests collected) is treated as success
+        # Tolerant by design: if pytest isn't installed, the project has no
+        # [dependency-groups] test (the install step fell back to `uv pip
+        # install --system .`). Treat that the same as "no tests yet" and
+        # pass green — matches the install step's tolerance.
+        # When pytest does run, exit code 5 (no tests collected) is success.
+        # We capture pytest's exit code before any other command clobbers $?.
         run: |
-          pytest -v || if [ $? -eq 5 ]; then exit 0; else exit $?; fi
+          if ! command -v pytest >/dev/null 2>&1; then
+            echo "pytest not installed (no [dependency-groups] test); skipping."
+            exit 0
+          fi
+          pytest -v
+          code=$?
+          if [ $code -eq 5 ]; then exit 0; else exit $code; fi
 
   # Job 3.2: Test Suite - Pixi Workflow
   # Pixi-based testing for projects using pixi.toml

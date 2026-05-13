@@ -40,7 +40,7 @@ repos:
     - --config
     - ./afterpython/ruff.toml
 - repo: https://github.com/commitizen-tools/commitizen
-  rev: v4.13.10
+  rev: v4.16.0
   hooks:
   - id: commitizen
     stages:
