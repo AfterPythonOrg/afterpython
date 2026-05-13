@@ -112,8 +112,6 @@ def dependencies(upgrade: bool, all_: bool, exclude: tuple[str, ...]):
                 "uv not found. Updated pyproject.toml only (packages not installed)."
             )
     if upgrade and all_:
-        subprocess.run(["ap", "pre-commit", "autoupdate"])
-        click.echo("All pre-commit hooks updated successfully.")
         if has_pixi():
             click.echo("Upgrading dependencies with pixi...")
             pixi_exclude_args = ["--exclude", "python"]
@@ -135,6 +133,16 @@ def dependencies(upgrade: bool, all_: bool, exclude: tuple[str, ...]):
                     "✓ All dependencies in pixi.toml upgraded successfully 🎉",
                     fg="green",
                     bold=True,
+                )
+            )
+        result = subprocess.run(["ap", "pre-commit", "autoupdate"], check=False)
+        if result.returncode == 0:
+            click.echo("All pre-commit hooks updated successfully.")
+        else:
+            click.echo(
+                click.style(
+                    "Skipped pre-commit autoupdate (no config or command failed).",
+                    fg="yellow",
                 )
             )
 
