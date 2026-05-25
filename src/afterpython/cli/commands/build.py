@@ -171,7 +171,13 @@ def postbuild(dev_build: bool = False):
             print(f"Moved: {source} to {destination}")
 
     build_content_json()
-    delete_placeholder_index_md_files()
+    # In dev mode the MyST `start` server is watching these files. Deleting
+    # them here would make MyST re-index without the placeholder and revert
+    # to using the first content file as the section index — exactly what
+    # the placeholder was created to prevent. `ap dev` cleans them up in
+    # its `finally` block after MyST has been shut down.
+    if not dev_build:
+        delete_placeholder_index_md_files()
 
     website_static = ap.paths.website_path / "static"
     website_static.mkdir(parents=True, exist_ok=True)

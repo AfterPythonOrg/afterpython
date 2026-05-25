@@ -11,6 +11,7 @@ import time
 import click
 from click.exceptions import Exit
 
+from afterpython.builders import delete_placeholder_index_md_files
 from afterpython.cli.commands.build import postbuild, prebuild
 from afterpython.const import CONTENT_TYPES
 from afterpython.utils import find_available_port, find_node_env
@@ -218,3 +219,6 @@ def dev(
         pass
     finally:
         cleanup_processes()
+        # Now that MyST watchers are gone, clean up the placeholders
+        # postbuild() intentionally left behind for dev mode.
+        delete_placeholder_index_md_files()

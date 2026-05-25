@@ -143,14 +143,11 @@ def _write_index_file(content_type: tContentType):
             f"and update the reference in afterpython/{content_type}/myst.yml."
         )
 
-    index_content = f"""---
-title: ← {content_type.capitalize()}
----
+    # Lazy import to avoid the circular dep with builders/index_md.py, which
+    # already lazy-imports _write_index_file from this module.
+    from afterpython.builders.index_md import _placeholder_content
 
-{PLACEHOLDER_INDEX_MARKER}
-
-This is a placeholder index page. The actual {content_type} landing page is rendered by SvelteKit.
-"""
+    index_content = _placeholder_content(content_type)
     index_file.write_text(index_content)
     return index_file
 
