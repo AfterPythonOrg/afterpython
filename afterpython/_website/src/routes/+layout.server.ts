@@ -26,10 +26,16 @@ function checkApiReferenceExists(): boolean {
 	return existsSync(resolve('static', 'api_reference'));
 }
 
+type LogoMetadata = {
+	logo?: string;
+	logo_dark?: string;
+};
+
 export const load: LayoutServerLoad = async () => {
 	try {
 		// Dynamic import to handle missing file gracefully
 		const metadata = await import('$static/metadata.json');
+		const metadataData = metadata.default as typeof metadata.default & LogoMetadata;
 
 		// Check which content types exist - dynamically from CONTENT_TYPES
 		const contentTypesArray = await Promise.all(
@@ -45,7 +51,7 @@ export const load: LayoutServerLoad = async () => {
 		contentTypes.faq = await checkContentType('faq');
 
 		return {
-			...metadata.default,
+			...metadataData,
 			metadataError: null,
 			contentTypes
 		};
@@ -54,7 +60,7 @@ export const load: LayoutServerLoad = async () => {
 		const emptyContentTypes = Object.fromEntries(
 			[...CONTENT_TYPES, 'doc', 'faq', 'api_reference'].map((type) => [type, false])
 		);
-		
+
 		return {
 			name: '',
 			summary: '',
