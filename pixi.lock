@@ -2291,7 +2291,7 @@ packages:
 - pypi: ./
   name: afterpython
   version: 0.3.6
-  sha256: f23369fe353fd58f80f2b312d8d28034022199858b1d57babd95159518c69040
+  sha256: 31677d009c47ec2ad280d9f77590047358d825b6204c8518e55f50bbc393f0a2
   requires_dist:
   - click>=8.2.1
   - trogon>=0.6.0

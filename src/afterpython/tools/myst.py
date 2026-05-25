@@ -9,8 +9,11 @@ if TYPE_CHECKING:
 
 import subprocess
 
+import click
+
 import afterpython as ap
 from afterpython._io.yaml import read_yaml, write_yaml
+from afterpython.const import PLACEHOLDER_INDEX_MARKER
 from afterpython.utils import deep_merge
 
 
@@ -113,7 +116,7 @@ def _write_index_file(content_type: tContentType):
     Note: This only creates the file. TOC modification is handled by the build process.
 
     Raises:
-        FileExistsError: If index.md already exists (users shouldn't create this file).
+        click.ClickException: If a non-placeholder index.md already exists.
     """
     if content_type == "doc":
         return  # Doc doesn't need a placeholder index.md
@@ -123,21 +126,28 @@ def _write_index_file(content_type: tContentType):
 
     # Check if user created an index.md file
     if index_file.exists():
-        raise FileExistsError(
+        existing_content = index_file.read_text(encoding="utf-8", errors="ignore")
+        if PLACEHOLDER_INDEX_MARKER in existing_content:
+            return index_file
+
+        raise click.ClickException(
             f"\n"
-            f"Found existing 'index.md' in afterpython/{content_type}/\n"
+            f"Found existing 'afterpython/{content_type}/index.md'\n"
             f"\n"
-            f"The 'index.md' file is reserved for internal use by AfterPython.\n"
+            f"'afterpython/{content_type}/index.md' is reserved for internal use by AfterPython.\n"
             f"MyST treats the first file in TOC as index, which would conflict with\n"
-            f"SvelteKit (project-website-template)'s landing page route (/{content_type}).\n"
+            f"the SvelteKit listing page route '/{content_type}', which is owned by\n"
+            f"AfterPython's project website.\n"
             f"\n"
             f"Please rename your file to something else (e.g., '{content_type}_intro.md')\n"
-            f"and update the reference in afterpython/{content_type}/myst.yml"
+            f"and update the reference in afterpython/{content_type}/myst.yml."
         )
 
     index_content = f"""---
 title: ← {content_type.capitalize()}
 ---
+
+{PLACEHOLDER_INDEX_MARKER}
 
 This is a placeholder index page. The actual {content_type} landing page is rendered by SvelteKit.
 """

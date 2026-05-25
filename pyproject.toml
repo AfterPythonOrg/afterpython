@@ -71,8 +71,8 @@ build-backend = "uv_build"
 module-name = "afterpython"
 module-root = "src"
 
-[tool.uv.sources]
-afterpython = { path = ".", editable = true }
+# [tool.uv.sources]
+# afterpython = { path = ".", editable = true }
 
 [tool.pyright]
 typeCheckingMode = "basic"
