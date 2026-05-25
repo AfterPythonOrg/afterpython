@@ -57,11 +57,32 @@ def build_metadata():
     website = _from_tomlkit(afterpython.get("website", {}))
     metadata_json["announcement"] = str(website.get("announcement", "")).strip()
     metadata_json["readme_py"] = _resolve_readme_py(website)
+    # Logos are served from the site root in _website/ (assets copied from
+    # afterpython/static/ to _website/static/), so we normalize to a leading-
+    # slash form that the Svelte side can hand straight to `asset()`.
+    metadata_json["logo"] = _resolve_logo_path(website.get("logo", ""))
+    metadata_json["logo_dark"] = _resolve_logo_path(website.get("logo_dark", ""))
 
     with open(build_path / "metadata.json", "w") as f:
         json.dump(metadata_json, f, indent=2)
 
     convert_paths()
+
+
+def _resolve_logo_path(raw: object) -> str:
+    """Normalize a logo path from afterpython.toml for consumption by _website/.
+
+    normalize_static_path() returns either a bare filename ("logo.svg") or an
+    absolute path ("/some/dir/logo.svg"). The Svelte side passes this to
+    `asset()`, which expects a leading slash, so we prepend one when missing.
+    Returns "" when unset so the Svelte side can fall back to its default.
+    """
+    from afterpython.utils import normalize_static_path
+
+    path = normalize_static_path(str(raw))
+    if not path:
+        return ""
+    return path if path.startswith("/") else f"/{path}"
 
 
 def _resolve_readme_py(website_config: dict) -> str:
