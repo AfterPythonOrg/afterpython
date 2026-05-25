@@ -12,6 +12,10 @@
 
 	let { data, children }: LayoutProps = $props();
 
+	const faviconType = $derived(
+		data.favicon?.endsWith('.svg') ? 'image/svg+xml' : 'image/x-icon'
+	);
+
 	// Extract repository URL safely
 	const repositoryUrl = $derived(
 		data.project_url?.find((url: string) => url.startsWith('repository,'))?.split(', ')[1]
@@ -23,6 +27,7 @@
 
 <svelte:head>
 	<title>{siteTitle}</title>
+	<link rel="icon" type={faviconType} href={resolve(`/${data.favicon}`)} />
 </svelte:head>
 
 <div class="flex min-h-screen flex-col bg-bg50">

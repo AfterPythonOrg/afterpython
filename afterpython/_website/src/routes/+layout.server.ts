@@ -3,6 +3,8 @@ import { CONTENT_TYPES } from '$lib/utils/content';
 import { existsSync } from 'fs';
 import { resolve } from 'path';
 
+const DEFAULT_FAVICON = 'favicon.ico';
+
 export const prerender = true;
 
 async function checkContentType(type: string): Promise<boolean> {
@@ -29,6 +31,7 @@ function checkApiReferenceExists(): boolean {
 type LogoMetadata = {
 	logo?: string;
 	logo_dark?: string;
+	favicon?: string;
 };
 
 export const load: LayoutServerLoad = async () => {
@@ -52,6 +55,7 @@ export const load: LayoutServerLoad = async () => {
 
 		return {
 			...metadataData,
+			favicon: metadataData.favicon ?? DEFAULT_FAVICON,
 			metadataError: null,
 			contentTypes
 		};
@@ -68,7 +72,8 @@ export const load: LayoutServerLoad = async () => {
 			project_url: [],
 			metadataError:
 				'Project metadata not found. Please ensure metadata.json exists in the static folder. Did you forget to run `ap build`?',
-			contentTypes: emptyContentTypes
+			contentTypes: emptyContentTypes,
+			favicon: DEFAULT_FAVICON
 		};
 	}
 };

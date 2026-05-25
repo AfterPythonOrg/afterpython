@@ -62,6 +62,7 @@ def build_metadata():
     # slash form that the Svelte side can hand straight to `asset()`.
     metadata_json["logo"] = _resolve_logo_path(website.get("logo", ""))
     metadata_json["logo_dark"] = _resolve_logo_path(website.get("logo_dark", ""))
+    metadata_json["favicon"] = _resolve_logo_path(website.get("favicon", ""))
 
     with open(build_path / "metadata.json", "w") as f:
         json.dump(metadata_json, f, indent=2)
