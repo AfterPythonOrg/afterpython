@@ -125,6 +125,7 @@ def init_afterpython():
             "thumbnail": "thumbnail.png",
             "announcement": "",
             "readme_py": "wasm",
+            "execute_readme_py": False,
             "api_reference": False,
         },
     }

@@ -158,10 +158,13 @@ Choose the export mode in `afterpython.toml`:
 ```toml
 [website]
 readme_py = "wasm"  # or "static"
+execute_readme_py = false  # execute cells at build time and embed outputs as a preview (wasm mode only)
 ```
 
 - **`wasm`** (default) — interactive. Cells run in the browser via Pyodide. Great for live demos of your package, but adds a ~10MB+ Pyodide download on first visit. Won't work for packages with C extensions that aren't ported to Pyodide.
 - **`static`** — pre-rendered HTML, no runtime. Lighter, but cells can't execute. AfterPython adds an "Open in molab" badge so users can still run the notebook on a real Python server hosted by marimo.
+
+Set `execute_readme_py = true` to execute the notebook before exporting and embed the cell outputs as a preview — visitors see results immediately instead of a blank notebook while Pyodide boots. Marimo runs the execution in an isolated environment pinned to WASM-compatible packages when possible. Only honored in `wasm` mode.
 
 `README.md` is still required (PyPI uses it for the long description) and is shown if `README.py` is absent or isn't a marimo notebook.
 

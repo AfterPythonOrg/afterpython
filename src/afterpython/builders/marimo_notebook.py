@@ -41,15 +41,33 @@ def is_marimo_notebook(path: Path) -> bool:
     return "__generated_with" in head and "marimo.App(" in head
 
 
-def _export_marimo(source: Path, output_html: Path, mode: MarimoExportMode):
+def _export_marimo(
+    source: Path,
+    output_html: Path,
+    mode: MarimoExportMode,
+    execute: bool = False,
+):
     """Run `marimo export` to produce HTML at `output_html`."""
     output_html.parent.mkdir(parents=True, exist_ok=True)
     subcommand = "html-wasm" if mode == "wasm" else "html"
-    cmd = ["marimo", "export", subcommand, str(source), "-o", str(output_html)]
+    cmd = [
+        "marimo",
+        "export",
+        subcommand,
+        str(source),
+        "-o",
+        str(output_html),
+        "--sandbox",
+        "--force",
+    ]
     # WASM-only flag: --mode edit shows code cells (interactive). Without it,
     # marimo's html-wasm subcommand defaults to "run" which hides them.
+    # --sandbox auto-answers marimo's interactive "Run in a sandboxed venv?"
+    # prompt; non-interactive builds (CI, `ap build`) would otherwise hang.
     if mode == "wasm":
         cmd += ["--mode", "edit"]
+        if execute:
+            cmd += ["--execute"]
     result = subprocess.run(cmd, check=False)
     if result.returncode != 0:
         raise click.ClickException(f"marimo export failed for {source}")
@@ -85,6 +103,7 @@ def build_marimo_notebook(
     output_html: Path,
     content_path: Path,
     mode: MarimoExportMode = "wasm",
+    execute: bool = False,
 ):
     """Build a single marimo notebook to HTML and inject the molab badge.
 
@@ -104,7 +123,7 @@ def build_marimo_notebook(
         return
 
     click.echo(f"Building marimo notebook {source.name} (mode={mode})...")
-    _export_marimo(source, output_html, mode)
+    _export_marimo(source, output_html, mode, execute=execute)
 
     # WASM mode runs the notebook in-browser via Pyodide, so molab (a remote
     # runtime) is redundant. Skip the badge.
@@ -136,9 +155,14 @@ def build_marimo_readme(mode: MarimoExportMode = "wasm"):
     Skips silently if README.py is absent or isn't a marimo notebook so users
     who keep only README.md aren't penalized.
     """
+    from afterpython._io.toml import _from_tomlkit
+    from afterpython.tools._afterpython import read_afterpython
+
     readme_path = ap.paths.afterpython_path / "README.py"
     if not readme_path.exists():
         return
     output_html = ap.paths.build_path / "readme_py" / "readme_py.html"
     content_path = Path("README.py")
-    build_marimo_notebook(readme_path, output_html, content_path, mode)
+    website = _from_tomlkit(read_afterpython().get("website", {}))
+    execute = bool(website.get("execute_readme_py", False))
+    build_marimo_notebook(readme_path, output_html, content_path, mode, execute=execute)
