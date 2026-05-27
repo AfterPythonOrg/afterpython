@@ -1,4 +1,5 @@
 from datetime import datetime
+from pathlib import PurePosixPath
 
 import click
 from pyproject_metadata import StandardMetadata
@@ -6,6 +7,13 @@ from tomlkit.toml_document import TOMLDocument
 
 import afterpython as ap
 from afterpython.utils import convert_author_name_to_id, normalize_static_path
+
+
+def _myst_favicon_path(path: str) -> str:
+    """Convert a website favicon path to MyST's required .ico favicon path."""
+    if not path:
+        return ""
+    return str(PurePosixPath(path).with_suffix(".ico"))
 
 
 def _sync_authors_yml(authors: list[tuple[str, str | None]]):
@@ -58,10 +66,7 @@ def sync():
         website_favicon = normalize_static_path(
             str(_from_tomlkit(afterpython.get("website", {})).get("favicon", ""))
         )
-        if website_favicon and not website_favicon.lower().endswith(".ico"):
-            raise ValueError(
-                f"Invalid favicon '{website_favicon}': mystmd only supports .ico files."
-            )
+        myst_favicon = _myst_favicon_path(website_favicon)
         website_logo = normalize_static_path(
             str(_from_tomlkit(afterpython.get("website", {})).get("logo", ""))
         )
@@ -133,7 +138,7 @@ def sync():
             "site": {
                 "title": title,
                 "options": {
-                    "favicon": "../static" + website_favicon if website_favicon else "",
+                    "favicon": "../static" + myst_favicon if myst_favicon else "",
                     "logo": "../static" + website_logo if website_logo else "",
                     "logo_dark": "../static" + website_logo_dark
                     if website_logo_dark
