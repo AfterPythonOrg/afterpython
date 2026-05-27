@@ -5,6 +5,9 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from afterpython._typing import NodeEnv
 
+import contextlib
+import os
+import signal
 import subprocess
 import time
 
@@ -116,15 +119,26 @@ def dev(
     paths = ctx.obj["paths"]
 
     def cleanup_processes():
-        """Clean up all MyST server processes"""
+        """Clean up all MyST server processes.
+
+        Each spawned 'ap {content_type}' is its own session leader (start_new_session=True
+        below), so its grandchild `myst start` shares the same process group. proc.terminate()
+        would only SIGTERM the outer Python wrapper — which is blocked in subprocess.run and
+        doesn't forward the signal — leaving myst orphaned. Signal the whole group instead.
+        """
         click.echo("\nShutting down MyST servers...")
         for proc in myst_processes:
             try:
-                proc.terminate()
+                pgid = os.getpgid(proc.pid)
+            except ProcessLookupError:
+                continue
+            try:
+                os.killpg(pgid, signal.SIGTERM)
                 proc.wait(timeout=5)
             except subprocess.TimeoutExpired:
-                proc.kill()
-            except Exception:
+                with contextlib.suppress(ProcessLookupError):
+                    os.killpg(pgid, signal.SIGKILL)
+            except ProcessLookupError:
                 pass
 
     # Determine which content types to run
@@ -184,6 +198,9 @@ def dev(
                         *(["--execute"] if execute else []),
                         *ctx.args,
                     ],
+                    # New session so cleanup_processes can SIGTERM the whole group and
+                    # take the grandchild `myst start` down with the wrapper.
+                    start_new_session=True,
                     # stdout=subprocess.DEVNULL,  # Suppress output (optional)
                     # stderr=subprocess.DEVNULL,  # Suppress errors (optional)
                 )
