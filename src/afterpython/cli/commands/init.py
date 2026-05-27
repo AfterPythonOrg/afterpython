@@ -43,6 +43,16 @@ def init_py_typed():
     click.echo(f"Created {py_typed_path}")
 
 
+def _preflight_init(skip_website: bool) -> None:
+    """Validate external prerequisites before any filesystem writes, so a
+    failure aborts cleanly instead of leaving a half-initialized project."""
+    if not skip_website:
+        from afterpython.tools.myst import ensure_pnpm_11
+        from afterpython.utils import find_node_env
+
+        ensure_pnpm_11(find_node_env())
+
+
 @click.group(invoke_without_command=True)
 @click.option(
     "--yes",
@@ -70,48 +80,60 @@ def init(ctx, yes, skip_website: bool):
     from afterpython.tools.pre_commit import init_pre_commit
     from afterpython.tools.pyproject import init_pyproject
 
+    _preflight_init(skip_website)
+
     paths = ctx.obj["paths"]
     click.echo("Initializing afterpython...")
     afterpython_path = paths.afterpython_path
     static_path = paths.static_path
 
-    afterpython_path.mkdir(parents=True, exist_ok=True)
-    static_path.mkdir(parents=True, exist_ok=True)
+    try:
+        afterpython_path.mkdir(parents=True, exist_ok=True)
+        static_path.mkdir(parents=True, exist_ok=True)
 
-    init_pyproject()
+        init_pyproject()
 
-    init_afterpython()
+        init_afterpython()
 
-    if not skip_website:
-        subprocess.run(["ap", "init", "website"])
+        if not skip_website:
+            # check=True so a failure inside `ap init website` aborts the parent
+            # run instead of silently continuing to write more files.
+            subprocess.run(["ap", "init", "website"], check=True)
 
-    # TODO: add type checking related stuff here
-    init_py_typed()
+        # TODO: add type checking related stuff here
+        init_py_typed()
 
-    create_workflow("ci")
+        create_workflow("ci")
 
-    if yes or click.confirm(
-        f"\nCreate .pre-commit-config.yaml in {afterpython_path}?", default=True
-    ):
-        init_pre_commit()
+        if yes or click.confirm(
+            f"\nCreate .pre-commit-config.yaml in {afterpython_path}?", default=True
+        ):
+            init_pre_commit()
 
-    if yes or click.confirm(f"\nCreate ruff.toml in {afterpython_path}?", default=True):
-        init_ruff_toml()
+        if yes or click.confirm(
+            f"\nCreate ruff.toml in {afterpython_path}?", default=True
+        ):
+            init_ruff_toml()
 
-    if yes or click.confirm(
-        f"\nCreate commitizen configuration (cz.toml) in {afterpython_path} "
-        f"and release workflow in .github/workflows/release.yml?",
-        default=True,
-    ):
-        init_commitizen()
-        create_workflow("release")
+        if yes or click.confirm(
+            f"\nCreate commitizen configuration (cz.toml) in {afterpython_path} "
+            f"and release workflow in .github/workflows/release.yml?",
+            default=True,
+        ):
+            init_commitizen()
+            create_workflow("release")
 
-    if yes or click.confirm(
-        "\nCreate Dependabot configuration (.github/dependabot.yml) "
-        "to auto-update GitHub Actions versions?",
-        default=True,
-    ):
-        create_dependabot()
+        if yes or click.confirm(
+            "\nCreate Dependabot configuration (.github/dependabot.yml) "
+            "to auto-update GitHub Actions versions?",
+            default=True,
+        ):
+            create_dependabot()
+    except BaseException:
+        if afterpython_path.exists():
+            click.echo(f"ap init failed — removing {afterpython_path}", err=True)
+            shutil.rmtree(afterpython_path, ignore_errors=True)
+        raise
 
 
 @init.command("website")
@@ -122,10 +144,18 @@ def init_website_subcommand():
     the website to an existing AfterPython project.
     """
     from afterpython.tools.github_actions import create_workflow
-    from afterpython.tools.myst import init_myst
+    from afterpython.tools.myst import ensure_pnpm_11, init_myst
+    from afterpython.utils import find_node_env
+
+    # Pre-flight: same rationale as `ap init` — guard the standalone entry too,
+    # since this subcommand can be invoked directly via `ap init website`.
+    ensure_pnpm_11(find_node_env())
 
     init_faq()
     init_myst()
     click.echo(f"Initializing project website template in {ap.paths.website_path}...")
-    subprocess.run(["ap", "update", "website"])
+    # check=True so a network/pnpm failure inside `ap update website` aborts
+    # the subcommand instead of silently dropping the deploy workflow on top
+    # of a broken website install.
+    subprocess.run(["ap", "update", "website"], check=True)
     create_workflow("deploy")

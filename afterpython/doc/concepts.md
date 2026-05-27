@@ -45,6 +45,10 @@ favicon = "favicon.svg"
 logo = "logo.svg"
 logo_dark = "logo.svg"
 thumbnail = "thumbnail.png"
+announcement = ""
+# using marimo notebook (README.py) in the landing page, useful for showcasing project demos
+readme_py = "wasm"  # marimo html export format: "wasm" or "static"
+execute_readme_py = false  # execute README.py cells at build time and embed outputs as a preview (wasm mode only)
 api_reference = false  # set to true to enable the pdoc-generated API reference
 ```
 

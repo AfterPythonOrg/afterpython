@@ -179,6 +179,56 @@ Start building your amazing project! 🚀
     return welcome_file
 
 
+def ensure_pnpm_11(node_env: NodeEnv) -> None:
+    """Ensure pnpm 11.x is available on `node_env`'s PATH. No-op if already satisfied.
+
+    Pinned to major 11 because an unpinned `npm install -g pnpm` previously did
+    a silent 9→10 jump that broke `ap init` via ERR_PNPM_IGNORED_BUILDS. We
+    pre-check the installed version so we don't redundantly invoke `npm install
+    -g`, which fails with EEXIST when pnpm was installed by a different package
+    manager (e.g. Homebrew) that owns the shim filenames npm wants to write.
+    """
+    current: str | None = None
+    try:
+        result = subprocess.run(
+            ["pnpm", "--version"],
+            env=node_env,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if result.returncode == 0:
+            current = result.stdout.strip()
+            if current.startswith("11."):
+                return
+    except FileNotFoundError:
+        pass
+
+    install = subprocess.run(
+        ["npm", "install", "-g", "pnpm@11"],
+        env=node_env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if install.returncode == 0:
+        return
+
+    msg = ["Failed to install pnpm@11 via npm."]
+    if current:
+        msg.append(f"Detected existing pnpm version: {current}")
+    msg.append(
+        "If pnpm is already installed via another package manager "
+        "(e.g. Homebrew: `brew install pnpm`), npm refuses to overwrite "
+        "its shims. Please either:\n"
+        "  - upgrade your existing pnpm to major version 11, or\n"
+        "  - uninstall it and let afterpython manage pnpm via npm."
+    )
+    if install.stderr:
+        msg.append(f"\nnpm stderr:\n{install.stderr}")
+    raise RuntimeError("\n".join(msg))
+
+
 def init_myst():
     """
     Initialize MyST Markdown (mystmd) and myst.yml files in
@@ -189,14 +239,19 @@ def init_myst():
 
     # find any existing node.js version and use it, if no, install the Node.js version specified in NODEENV_VERSION
     node_env: NodeEnv = find_node_env()
-    # Pin to pnpm major version — `npm install -g pnpm` (unpinned) caused a
-    # silent 9→10 jump that broke `ap init` via ERR_PNPM_IGNORED_BUILDS.
-    subprocess.run(["npm", "install", "-g", "pnpm@11"], env=node_env, check=True)
+    ensure_pnpm_11(node_env)
     for content_type in CONTENT_TYPES:
         path = ap.paths.afterpython_path / content_type
         print(f"Initializing MyST Markdown (mystmd) in {path.name}/ directory ...")
         path.mkdir(parents=True, exist_ok=True)
-        subprocess.run(["myst", "init"], cwd=path, input="n\n", text=True, env=node_env)
+        subprocess.run(
+            ["myst", "init"],
+            cwd=path,
+            input="n\n",
+            text=True,
+            env=node_env,
+            check=True,
+        )
         myst_yml_defaults = {
             "extends": "../authors.yml",
             "project": {
