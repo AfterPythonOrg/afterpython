@@ -55,7 +55,7 @@ See [](project_website.md)  for more details.
 
 AfterPython provides two ways to work with content:
 
-1. **Project Website Only** - Run `ap dev` to start the development server for your project website.
+1. **Project Website Only** - Run `ap dev` to start the development server for your project website shell.
 
 2. **Individual Content Development** - Run `ap dev` with flags to work on specific content types:
    - `ap dev --doc` - Documentation
@@ -67,11 +67,15 @@ AfterPython provides two ways to work with content:
 
 When using flags, a MyST development server starts for that specific content folder (e.g., `afterpython/doc/`), allowing you to write and preview content in `.md` or `.ipynb` files with live reload.
 
+:::{note} Navigation tabs in development
+Plain `ap dev` runs only the project website, so content tabs such as **Documentation**, **Tutorials**, **Examples**, **Guides**, and **Blog** may not appear in the navbar. To preview those tabs while writing content, start the corresponding content server, for example `ap dev --doc --tutorial`, or use `ap dev --all`.
+:::
+
 ### Content Organization
 
 All content folders in `afterpython/` (e.g., `afterpython/doc/`, `afterpython/blog/`) are initialized by `myst init` (see [MyST Markdown]), and **each** has a `myst.yml` file for configuration. Add your own `.md` or `.ipynb` files to a folder to start writing.
 
-The `/blog`, `/tutorial`, `/example`, and `/guide` listing pages are rendered by the project website — don't add an `index.md` to those folders, it's reserved.
+The `/blog`, `/tutorial`, `/example`, and `/guide` listing pages are rendered by the project website — don't add an `index.md` to those folders, it's reserved. If a listing page has no posts yet, the project website can still render an empty-state page such as "No posts available yet."
 
 :::{seealso}
 To learn more about how to arrange your content in the content folders, see [Table of Contents] or a [Quick Guide about myst.yml](myst.md).

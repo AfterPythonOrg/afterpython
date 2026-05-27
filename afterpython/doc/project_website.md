@@ -47,6 +47,10 @@ During `ap init`, `afterpython` creates a new directory `afterpython/_website/` 
 
 This approach brings us into the realm of full-stack web development, which enables us to add features such as an AI chatbot, full-text search engine across the website, etc.
 
+:::{note} Development navbar behavior
+`ap dev` starts the project website only. In development, navbar links for MyST-backed sections are shown when their content dev servers are running, for example with `ap dev --doc`, `ap dev --tutorial`, or `ap dev --all`. In production builds and previews, the navbar is based on the generated site output, so sections appear after their content has been built.
+:::
+
 
 ---
 ## Website Template Update
