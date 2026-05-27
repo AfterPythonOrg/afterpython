@@ -69,7 +69,9 @@ When using flags, a MyST development server starts for that specific content fol
 
 ### Content Organization
 
-All content folders in `afterpython/` (e.g., `afterpython/doc/`, `afterpython/blog/`) are initialized by `myst init` (see [MyST Markdown]), and **each** has a default `index.md` file and a `myst.yml` file for configuration.
+All content folders in `afterpython/` (e.g., `afterpython/doc/`, `afterpython/blog/`) are initialized by `myst init` (see [MyST Markdown]), and **each** has a `myst.yml` file for configuration. Add your own `.md` or `.ipynb` files to a folder to start writing.
+
+The `/blog`, `/tutorial`, `/example`, and `/guide` listing pages are rendered by the project website — don't add an `index.md` to those folders, it's reserved.
 
 :::{seealso}
 To learn more about how to arrange your content in the content folders, see [Table of Contents] or a [Quick Guide about myst.yml](myst.md).
