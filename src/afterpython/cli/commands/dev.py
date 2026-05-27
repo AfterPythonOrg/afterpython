@@ -7,8 +7,10 @@ if TYPE_CHECKING:
 
 import contextlib
 import os
+import queue
 import signal
 import subprocess
+import threading
 import time
 
 import click
@@ -17,6 +19,76 @@ from click.exceptions import Exit
 from afterpython.cli.commands.build import postbuild, prebuild
 from afterpython.const import CONTENT_TYPES
 from afterpython.utils import find_available_port, find_node_env
+
+
+def _stream_process_output(
+    proc: subprocess.Popen,
+    output_queue: queue.Queue[str | None],
+    ready_event: threading.Event,
+):
+    """Forward process output to the terminal and queue startup lines."""
+    if proc.stdout is None:
+        if not ready_event.is_set():
+            output_queue.put(None)
+        return
+
+    for line in proc.stdout:
+        click.echo(line, nl=False)
+        if not ready_event.is_set():
+            output_queue.put(line)
+
+    if not ready_event.is_set():
+        output_queue.put(None)
+
+
+def _wait_for_myst_server(
+    proc: subprocess.Popen,
+    content_type: str,
+    port: int,
+    output_queue: queue.Queue[str | None],
+    ready_event: threading.Event,
+    timeout: int = 300,
+):
+    """Wait until MyST reports that its dev server has started."""
+    deadline = time.monotonic() + timeout
+    ready_markers = (
+        f"Server started on port {port}",
+        f"http://localhost:{port}",
+        f"http://127.0.0.1:{port}",
+    )
+
+    try:
+        while time.monotonic() < deadline:
+            returncode = proc.poll()
+            if returncode is not None and output_queue.empty():
+                if returncode == 0:
+                    click.echo(
+                        f"MyST {content_type} server exited before becoming ready"
+                    )
+                    return
+                raise Exit(returncode)
+
+            try:
+                line = output_queue.get(timeout=0.5)
+            except queue.Empty:
+                continue
+
+            if line is None:
+                returncode = proc.poll()
+                if returncode not in (None, 0):
+                    raise Exit(returncode)
+                click.echo(f"MyST {content_type} server exited before becoming ready")
+                return
+
+            if any(marker in line for marker in ready_markers):
+                click.echo(f"MyST {content_type} server is ready")
+                return
+
+        raise click.ClickException(
+            f"Timed out waiting for MyST {content_type} server on port {port}"
+        )
+    finally:
+        ready_event.set()
 
 
 @click.command(
@@ -189,6 +261,8 @@ def dev(
                         f"PUBLIC_{content_type.upper()}_URL=http://localhost:{myst_port}\n"
                     )
 
+                output_queue: queue.Queue[str | None] = queue.Queue()
+                ready_event = threading.Event()
                 myst_process = subprocess.Popen(
                     [
                         "ap",
@@ -201,15 +275,20 @@ def dev(
                     # New session so cleanup_processes can SIGTERM the whole group and
                     # take the grandchild `myst start` down with the wrapper.
                     start_new_session=True,
-                    # stdout=subprocess.DEVNULL,  # Suppress output (optional)
-                    # stderr=subprocess.DEVNULL,  # Suppress errors (optional)
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    text=True,
+                    bufsize=1,
                 )
                 myst_processes.append(myst_process)
-
-                # NOTE: MyST internally uses additional ports beyond the one specified by --port.
-                # Without this delay, multiple MyST servers may attempt to bind to the same internal port,
-                # causing "address already in use" errors.
-                time.sleep(3)
+                threading.Thread(
+                    target=_stream_process_output,
+                    args=(myst_process, output_queue, ready_event),
+                    daemon=True,
+                ).start()
+                _wait_for_myst_server(
+                    myst_process, content_type, myst_port, output_queue, ready_event
+                )
 
         postbuild(dev_build=True)
 
@@ -225,7 +304,7 @@ def dev(
             click.echo(
                 "Skipping website dev server (--no-website flag). Run 'pnpm dev' manually in afterpython/_website/ with your custom options."
             )
-            if enabled_content_types:
+            if myst_processes:
                 # Keep the process running to maintain MyST servers
                 click.echo("Press Ctrl+C to stop MyST servers...")
                 while True:
