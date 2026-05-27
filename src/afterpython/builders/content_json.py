@@ -37,19 +37,23 @@ def standardize_data(content_type: tContentType, content: dict) -> dict:
     is_featured = content["slug"] == featured_post or content["location"].endswith(
         featured_post
     )
+    # `frontmatter.get(key, default)` only falls back when the key is missing —
+    # but YAML parses `thumbnail:` (empty value) as None, which then propagates
+    # into convert_paths() and crashes the string concatenation. Coerce here
+    # so downstream sees "" / [] consistently.
     return {
         "version": content["version"],
         "slug": content["slug"],
         "location": content["location"],
         "featured": is_featured,
         # frontmatter fields
-        "title": frontmatter.get("title", ""),
-        "description": frontmatter.get("description", ""),
-        "tags": frontmatter.get("tags", []),
-        "date": frontmatter.get("date", ""),
-        "thumbnail": frontmatter.get("thumbnail", ""),
-        "thumbnailOptimized": frontmatter.get("thumbnailOptimized", ""),
-        "authors": frontmatter.get("authors", []),
+        "title": frontmatter.get("title") or "",
+        "description": frontmatter.get("description") or "",
+        "tags": frontmatter.get("tags") or [],
+        "date": frontmatter.get("date") or "",
+        "thumbnail": frontmatter.get("thumbnail") or "",
+        "thumbnailOptimized": frontmatter.get("thumbnailOptimized") or "",
+        "authors": frontmatter.get("authors") or [],
     }
 
 
@@ -63,11 +67,15 @@ def convert_paths(content_type: tContentType, output_file: Path):
 
     for item in content:
         if not item.get("thumbnailOptimized"):
-            item["thumbnailOptimized"] = item["thumbnail"]
-        item["thumbnail"] = f"/{content_type}/build" + item["thumbnail"]
-        item["thumbnailOptimized"] = (
-            f"/{content_type}/build" + item["thumbnailOptimized"]
-        )
+            item["thumbnailOptimized"] = item.get("thumbnail") or ""
+        # Skip path prefixing when there's no thumbnail — prepending to "" would
+        # produce a bogus "/blog/build" URL that 404s in the frontend.
+        if item.get("thumbnail"):
+            item["thumbnail"] = f"/{content_type}/build" + item["thumbnail"]
+        if item.get("thumbnailOptimized"):
+            item["thumbnailOptimized"] = (
+                f"/{content_type}/build" + item["thumbnailOptimized"]
+            )
 
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump(content, f, indent=2, ensure_ascii=False)
