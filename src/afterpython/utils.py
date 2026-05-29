@@ -188,9 +188,7 @@ def find_available_port(
 def has_content_for_myst(content_path: Path) -> bool:
     """Check if a content directory has any content files"""
     return any(
-        content_path.glob("*.md")
-        or content_path.glob("*.ipynb")
-        or content_path.glob("*.tex")
+        any(content_path.glob(pattern)) for pattern in ("*.md", "*.ipynb", "*.tex")
     )
 
 
