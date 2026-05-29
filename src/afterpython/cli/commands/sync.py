@@ -6,7 +6,11 @@ from pyproject_metadata import StandardMetadata
 from tomlkit.toml_document import TOMLDocument
 
 import afterpython as ap
-from afterpython.utils import convert_author_name_to_id, normalize_static_path
+from afterpython.utils import (
+    build_author_name,
+    convert_author_name_to_id,
+    normalize_static_path,
+)
 
 
 def _myst_favicon_path(path: str) -> str:
@@ -23,20 +27,21 @@ def _sync_authors_yml(authors: list[tuple[str, str | None]]):
 
     # read myst.yml from docs path to get "version"
     doc_myst_yml = read_yaml(ap.paths.afterpython_path / "doc" / "myst.yml")
+    entries = []
+    for author in authors:
+        # author is a tuple of (name, email)
+        name = str(author[0]).strip()
+        entries.append(
+            {
+                "id": convert_author_name_to_id(name),
+                "name": build_author_name(name),
+                "email": str(author[1]),
+                # "github": ...
+            }
+        )
     data = {
         "version": doc_myst_yml["version"],
-        "project": {
-            "contributors": [
-                # NOTE: author is a tuple of (name, email), so author[0] is the name and author[1] is the email
-                {
-                    "id": convert_author_name_to_id(str(author[0])),
-                    "name": str(author[0]),
-                    "email": str(author[1]),
-                    # "github": ...
-                }
-                for author in authors
-            ]
-        },
+        "project": {"authors": entries},
     }
     update_authors_yml(data)
     click.echo("✓ Synced authors.yml with pyproject.toml")

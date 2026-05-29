@@ -149,6 +149,25 @@ def convert_author_name_to_id(name: str) -> str:
     return name.replace(" ", "_").lower()
 
 
+def build_author_name(name: str) -> dict:
+    """Build a MyST name object from a display name.
+
+    A multi-word name ("Stephen Yau") is split into ``given``/``surname`` so MyST
+    can render and cite it properly. A single-token name (e.g. a username like
+    "softwareentrepreneer") uses ``literal`` so MyST treats it as the full name
+    verbatim instead of warning about a missing given name.
+
+    Examples:
+        - "Stephen Yau" -> {"given": "Stephen", "surname": "Yau"}
+        - "softwareentrepreneer" -> {"literal": "softwareentrepreneer"}
+    """
+    name = name.strip()
+    if " " in name:
+        given, surname = name.split(" ", 1)
+        return {"given": given, "surname": surname}
+    return {"literal": name}
+
+
 def find_available_port(
     start_port: int = 3000, max_port: int = 3100, host: str = "localhost"
 ) -> int:

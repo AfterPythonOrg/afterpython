@@ -30,8 +30,7 @@ def update_authors_yml(data_update: dict):
     # merge authors, keep the author with more fields (e.g. github, x, etc.) to avoid duplication
     merged_authors = {}
     for author in (
-        existing_data["project"]["contributors"]
-        + data_update["project"]["contributors"]
+        existing_data["project"].get("authors", []) + data_update["project"]["authors"]
     ):
         author_id = author["id"]
         if author_id not in merged_authors:
@@ -40,14 +39,14 @@ def update_authors_yml(data_update: dict):
             # keep the author with more fields (e.g. github, x, etc.)
             if len(author.keys()) > len(merged_authors[author_id].keys()):
                 merged_authors[author_id] = author
-    existing_data["project"]["contributors"] = list(merged_authors.values())
+    existing_data["project"]["authors"] = list(merged_authors.values())
 
     # set comments for project section for convenience
     if "project" in existing_data and not existing_data["project"].ca.items.get(
-        "contributors"
+        "authors"
     ):
         existing_data["project"].yaml_set_comment_before_after_key(
-            "contributors",
+            "authors",
             before="See more at: https://mystmd.org/guide/frontmatter#frontmatter-authors",
         )
     write_yaml(file_path, existing_data)
