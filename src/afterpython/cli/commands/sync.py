@@ -119,7 +119,8 @@ def sync():
         # nav_bar_per_content_type = [
         #     item for item in nav_bar if item["title"] != content_type.capitalize() + "s"
         # ]
-        title = project_name + f"'s {content_type.capitalize()}"
+        project_title = content_type.capitalize()
+        site_title = project_name + f"'s {content_type.capitalize()}"
         data = {
             "project": {
                 # using author ids defined in authors.yml
@@ -132,7 +133,7 @@ def sync():
                     "url": company_url,
                 },
                 "copyright": f"© {company_name or project_name} {datetime.now().year}. All rights reserved.",
-                "title": "",
+                "title": project_title,
                 "description": str(pyproject.description),
                 "keywords": list(map(str, pyproject.keywords)),
                 "github": github_url,
@@ -141,7 +142,7 @@ def sync():
                 else "",
             },
             "site": {
-                "title": title,
+                "title": site_title,
                 "options": {
                     "favicon": "../static" + myst_favicon if myst_favicon else "",
                     "logo": "../static" + website_logo if website_logo else "",

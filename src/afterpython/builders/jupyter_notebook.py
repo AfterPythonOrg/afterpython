@@ -222,7 +222,7 @@ def build_jupyter_notebooks():
     from afterpython.tools._afterpython import get_default_thumbnail
 
     # Check if molab badge feature is enabled
-    add_molab_badge = os.getenv("AP_MOLAB_BADGE", "1") == "1"
+    add_molab_badge = os.getenv("AP_MOLAB_BADGE", "0") == "1"
 
     # Get GitHub URL once if needed for molab badges
     github_url = None

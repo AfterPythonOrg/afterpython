@@ -130,7 +130,7 @@ def build_marimo_notebook(
     if mode == "wasm":
         return
 
-    add_molab_badge = os.getenv("AP_MOLAB_BADGE", "1") == "1"
+    add_molab_badge = os.getenv("AP_MOLAB_BADGE", "0") == "1"
     if not add_molab_badge:
         return
 
