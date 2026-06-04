@@ -209,6 +209,4 @@ tests/data/
 
 !afterpython/_website/src/lib/
 
-.python-version
-
 afterpython/_website.backup/

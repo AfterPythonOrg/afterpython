@@ -74,7 +74,12 @@ def _publish_for_type(content_type: tContentType) -> int:
 
     count = 0
     for source in sorted(source_dir.rglob("*")):
-        if "_build" in source.parts:
+        # Skip MyST build output and any hidden tool directory. The latter is
+        # essential: jupyterlab-lsp writes `.virtual_documents/*.ipynb` and
+        # jupyter writes `.ipynb_checkpoints/*.ipynb` — these carry an `.ipynb`
+        # extension but are NOT notebooks (the virtual-documents ones are raw
+        # Python source), so jupytext.read() chokes on them.
+        if "_build" in source.parts or any(p.startswith(".") for p in source.parts):
             continue
         if not source.is_file():
             continue
