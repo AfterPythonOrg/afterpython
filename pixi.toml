@@ -4,8 +4,7 @@ channels = ["conda-forge"]
 name = "afterpython"
 platforms = ["win-64", "linux-64", "osx-arm64", "osx-64"]
 # NOTE: this depends on the lock version used in setup-pixi in ci.yml
-# currently the max lock-version supported is 6
-requires-pixi = "<=0.67.2"  # command: pixi workspace requires-pixi set "<=0.67.2"
+requires-pixi = "<=0.72.2"  # command: pixi workspace requires-pixi set "<=0.72.2"
 
 [tasks]
 
@@ -18,13 +17,11 @@ depends-on = [
 ]
 
 [dependencies]
-python = ">=3.11.14"
-uv = ">=0.11.14"
 gh = ">=2.92.0"
 
 # `pixi config set pinning-strategy latest-up` removes the upper bound on the versions of the dependencies
 [pypi-dependencies]
-click = ">=8.2.1"
+click = ">=8.1.8"
 trogon = ">=0.6.0"
 httpx = ">=0.28.1"
 tomlkit = ">=0.15.0"
@@ -33,13 +30,13 @@ gitpython = ">=3.1.50"
 # pygithub = ">=2.8.1"
 python-dotenv = ">=1.2.2"
 pyproject-metadata = ">=0.11.0"
-jupytext = ">=1.19.2"
+jupytext = ">=1.19.4"
 # jinja2 = ">=3.1.6"
-mystmd = ">=1.9.1"
+mystmd = ">=1.10.1"
 pdoc = ">=16.0.0"
-ruff = ">=0.15.12"
+ruff = ">=0.15.22"
 pre-commit = ">=4.6.0"
-commitizen = ">=4.16.0"
+commitizen = ">=4.16.5"
 # python-semantic-release = ">=10.5.2"
 
 # [pypi-options.dependency-overrides]
