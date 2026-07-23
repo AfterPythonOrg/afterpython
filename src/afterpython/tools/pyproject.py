@@ -74,7 +74,7 @@ def init_pyproject():
     - add [build-system] section with uv build backend (same as `uv init --package`)
     - add [project.urls] section with homepage, repository, and documentation URLs
     """
-    import httpx
+    import httpx2
 
     from afterpython.tools._git import get_git_user_config, get_github_url
     from afterpython.utils import fetch_pypi_json
@@ -83,7 +83,7 @@ def init_pyproject():
 
     async def fetch_build_backend_version() -> str | None:
         """Fetch the latest version of build backend package from PyPI."""
-        async with httpx.AsyncClient() as client:
+        async with httpx2.AsyncClient() as client:
             data = await fetch_pypi_json(client, build_backend)
             return data["info"]["version"] if data else None
 

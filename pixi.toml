@@ -3,8 +3,9 @@ authors = ["softwareentrepreneer <softwareentrepreneer+afterpython@gmail.com>"]
 channels = ["conda-forge"]
 name = "afterpython"
 platforms = ["win-64", "linux-64", "osx-arm64", "osx-64"]
-# NOTE: this depends on the lock version used in setup-pixi in ci.yml
-requires-pixi = "<=0.72.2"  # command: pixi workspace requires-pixi set "<=0.72.2"
+# NOTE: the minimum supports relative exclude-newer; the maximum matches setup-pixi in ci.yml
+requires-pixi = ">=0.67.0,<=0.72.2"
+exclude-newer = "14d"
 
 [tasks]
 
@@ -23,7 +24,7 @@ gh = ">=2.92.0"
 [pypi-dependencies]
 click = ">=8.1.8"
 trogon = ">=0.6.0"
-httpx = ">=0.28.1"
+httpx2 = ">=2.5.0"
 tomlkit = ">=0.15.0"
 ruamel-yaml = ">=0.19.1"
 gitpython = ">=3.1.50"
@@ -34,9 +35,9 @@ jupytext = ">=1.19.4"
 # jinja2 = ">=3.1.6"
 mystmd = ">=1.10.1"
 pdoc = ">=16.0.0"
-ruff = ">=0.15.22"
+ruff = ">=0.15.21"
 pre-commit = ">=4.6.0"
-commitizen = ">=4.16.5"
+commitizen = ">=4.16.4"
 # python-semantic-release = ">=10.5.2"
 
 # [pypi-options.dependency-overrides]

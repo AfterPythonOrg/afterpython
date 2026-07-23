@@ -60,18 +60,18 @@ async def get_latest_versions(
     requirements: list[Requirement],
 ) -> dict[str, Version | None]:
     """Get latest versions for a list of dependencies from PyPI."""
-    import httpx
+    import httpx2
 
     from afterpython.utils import fetch_pypi_json
 
     async def fetch_version(
-        client: httpx.AsyncClient, package_name: str
+        client: httpx2.AsyncClient, package_name: str
     ) -> Version | None:
         """Fetch the latest version of a package from PyPI."""
         data = await fetch_pypi_json(client, package_name)
         return Version(data["info"]["version"]) if data else None
 
-    async with httpx.AsyncClient(timeout=10.0) as client:
+    async with httpx2.AsyncClient(timeout=10.0) as client:
         tasks = [fetch_version(client, req.name) for req in requirements]
         results = await asyncio.gather(*tasks, return_exceptions=True)
         return dict(zip([req.name for req in requirements], results, strict=False))
