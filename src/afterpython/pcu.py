@@ -157,10 +157,11 @@ def update_dependencies(dependencies: Dependencies):
                     and latest_ver
                     and min_ver in package
                 ):
-                    doc_deps[i] = package.replace(min_ver, latest_ver)
+                    doc_deps[i] = package
+                    # Update this first because latest_ver may equal max_ver.
                     if max_ver and dep.latest_version not in req.specifier:
-                        doc_deps[i] = doc_deps[i].replace(
-                            max_ver, str(dep.max_version.next_breaking())
-                        )
+                        next_max_ver = str(dep.latest_version.next_breaking())
+                        doc_deps[i] = doc_deps[i].replace(max_ver, next_max_ver, 1)
+                    doc_deps[i] = doc_deps[i].replace(min_ver, latest_ver, 1)
 
     write_pyproject(doc)
