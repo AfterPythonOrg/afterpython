@@ -3,8 +3,8 @@ authors = ["softwareentrepreneer <softwareentrepreneer+afterpython@gmail.com>"]
 channels = ["conda-forge"]
 name = "afterpython"
 platforms = ["win-64", "linux-64", "osx-arm64", "osx-64"]
-# NOTE: the minimum supports relative exclude-newer; the maximum matches setup-pixi in ci.yml
-requires-pixi = ">=0.67.0,<=0.72.2"
+# NOTE: should match with setup-pixi in ci.yml
+requires-pixi = ">=0.81.0,<0.82.0"
 exclude-newer = "14d"
 
 [tasks]
