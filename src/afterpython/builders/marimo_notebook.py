@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import re
+import shutil
 import subprocess
 from pathlib import Path
 from typing import Literal
@@ -48,6 +49,12 @@ def _export_marimo(
     execute: bool = False,
 ):
     """Run `marimo export` to produce HTML at `output_html`."""
+    # marimo is an optional dependency (the `marimo` extra)
+    if shutil.which("marimo") is None:
+        raise click.ClickException(
+            f"marimo is required to build {source.name} (a marimo notebook), "
+            'install it with: uv add --dev "afterpython[marimo]"'
+        )
     output_html.parent.mkdir(parents=True, exist_ok=True)
     subcommand = "html-wasm" if mode == "wasm" else "html"
     cmd = [

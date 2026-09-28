@@ -16,6 +16,10 @@ on:
       - 'afterpython/authors.yml'
       - 'afterpython/faq.yml'
       - 'afterpython/README.py'
+      - 'afterpython/afterpython.toml'
+      # metadata.json (name, version, urls) and the homepage description
+      - 'pyproject.toml'
+      - 'README.md'
       - '.github/workflows/deploy.yml'
   workflow_dispatch:  # Allow manual deployment from Actions tab
 
@@ -50,31 +54,19 @@ jobs:
           cache: 'pnpm'
           cache-dependency-path: './afterpython/_website/pnpm-lock.yaml'
 
-      - name: Set up Python
-        uses: actions/setup-python@v7
-        with:
-          python-version: '3.11'
-
       - name: Install uv
-        uses: astral-sh/setup-uv@v7
-        with:
-          version: "latest"
+        uses: astral-sh/setup-uv@v10.2.0
 
-      - name: Install afterpython
-        run: uv pip install --system afterpython
-
-      - name: Install marimo
-        # Needed by `ap build` when afterpython/README.py is a marimo notebook;
-        # afterpython shells out to the `marimo` CLI for the WASM export.
-        run: uv pip install --system marimo
+      - name: Install the project
+        # afterpython itself (the project) + its marimo extra, for the marimo README.py, at uv.lock's versions
+        run: uv sync --locked --extra marimo
 
       - name: Install website dependencies
         run: pnpm install
         working-directory: ./afterpython/_website
 
       - name: Build website
-        run: |
-          ap build
+        run: uv run --no-sync ap build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5

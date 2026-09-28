@@ -11,10 +11,10 @@ requires-pixi = ">=0.81.0,<0.82.0"
 
 [tasks.test-all]
 depends-on = [
-  { task = "test", environment = "py311" },
   { task = "test", environment = "py312" },
   { task = "test", environment = "py313" },
-  # { task = "test", environment = "py314" },
+  { task = "test", environment = "py314" },
+  # { task = "test", environment = "py315" },
 ]
 
 [dependencies]
@@ -41,29 +41,27 @@ prek = ">=0.5.4"
 # nodeenv = ">=1.9.1"
 
 [environments]
-default = ["py311", "dev", "optional"]
-py311 = ["py311", "test", "optional"]
+default = ["py312", "dev", "optional"]
 py312 = ["py312", "test", "optional"]
 py313 = ["py313", "test", "optional"]
 py314 = ["py314", "test", "optional"]
+# py315 = ["py315", "test", "optional"]
 
 [feature.optional.pypi-dependencies]
+marimo = { version = ">=0.25.0", extras = ["recommended", "lsp"] }
 
 [feature.dev.pypi-dependencies]
 afterpython = { path = ".", editable = true }
-notebook = ">=7.5.6"
-marimo = { version = ">=0.23.8", extras = ["recommended", "lsp"] }
+notebook = ">=7.6.3"
 
 [feature.test.pypi-dependencies]
-pytest = ">=9.0.3"
+afterpython = { path = ".", editable = true }
+pytest = ">=9.1.1"
 pytest-cov = ">=7.1.0"
-pytest-mock = ">=3.15.1"
+pytest-mock = ">=3.16.0"
 pytest-xdist = ">=3.8.0"
 [feature.test.tasks]
 test = "pytest -v -n auto"
-
-[feature.py311.dependencies]
-python = "3.11.*"
 
 [feature.py312.dependencies]
 python = "3.12.*"
@@ -73,3 +71,6 @@ python = "3.13.*"
 
 [feature.py314.dependencies]
 python = "3.14.*"
+
+# [feature.py315.dependencies]
+# python = "3.15.*"

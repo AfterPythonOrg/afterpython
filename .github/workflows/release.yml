@@ -6,7 +6,15 @@ on:
       - 'v*'  # Trigger on all version tags (v0.1.0, v0.1.0rc1, v0.1.0.dev4, etc.)
 
 jobs:
+  # Run the whole CI workflow (lint, tests, build) on the tagged commit first
+  ci:
+    uses: ./.github/workflows/ci.yml
+    permissions:
+      contents: read
+
   release:
+    # Only publish if CI passes, a PyPI upload can't be undone
+    needs: ci
     runs-on: ubuntu-latest
     permissions:
       contents: write  # Required for creating GitHub releases
@@ -16,21 +24,28 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v7
 
-      - name: Set up Python
-        uses: actions/setup-python@v7
-        with:
-          python-version: '3.11'
-
       - name: Install uv
-        uses: astral-sh/setup-uv@v7
-        with:
-          version: "latest"
+        uses: astral-sh/setup-uv@v10.2.0
 
-      - name: Build package
-        run: uv build
+      - name: Check tag matches version
+        # e.g. a hand-made tag v0.4.0 on a commit whose pyproject.toml says 0.3.20
+        run: |
+          VERSION="$(uv version --short)"
+          if [ "v$VERSION" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME doesn't match version $VERSION in pyproject.toml"
+            exit 1
+          fi
+
+      - name: Download build artifacts
+        # the wheel + sdist that CI built and verified, published as is
+        uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
 
       - name: Publish to PyPI
-        run: uv publish
+        # Skip files already on PyPI so a re-run (e.g. after the GitHub release step failed) doesn't fail here
+        run: uv publish --check-url https://pypi.org/simple/
 
       - name: Determine if pre-release
         id: check_prerelease

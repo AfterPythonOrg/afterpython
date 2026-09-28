@@ -22,9 +22,9 @@ def release(force: bool):
     and pre-releases like rc, alpha, beta). Use --force to release dev versions.
 
     The release workflow will:
-    - Run tests in CI
-    - Publish to PyPI (if tests pass)
-    - Create a GitHub release (if tests pass)
+    - Run the CI workflow (lint, tests, build)
+    - Publish to PyPI (if CI passes)
+    - Create a GitHub release (if CI passes)
 
     Examples:
         ap bump --pre      # Bump to pre-release (e.g., 0.1.0rc1)
