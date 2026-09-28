@@ -21,10 +21,24 @@ Example wrapper:
 ## Linting and Formatting
 `afterpython` uses [ruff] for linting and formatting, configured in `afterpython/ruff.toml`.
 
-Example wrapper:
-- `ap check` (alias: `ap lint`) runs `ruff check --config ./afterpython/ruff.toml`.
+`ap init` also adds this to your `pyproject.toml`, so that ruff always finds `afterpython/ruff.toml`:
+```toml
+[tool.ruff]
+extend = "afterpython/ruff.toml"
+```
+Keep all your ruff settings in `afterpython/ruff.toml`, not in `pyproject.toml` or a `ruff.toml` at the project root.
+If `ap init` finds an existing ruff config there, it skips the ruff setup; remove it and run `ap init ruff` to set it up again.
 
-Or you can just directly use `ruff` command as usual since it will automatically find the config file in `afterpython/ruff.toml`.
+Wrappers (all arguments are passed through to ruff):
+- `ap check` (alias: `ap lint`) runs `ruff check`, e.g. `ap check --fix`.
+- `ap format` runs `ruff format`, e.g. `ap format --check`.
+
+Or you can just directly use the `ruff` command (and ruff editor extensions) as usual, they use the same config.
+
+:::{note}
+Relative paths in `afterpython/ruff.toml` are resolved from `afterpython/`, not the project root,
+e.g. use `"../tests/*"` in `per-file-ignores` to target your project's `tests/` folder.
+:::
 
 
 ---

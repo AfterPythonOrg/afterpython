@@ -78,3 +78,6 @@ module-root = "src"
 
 [tool.pyright]
 typeCheckingMode = "basic"
+
+[tool.ruff]
+extend = "afterpython/ruff.toml"

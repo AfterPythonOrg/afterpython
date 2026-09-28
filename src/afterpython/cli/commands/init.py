@@ -5,15 +5,65 @@ import click
 
 import afterpython as ap
 
+# pyproject.toml's [tool.ruff] only points to afterpython/ruff.toml,
+# so that running `ruff` directly (or via editors) also uses afterpython/ruff.toml
+RUFF_EXTEND = "afterpython/ruff.toml"
 
-def init_ruff_toml():
+
+def _find_ruff_config_conflicts() -> list[str]:
+    """Find ruff configs at the project root that would compete with afterpython/ruff.toml."""
+    from afterpython.tools.pyproject import read_pyproject
+
+    conflicts = [
+        name
+        for name in ("ruff.toml", ".ruff.toml")
+        if (ap.paths.user_path / name).exists()
+    ]
+    tool_ruff = read_pyproject().get("tool", {}).get("ruff")
+    if tool_ruff is not None and tool_ruff.unwrap() != {"extend": RUFF_EXTEND}:
+        conflicts.append("[tool.ruff] in pyproject.toml")
+    return conflicts
+
+
+def init_ruff():
+    import tomlkit
+
+    from afterpython.tools.pyproject import read_pyproject, write_pyproject
+
+    if conflicts := _find_ruff_config_conflicts():
+        click.echo(
+            click.style(
+                f"Skipped ruff setup: found existing ruff config ({', '.join(conflicts)}).\n",
+                fg="yellow",
+                bold=True,
+            )
+            + "afterpython keeps all ruff settings in afterpython/ruff.toml, "
+            "and pyproject.toml's [tool.ruff] only points to it.\n"
+            "Until then, `ap check` and `ap format` will use your existing ruff config, "
+            "not afterpython's.\n"
+            "To fix: remove the config(s) above (keep a copy of any settings you want), "
+            "run `ap init ruff`, then add your settings to afterpython/ruff.toml."
+        )
+        return
+
     ruff_toml_path = ap.paths.afterpython_path / "ruff.toml"
     if ruff_toml_path.exists():
         click.echo(f"Ruff configuration file {ruff_toml_path} already exists")
-        return
-    ruff_template_path = ap.paths.templates_path / "ruff-template.toml"
-    shutil.copy(ruff_template_path, ruff_toml_path)
-    click.echo(f"Created {ruff_toml_path}")
+    else:
+        ruff_template_path = ap.paths.templates_path / "ruff-template.toml"
+        shutil.copy(ruff_template_path, ruff_toml_path)
+        click.echo(f"Created {ruff_toml_path}")
+
+    data = read_pyproject()
+    if "ruff" in data.get("tool", {}):
+        return  # already points to afterpython/ruff.toml (checked above)
+    if "tool" not in data:
+        data["tool"] = tomlkit.table(is_super_table=True)
+    ruff_table = tomlkit.table()
+    ruff_table["extend"] = RUFF_EXTEND
+    data["tool"]["ruff"] = ruff_table
+    write_pyproject(data)
+    click.echo(f'Added [tool.ruff] extend = "{RUFF_EXTEND}" to pyproject.toml')
 
 
 def init_faq():
@@ -110,9 +160,10 @@ def init(ctx, yes, skip_website: bool):
             init_prek()
 
         if yes or click.confirm(
-            f"\nCreate ruff.toml in {afterpython_path}?", default=True
+            f"\nCreate ruff.toml in {afterpython_path} (and point pyproject.toml's [tool.ruff] to it)?",
+            default=True,
         ):
-            init_ruff_toml()
+            init_ruff()
 
         if yes or click.confirm(
             "\nCreate release workflow in .github/workflows/release.yml?",
@@ -131,6 +182,16 @@ def init(ctx, yes, skip_website: bool):
             click.echo(f"ap init failed — removing {afterpython_path}", err=True)
             shutil.rmtree(afterpython_path, ignore_errors=True)
         raise
+
+
+@init.command("ruff")
+def init_ruff_subcommand():
+    """Initialize ruff config (afterpython/ruff.toml + [tool.ruff] in pyproject.toml)
+
+    Use this to re-run the ruff setup, e.g. after removing a conflicting
+    ruff config that made `ap init` skip it.
+    """
+    init_ruff()
 
 
 @init.command("website")

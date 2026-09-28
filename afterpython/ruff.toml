@@ -1,5 +1,12 @@
 # Ruff configuration
 # See More: https://docs.astral.sh/ruff/configuration/
+#
+# NOTE: relative paths in this file are resolved from afterpython/, not the
+# project root, e.g. use "../tests/*" to target the project's tests/ folder.
+
+# where your own (first-party) packages live, used by import sorting:
+# ".." = project root (flat layout), "../src" = src layout
+src = ["..", "../src"]
 
 line-length = 88
 target-version = "py311"

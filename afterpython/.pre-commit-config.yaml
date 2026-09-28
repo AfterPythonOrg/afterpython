@@ -31,15 +31,9 @@ repos:
   - id: ruff-check
     stages:
     - pre-commit
-    args:
-    - --config
-    - ./afterpython/ruff.toml
   - id: ruff-format
     stages:
     - pre-commit
-    args:
-    - --config
-    - ./afterpython/ruff.toml
 - repo: local
   hooks:
   # same id twice so that SKIP=ap-commit skips both
