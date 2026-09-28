@@ -1,5 +1,4 @@
 [mystmd]: https://mystmd.org
-[commitizen]: https://github.com/commitizen-tools/commitizen
 [pre-commit]: https://github.com/pre-commit/pre-commit
 [ruff]: https://github.com/astral-sh/ruff
 
@@ -16,18 +15,17 @@ The `afterpython/` folder serves as a centralized location for both your project
 - `afterpython/guide/` - How-to Guides
 
 **Configuration files:**
-- `cz.toml` for [commitizen]
 - `ruff.toml` for [ruff]
 - `.pre-commit-config.yaml` for [pre-commit]
 - `authors.yml` for [mystmd]
-- `afterpython.toml` for `afterpython` itself
+- `afterpython.toml` for `afterpython` itself (e.g. allowed commit types)
 
 **Purpose:**
 
 This structure serves two goals:
 
 1. **Declutter the root directory** - Keeps maintenance-related configuration files separate from package code, making the project structure cleaner
-2. **Provide sane defaults** - Comes pre-configured with sensible defaults for common maintenance tools like [commitizen], [pre-commit], and [ruff], so you can start using them immediately
+2. **Provide sane defaults** - Comes pre-configured with sensible defaults for common maintenance tools like [pre-commit] and [ruff], so you can start using them immediately
 
 
 ---

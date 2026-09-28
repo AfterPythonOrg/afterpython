@@ -10,7 +10,6 @@
 [Scikit-Learn]: https://scikit-learn.org
 [WebLLM]: https://webllm.mlc.ai/
 [project-website-template]: https://github.com/AfterPythonOrg/project-website-template
-[commitizen]: https://github.com/commitizen-tools/commitizen
 [uv]: https://docs.astral.sh/uv/
 [ruff]: https://docs.astral.sh/ruff/
 
@@ -48,7 +47,6 @@ ap tui
 - [pre-commit]
 - [GitHub Actions]
 - [pdoc]
-- [commitizen]
 - [uv]
 - [ruff]
 - [pagefind]

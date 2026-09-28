@@ -15,7 +15,7 @@
   answer: |
     `ap init` configures:
     - Pre-commit hooks (ruff, mypy)
-    - Conventional commits via *commitizen*
+    - Conventional commit message checks (commit types in `afterpython.toml`)
     - Semantic-release for versioning
     - The project website scaffold under `afterpython/`
   category: Getting Started

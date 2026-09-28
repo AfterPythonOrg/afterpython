@@ -12,9 +12,9 @@ Runs linting and formatting with ruff, runs tests with pytest and builds the pac
 ### `release.yml` (optional)
 Releases your package to [PyPI] and GitHub.
 
-`release.yml` will NOT be created if `commitizen` is not initialized during `ap init`.
+`release.yml` is only created if you agree to it during `ap init`.
 
-See [PyPI and GitHub Releases](./release_management.md#pypi-and-github-releases) for more details.
+See [PyPI and GitHub Releases](./package_releases.md#pypi-and-github-releases) for more details.
 
 ### `deploy.yml`
 Deploys your project website to GitHub Pages.
