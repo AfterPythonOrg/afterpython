@@ -6,6 +6,8 @@ on:
       - main  # Deploy when pushing to main branch
     paths:
       # Trigger deployment only when content or website files change
+      # Code changes (src/) don't trigger it, so a docstring change doesn't update the API reference (pdoc).
+      # To update it, run this workflow manually (Actions tab, workflow_dispatch).
       - 'afterpython/doc/**'
       - 'afterpython/blog/**'
       - 'afterpython/tutorial/**'

@@ -43,15 +43,16 @@ repos:
 - repo: local
   hooks:
   # same id twice so that SKIP=ap-commit skips both
+  # git GUIs run hooks with a minimal PATH (no uv/venv), so put the project venv on PATH ourselves
   - id: ap-commit
     name: commit message template
-    entry: uv run --no-sync ap commit-msg --template
+    entry: sh -c 'PATH="$PWD/.venv/bin:$PWD/.venv/Scripts:$PATH" exec ap commit-msg --template "$@"' --
     language: system
     stages:
     - prepare-commit-msg
   - id: ap-commit
     name: check commit message
-    entry: uv run --no-sync ap commit-msg
+    entry: sh -c 'PATH="$PWD/.venv/bin:$PWD/.venv/Scripts:$PATH" exec ap commit-msg "$@"' --
     language: system
     stages:
     - commit-msg
