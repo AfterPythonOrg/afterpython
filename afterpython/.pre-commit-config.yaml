@@ -2,6 +2,7 @@
 # we need to explicitly pass in --hook-type whenever we run "pre-commit install --hook-type ..."
 default_install_hook_types:
 - pre-commit
+- prepare-commit-msg
 - commit-msg
 - pre-push
 exclude: ^afterpython/_website/
@@ -25,7 +26,7 @@ repos:
     stages:
     - pre-commit
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.15.21
+  rev: v0.16.9
   hooks:
   - id: ruff-check
     stages:
@@ -39,12 +40,18 @@ repos:
     args:
     - --config
     - ./afterpython/ruff.toml
-# - repo: https://github.com/commitizen-tools/commitizen
-#   rev: v4.16.0
-#   hooks:
-#   - id: commitizen
-#     stages:
-#     - commit-msg
-#   - id: commitizen-branch
-#     stages:
-#     - pre-push
+- repo: local
+  hooks:
+  # same id twice so that SKIP=ap-commit skips both
+  - id: ap-commit
+    name: commit message template
+    entry: uv run --no-sync ap commit-msg --template
+    language: system
+    stages:
+    - prepare-commit-msg
+  - id: ap-commit
+    name: check commit message
+    entry: uv run --no-sync ap commit-msg
+    language: system
+    stages:
+    - commit-msg

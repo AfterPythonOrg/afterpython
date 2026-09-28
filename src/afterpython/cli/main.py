@@ -13,15 +13,14 @@ from afterpython.cli.commands.build import build
 from afterpython.cli.commands.bump import bump
 from afterpython.cli.commands.check import check
 from afterpython.cli.commands.clean import clean
-from afterpython.cli.commands.commit import commit
-from afterpython.cli.commands.commitizen import commitizen
+from afterpython.cli.commands.commit_msg import commit_msg
 from afterpython.cli.commands.dev import dev
 from afterpython.cli.commands.format import format
 from afterpython.cli.commands.init import init
 from afterpython.cli.commands.init_branch_rules import init_branch_rules
 from afterpython.cli.commands.install import install
 from afterpython.cli.commands.lock import lock
-from afterpython.cli.commands.pre_commit import pre_commit
+from afterpython.cli.commands.prek import prek
 from afterpython.cli.commands.preview import preview
 from afterpython.cli.commands.release import release
 from afterpython.cli.commands.remove import remove
@@ -121,11 +120,9 @@ afterpython_group.add_command(guide)
 afterpython_group.add_command(preview)
 afterpython_group.add_command(serve)
 afterpython_group.add_command(clean)
-afterpython_group.add_command(pre_commit)
-afterpython_group.add_command(pre_commit, name="pc")
-afterpython_group.add_command(commitizen)
-afterpython_group.add_command(commitizen, name="cz")
-afterpython_group.add_command(commit)
+afterpython_group.add_command(prek)
+afterpython_group.add_command(prek, name="pc")
+afterpython_group.add_command(commit_msg)
 afterpython_group.add_command(bump)
 afterpython_group.add_command(release)
 afterpython_group.add_command(init_branch_rules)

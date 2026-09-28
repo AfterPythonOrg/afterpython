@@ -30,7 +30,7 @@ def update():
     "--all",
     "all_",
     is_flag=True,
-    help="Also update pre-commit hooks and pixi dependencies",
+    help="Also update prek hooks and pixi dependencies",
 )
 @click.option(
     "--exclude",
@@ -135,13 +135,13 @@ def dependencies(upgrade: bool, all_: bool, exclude: tuple[str, ...]):
                     bold=True,
                 )
             )
-        result = subprocess.run(["ap", "pre-commit", "autoupdate"], check=False)
+        result = subprocess.run(["ap", "prek", "update"], check=False)
         if result.returncode == 0:
-            click.echo("All pre-commit hooks updated successfully.")
+            click.echo("All prek hooks updated successfully.")
         else:
             click.echo(
                 click.style(
-                    "Skipped pre-commit autoupdate (no config or command failed).",
+                    "Skipped prek update (no config or command failed).",
                     fg="yellow",
                 )
             )

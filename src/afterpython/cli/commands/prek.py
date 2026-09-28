@@ -5,10 +5,10 @@ from click.exceptions import Exit
 
 
 def _command_supports_config(command: str) -> bool:
-    """Check if a pre-commit command supports --config flag by checking its help text."""
+    """Check if a prek command supports --config flag by checking its help text."""
     try:
         result = subprocess.run(
-            ["pre-commit", command, "--help"],
+            ["prek", command, "--help"],
             capture_output=True,
             text=True,
             check=False,
@@ -19,21 +19,21 @@ def _command_supports_config(command: str) -> bool:
 
 
 @click.command(
-    add_help_option=False,  # disable click's --help option so that pre-commit --help can work
+    add_help_option=False,  # disable click's --help option so that prek --help can work
     context_settings=dict(
         ignore_unknown_options=True,
         allow_extra_args=True,
     ),
 )
 @click.pass_context
-def pre_commit(ctx):
-    """Run pre-commit hooks (uses afterpython/.pre-commit-config.yaml if available)"""
+def prek(ctx):
+    """Run prek hooks (uses afterpython/.pre-commit-config.yaml if available)"""
     from afterpython.utils import handle_passthrough_help
 
-    # Show both our options and pre-commit's help and exit
+    # Show both our options and prek's help and exit
     handle_passthrough_help(
         ctx,
-        ["pre-commit"],
+        ["prek"],
         show_underlying=True,
     )
 
@@ -61,6 +61,6 @@ def pre_commit(ctx):
         args.insert(command_idx + 1, "--config")
         args.insert(command_idx + 2, str(pre_commit_path))
 
-    result = subprocess.run(["pre-commit", *args], check=False)
+    result = subprocess.run(["prek", *args], check=False)
     if result.returncode != 0:
         raise Exit(result.returncode)

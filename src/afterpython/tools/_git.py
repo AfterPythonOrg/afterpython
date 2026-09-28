@@ -135,3 +135,59 @@ def get_current_user_id() -> int | None:
 
 # TODO: use gh's token for pygithub to get repo issues
 # def get_repo_issues(owner: str, repo: str) -> list[dict]:
+
+
+def _git_output(*args: str) -> str | None:
+    """Run a git command in the project root, return its stripped stdout or None on failure"""
+    import afterpython as ap
+
+    result = subprocess.run(
+        ["git", *args],
+        cwd=ap.paths.user_path,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    return result.stdout.strip() if result.returncode == 0 else None
+
+
+def get_default_branch(remote: str = "origin") -> str | None:
+    """Get the remote's default branch, e.g. "main" """
+    # set by `git clone`, e.g. "origin/main"
+    ref = _git_output(
+        "symbolic-ref", "--quiet", "--short", f"refs/remotes/{remote}/HEAD"
+    )
+    if ref:
+        return ref.removeprefix(f"{remote}/")
+    # not set when the remote was added to an existing repo, ask the remote instead
+    output = _git_output("ls-remote", "--symref", remote, "HEAD") or ""
+    match = re.match(r"ref: refs/heads/(\S+)\s+HEAD", output)
+    return match.group(1) if match else None
+
+
+def check_release_branch(remote: str = "origin") -> str:
+    """Return the current branch if releases are allowed from it:
+    it's the remote's default branch and has all the remote's commits"""
+    import click
+
+    branch = _git_output("symbolic-ref", "--quiet", "--short", "HEAD")
+    if branch is None:
+        raise click.ClickException("Not on a branch (detached HEAD), can't release")
+    default_branch = get_default_branch(remote)
+    if default_branch is None:
+        raise click.ClickException(
+            f"Unable to find the default branch of remote '{remote}', check that it's reachable"
+        )
+    if branch != default_branch:
+        raise click.ClickException(
+            f"Releases are only allowed from '{default_branch}', current branch is '{branch}'"
+        )
+    # fetch (not pull) so nothing changes locally; the user decides how to bring in new commits
+    if _git_output("fetch", "--quiet", remote, branch) is None:
+        raise click.ClickException(f"Unable to fetch '{branch}' from '{remote}'")
+    behind = _git_output("rev-list", "--count", f"HEAD..{remote}/{branch}")
+    if behind and behind != "0":
+        raise click.ClickException(
+            f"'{remote}/{branch}' has {behind} commit(s) you don't have, run `git pull` first"
+        )
+    return branch

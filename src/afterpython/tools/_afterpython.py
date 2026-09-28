@@ -9,6 +9,8 @@ if TYPE_CHECKING:
 
     from afterpython._typing import tContentType
 
+import shutil
+
 import tomlkit
 
 import afterpython as ap
@@ -110,23 +112,6 @@ def init_afterpython():
     if afterpython_toml_path.exists():
         print(f"afterpython.toml already exists at {afterpython_toml_path}")
         return
-    afterpython_toml_path.touch()
+    afterpython_template_path = ap.paths.templates_path / "afterpython-template.toml"
+    shutil.copy(afterpython_template_path, afterpython_toml_path)
     print(f"Created {afterpython_toml_path}")
-    default_data = {
-        "company": {
-            "name": "",
-            "url": "",
-        },
-        "website": {
-            "url": "",
-            "favicon": "favicon.ico",
-            "logo": "logo.svg",
-            "logo_dark": "logo.svg",
-            "thumbnail": "thumbnail.png",
-            "announcement": "",
-            "readme_py": "wasm",
-            "execute_readme_py": False,
-            "api_reference": False,
-        },
-    }
-    update_afterpython(default_data)

@@ -223,7 +223,7 @@ def handle_passthrough_help(
 
     Args:
         ctx: Click context
-        underlying_command: Command to show help for (e.g., ["cz", "bump"])
+        underlying_command: Command to show help for (e.g., ["ruff", "check"])
         show_underlying: Whether to show underlying tool's help (default: True)
         help_flags: Flags that trigger help display (default: ("--help", "-h"))
                    Use ("--help",) if -h is reserved by the underlying tool

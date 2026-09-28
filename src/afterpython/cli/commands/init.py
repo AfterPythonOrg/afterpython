@@ -72,12 +72,11 @@ def init(ctx, yes, skip_website: bool):
         return
 
     from afterpython.tools._afterpython import init_afterpython
-    from afterpython.tools.commitizen import init_commitizen
     from afterpython.tools.github_actions import (
         create_dependabot,
         create_workflow,
     )
-    from afterpython.tools.pre_commit import init_pre_commit
+    from afterpython.tools.prek import init_prek
     from afterpython.tools.pyproject import init_pyproject
 
     _preflight_init(skip_website)
@@ -108,7 +107,7 @@ def init(ctx, yes, skip_website: bool):
         if yes or click.confirm(
             f"\nCreate .pre-commit-config.yaml in {afterpython_path}?", default=True
         ):
-            init_pre_commit()
+            init_prek()
 
         if yes or click.confirm(
             f"\nCreate ruff.toml in {afterpython_path}?", default=True
@@ -116,11 +115,9 @@ def init(ctx, yes, skip_website: bool):
             init_ruff_toml()
 
         if yes or click.confirm(
-            f"\nCreate commitizen configuration (cz.toml) in {afterpython_path} "
-            f"and release workflow in .github/workflows/release.yml?",
+            "\nCreate release workflow in .github/workflows/release.yml?",
             default=True,
         ):
-            init_commitizen()
             create_workflow("release")
 
         if yes or click.confirm(

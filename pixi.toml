@@ -5,7 +5,7 @@ name = "afterpython"
 platforms = ["win-64", "linux-64", "osx-arm64", "osx-64"]
 # NOTE: should match with setup-pixi in ci.yml
 requires-pixi = ">=0.81.0,<0.82.0"
-exclude-newer = "14d"
+# exclude-newer = "14d"
 
 [tasks]
 
@@ -22,23 +22,19 @@ gh = ">=2.92.0"
 
 # `pixi config set pinning-strategy latest-up` removes the upper bound on the versions of the dependencies
 [pypi-dependencies]
-click = ">=8.1.8"
+click = ">=8.5.0"
 trogon = ">=0.6.0"
-httpx2 = ">=2.5.0"
-tomlkit = ">=0.15.0"
+httpx2 = ">=2.13.1"
+tomlkit = ">=0.15.1"
 ruamel-yaml = ">=0.19.1"
-gitpython = ">=3.1.50"
-# pygithub = ">=2.8.1"
-python-dotenv = ">=1.2.2"
-pyproject-metadata = ">=0.11.0"
-jupytext = ">=1.19.4"
-# jinja2 = ">=3.1.6"
-mystmd = ">=1.10.1"
+gitpython = ">=3.1.62"
+python-dotenv = ">=1.2.3"
+pyproject-metadata = ">=0.12.1"
+jupytext = ">=1.19.5"
+mystmd = ">=1.11.0"
 pdoc = ">=16.0.0"
-ruff = ">=0.15.21"
-pre-commit = ">=4.6.0"
-commitizen = ">=4.16.4"
-# python-semantic-release = ">=10.5.2"
+ruff = ">=0.16.9"
+prek = ">=0.5.4"
 
 # [pypi-options.dependency-overrides]
 # platformdirs = ">=4.5.0"
@@ -65,7 +61,6 @@ pytest-mock = ">=3.15.1"
 pytest-xdist = ">=3.8.0"
 [feature.test.tasks]
 test = "pytest -v -n auto"
-
 
 [feature.py311.dependencies]
 python = "3.11.*"
