@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -147,7 +147,7 @@ def postbuild(dev_build: bool = False):
         source: Path,
         destination: Path,
         is_copy: bool = True,
-        ignore_copy: Callable[[str, list[str]], set[str]] | None = None,
+        ignore_copy: Callable[[str, list[str]], Iterable[str]] | None = None,
     ):
         """
         Move or copy files from source to destination.
@@ -156,7 +156,7 @@ def postbuild(dev_build: bool = False):
             source: Source path
             destination: Destination path
             is_copy: If True, copy files (merge with existing). If False, move files (replace destination)
-            ignore_copy: Optional ignore function for copytree, takes (directory, contents) and returns set of names to ignore
+            ignore_copy: Optional ignore function for copytree, takes (directory, contents) and returns the names to ignore
         """
         if not source.exists():
             return

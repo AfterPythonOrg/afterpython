@@ -2,6 +2,7 @@
 [poetry]: https://github.com/python-poetry/poetry
 [pdm]: https://github.com/pdm-project/pdm
 [ruff]: https://github.com/astral-sh/ruff
+[ty]: https://github.com/astral-sh/ty
 [pixi]: https://github.com/prefix-dev/pixi
 [npm-check-updates]: https://www.npmjs.com/package/npm-check-updates
 
@@ -30,16 +31,79 @@ Keep all your ruff settings in `afterpython/ruff.toml`, not in `pyproject.toml` 
 If `ap init` finds an existing ruff config there, it skips the ruff setup; remove it and run `ap init ruff` to set it up again.
 
 Wrappers (all arguments are passed through to ruff):
-- `ap check` (alias: `ap lint`) runs `ruff check`, e.g. `ap check --fix`.
+- `ap lint` runs `ruff check`, e.g. `ap lint --fix`.
 - `ap format` runs `ruff format`, e.g. `ap format --check`.
 
 Or you can just directly use the `ruff` command (and ruff editor extensions) as usual, they use the same config.
+
+The ruff hooks (`ruff-check` and `ruff-format`) and the ruff step of the CI `lint` job only run when `afterpython/ruff.toml` exists.
+If you declined ruff during `ap init` (or its setup was skipped), they are removed/skipped; if you use your own ruff config, set up its hooks and CI yourself.
 
 :::{note}
 Relative paths in `afterpython/ruff.toml` are resolved from `afterpython/`, not the project root,
 e.g. use `"../tests/*"` in `per-file-ignores` to target your project's `tests/` folder.
 :::
 
+
+---
+## Type Checking
+`afterpython` uses [ty] for type checking, configured in `afterpython/ty.toml`.
+
+- `ap check` runs `ty check` with `afterpython/ty.toml` (all arguments are passed through to ty), e.g. `ap check src/`.
+
+Unlike ruff, ty doesn't support `extend` yet, so `pyproject.toml` can't point to `afterpython/ty.toml`, and ty only finds it when it's told to. So:
+- use `ap check` instead of `ty check` (or run `ty check --config-file afterpython/ty.toml` from the project root)
+- set up your editor as shown [below](#editor-setup)
+
+Keep all your ty settings in `afterpython/ty.toml`, not in `pyproject.toml` (`[tool.ty]`) or a `ty.toml` at the project root.
+If `ap init` finds an existing ty config there, it skips the ty setup; remove it and run `ap init ty` to set it up again.
+
+The `ty` hook (runs `ap check` on every commit) and the CI `typecheck` job only run when `afterpython/ty.toml` exists.
+If you declined ty during `ap init` (or its setup was skipped), they are removed/skipped.
+
+:::{note}
+Unlike `afterpython/ruff.toml`, relative paths in `afterpython/ty.toml` are resolved from the project root,
+e.g. use `"tests/"` to target your project's `tests/` folder.
+:::
+
+### Python Environment
+ty needs your project's Python environment to resolve imports of installed packages.
+It automatically uses the activated virtual environment, or `.venv` at the project root.
+For other environments (e.g. `pixi` or `conda`), or if your project has both `.venv` and a `pixi` environment and you want the latter, set it in `afterpython/ty.toml`:
+```toml
+[environment]
+python = ".pixi/envs/default"
+```
+Packages you only use in some files (e.g. `pytest` in `tests/`) must be installed in that environment too, otherwise ty reports them as unresolved imports.
+With `pixi`, that means adding the feature to your default environment, e.g. `default = ["dev", "test"]` in `pixi.toml`.
+
+### Editor Setup
+ty's language server (used by editor extensions) doesn't find `afterpython/ty.toml` by itself, you need to set its `configurationFile` setting **in your project's settings**, e.g.
+
+VS Code (`.vscode/settings.json`):
+```json
+{
+  "ty.configurationFile": "./afterpython/ty.toml"
+}
+```
+
+Zed (`.zed/settings.json`):
+```json
+{
+  "lsp": {
+    "ty": {
+      "settings": {
+        "configurationFile": "./afterpython/ty.toml"
+      }
+    }
+  }
+}
+```
+For other editors, see ty's [editor settings](https://docs.astral.sh/ty/reference/editor-settings/#configurationfile).
+
+:::{warning}
+Don't set it in your global (user) settings, ty fails to load projects that don't have `afterpython/ty.toml`.
+:::
 
 ---
 ## Python Check Updates (`pcu`)

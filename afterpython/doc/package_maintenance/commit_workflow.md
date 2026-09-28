@@ -12,6 +12,13 @@ After running `ap init`, if you agreed to create a `.pre-commit-config.yaml` fil
 ### Commands
 - `ap prek` (or `ap pc`) — equivalent to `prek --config afterpython/.pre-commit-config.yaml`
 
+### Default Hooks
+Besides basic file checks (e.g. trailing whitespace, YAML/TOML syntax), these hooks run on every commit:
+- `ruff-check` and `ruff-format` — lint and format with ruff (only if you set up `afterpython/ruff.toml`)
+- `ty` — type check the whole project with `ap check` (only if you set up `afterpython/ty.toml`)
+
+See [Package Management](./package_management.md#type-checking) for details.
+
 
 ---
 ## Commit Messages
@@ -52,5 +59,6 @@ To opt out, remove the section or leave it empty. If you opted out during `ap in
 
 ### Bypassing Checks
 - `SKIP=ap-commit git commit` — skip the commit message check
+- `SKIP=ty git commit` — skip the type check, e.g. to commit work in progress (it still runs in CI)
 - `git commit --no-verify` — skip all pre-commit and commit message hooks
 - `git push --no-verify` — skip all pre-push hooks

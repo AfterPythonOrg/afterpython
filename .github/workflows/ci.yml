@@ -31,7 +31,13 @@ jobs:
 
       - name: Run ruff
         # fails if ruff-check finds issues or ruff-format would change a file
-        run: uvx prek run --config afterpython/.pre-commit-config.yaml --all-files --show-diff-on-failure ruff-check ruff-format
+        # No afterpython/ruff.toml means ruff isn't set up (and there are no ruff hooks), pass green.
+        run: |
+          if [ ! -f afterpython/ruff.toml ]; then
+            echo "afterpython/ruff.toml not found (ruff not set up); skipping."
+            exit 0
+          fi
+          uvx prek run --config afterpython/.pre-commit-config.yaml --all-files --show-diff-on-failure ruff-check ruff-format
 
   # Job 2: Detect Test Strategy
   # Determines whether to use pixi or uv based on pixi.toml presence
@@ -202,4 +208,44 @@ jobs:
           if-no-files-found: error
 
   # Job 5: Type Check
-  # typecheck:
+  # Runs `ap check` like the ty hook does locally, in the project's own environment
+  # (uv's .venv, or pixi's default environment when pixi.toml exists)
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Check for ty setup
+        # No afterpython/ty.toml means ty isn't set up (and there's no ty hook), pass green.
+        id: ty
+        run: |
+          if [ -f afterpython/ty.toml ]; then
+            echo "enabled=true" >> $GITHUB_OUTPUT
+          else
+            echo "afterpython/ty.toml not found (ty not set up); skipping."
+          fi
+
+      - name: Install uv
+        if: steps.ty.outputs.enabled == 'true' && hashFiles('pixi.toml') == ''
+        uses: astral-sh/setup-uv@v10.2.0
+
+      - name: Run ty (uv)
+        # the package + all [dependency-groups] (incl. afterpython itself), at the versions in uv.lock
+        if: steps.ty.outputs.enabled == 'true' && hashFiles('pixi.toml') == ''
+        run: |
+          uv sync --locked --all-groups
+          uv run --no-sync ap check
+
+      - name: Set up pixi
+        if: steps.ty.outputs.enabled == 'true' && hashFiles('pixi.toml') != ''
+        uses: prefix-dev/setup-pixi@v0.10.2
+        with:
+          pixi-version: v0.81.0
+          cache: true
+          environments: default
+
+      - name: Run ty (pixi)
+        # ty uses the pixi environment it runs in (there's no .venv in CI)
+        if: steps.ty.outputs.enabled == 'true' && hashFiles('pixi.toml') != ''
+        run: pixi run ap check

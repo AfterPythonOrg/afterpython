@@ -17,8 +17,14 @@ depends-on = [
   # { task = "test", environment = "py315" },
 ]
 
+[environments]
+default = ["py312", "dev", "test", "optional"]
+py312 = ["py312", "test", "optional"]
+py313 = ["py313", "test", "optional"]
+py314 = ["py314", "test", "optional"]
+
 [dependencies]
-gh = ">=2.92.0"
+gh = ">=2.101.0"
 
 # `pixi config set pinning-strategy latest-up` removes the upper bound on the versions of the dependencies
 [pypi-dependencies]
@@ -35,17 +41,7 @@ mystmd = ">=1.11.0"
 pdoc = ">=16.0.0"
 ruff = ">=0.16.9"
 prek = ">=0.5.4"
-
-# [pypi-options.dependency-overrides]
-# platformdirs = ">=4.5.0"
-# nodeenv = ">=1.9.1"
-
-[environments]
-default = ["py312", "dev", "optional"]
-py312 = ["py312", "test", "optional"]
-py313 = ["py313", "test", "optional"]
-py314 = ["py314", "test", "optional"]
-# py315 = ["py315", "test", "optional"]
+ty = ">=0.0.84"
 
 [feature.optional.pypi-dependencies]
 marimo = { version = ">=0.25.0", extras = ["recommended", "lsp"] }

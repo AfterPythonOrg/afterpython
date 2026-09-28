@@ -39,8 +39,9 @@ def init_ruff():
             )
             + "afterpython keeps all ruff settings in afterpython/ruff.toml, "
             "and pyproject.toml's [tool.ruff] only points to it.\n"
-            "Until then, `ap check` and `ap format` will use your existing ruff config, "
-            "not afterpython's.\n"
+            "Until then, `ap lint` and `ap format` will use your existing ruff config, "
+            "not afterpython's, and there are no ruff hooks or CI lint job "
+            "(set them up yourself if you want them).\n"
             "To fix: remove the config(s) above (keep a copy of any settings you want), "
             "run `ap init ruff`, then add your settings to afterpython/ruff.toml."
         )
@@ -64,6 +65,45 @@ def init_ruff():
     data["tool"]["ruff"] = ruff_table
     write_pyproject(data)
     click.echo(f'Added [tool.ruff] extend = "{RUFF_EXTEND}" to pyproject.toml')
+
+
+def _find_ty_config_conflicts() -> list[str]:
+    """Find ty configs at the project root that `ap check` would silently ignore
+    (it passes --config-file afterpython/ty.toml), while editors and plain `ty` still use them."""
+    from afterpython.tools.pyproject import read_pyproject
+
+    conflicts = []
+    if (ap.paths.user_path / "ty.toml").exists():
+        conflicts.append("ty.toml")
+    if "ty" in read_pyproject().get("tool", {}):
+        conflicts.append("[tool.ty] in pyproject.toml")
+    return conflicts
+
+
+def init_ty():
+    if conflicts := _find_ty_config_conflicts():
+        click.echo(
+            click.style(
+                f"Skipped ty setup: found existing ty config ({', '.join(conflicts)}).\n",
+                fg="yellow",
+                bold=True,
+            )
+            + "afterpython keeps all ty settings in afterpython/ty.toml, "
+            "which `ap check` passes to ty with --config-file.\n"
+            "Until then, `ap check` will use your existing ty config, "
+            "and there is no ty hook or CI type check job "
+            "(set them up yourself if you want them).\n"
+            "To fix: remove the config(s) above (keep a copy of any settings you want), "
+            "run `ap init ty`, then add your settings to afterpython/ty.toml."
+        )
+        return
+
+    ty_toml_path = ap.paths.afterpython_path / "ty.toml"
+    if ty_toml_path.exists():
+        click.echo(f"ty configuration file {ty_toml_path} already exists")
+        return
+    shutil.copy(ap.paths.templates_path / "ty-template.toml", ty_toml_path)
+    click.echo(f"Created {ty_toml_path}")
 
 
 def init_faq():
@@ -126,7 +166,7 @@ def init(ctx, yes, skip_website: bool):
         create_dependabot,
         create_workflow,
     )
-    from afterpython.tools.prek import init_prek
+    from afterpython.tools.prek import init_prek, sync_hooks
     from afterpython.tools.pyproject import init_pyproject
 
     _preflight_init(skip_website)
@@ -159,7 +199,6 @@ def init(ctx, yes, skip_website: bool):
             # run instead of silently continuing to write more files.
             subprocess.run(["ap", "init", "website"], check=True)
 
-        # TODO: add type checking related stuff here
         init_py_typed()
 
         create_workflow("ci")
@@ -174,6 +213,14 @@ def init(ctx, yes, skip_website: bool):
             default=True,
         ):
             init_ruff()
+
+        if yes or click.confirm(
+            f"\nCreate ty.toml in {afterpython_path} (type checking with `ap check`)?",
+            default=True,
+        ):
+            init_ty()
+        # whatever the answers: keep ruff/ty hooks only for the tools that were set up
+        sync_hooks()
 
         if yes or click.confirm(
             "\nCreate release workflow in .github/workflows/release.yml?",
@@ -201,7 +248,23 @@ def init_ruff_subcommand():
     Use this to re-run the ruff setup, e.g. after removing a conflicting
     ruff config that made `ap init` skip it.
     """
+    from afterpython.tools.prek import sync_hooks
+
     init_ruff()
+    sync_hooks()
+
+
+@init.command("ty")
+def init_ty_subcommand():
+    """Initialize ty config (afterpython/ty.toml, used by `ap check`)
+
+    Use this to re-run the ty setup, e.g. after removing a conflicting
+    ty config that made `ap init` skip it.
+    """
+    from afterpython.tools.prek import sync_hooks
+
+    init_ty()
+    sync_hooks()
 
 
 @init.command("website")

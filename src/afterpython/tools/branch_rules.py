@@ -6,10 +6,11 @@ Uses gh CLI to create GitHub rulesets.
 import json
 import subprocess
 from copy import deepcopy
+from typing import Any
 
 from afterpython.tools._git import is_gh_authenticated
 
-DEFAULT_RULESET = {
+DEFAULT_RULESET: dict[str, Any] = {
     "name": "afterpython-default",  # The ruleset identifier in GitHub
     "target": "branch",  # This ruleset applies to branches (not tags)
     "enforcement": "active",  # Rules are enforced (vs "disabled" or "evaluate")
@@ -39,6 +40,7 @@ DEFAULT_RULESET = {
                     {"context": "lint"},
                     {"context": "test"},
                     {"context": "build"},
+                    {"context": "typecheck"},
                 ],
                 # The PR branch must be up to date with the base branch (main) before merging
                 "strict_required_status_checks_policy": True,

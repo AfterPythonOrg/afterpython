@@ -4,7 +4,7 @@ pcu = "pip check updates", similar to ncu (npm check updates in Node.js)
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, NamedTuple, TypedDict
+from typing import TYPE_CHECKING, NamedTuple
 
 if TYPE_CHECKING:
     from tomlkit.toml_document import TOMLDocument
@@ -27,15 +27,11 @@ type DependencyName = str
 type ExtrasName = str
 type GroupName = str
 type FakeCategoryName = str
-Dependencies = TypedDict(
-    "Dependencies",
-    {
-        "dependencies": dict[FakeCategoryName, list[Dependency]],
-        "optional-dependencies": dict[ExtrasName, list[Dependency]],
-        "dependency-groups": dict[GroupName, list[Dependency]],
-        "build-system": dict[str, list[Dependency]],
-    },
-)
+# dependency type -> category -> dependencies, where the dependency types are:
+# "dependencies" (category: FakeCategoryName), "optional-dependencies" (ExtrasName),
+# "dependency-groups" (GroupName), "build-system" (category: "requires")
+# (a plain dict, not a TypedDict, since the code loops over the dependency types as str keys)
+type Dependencies = dict[str, dict[str, list[Dependency]]]
 
 
 def parse_min_max_versions_from_requirement(
@@ -74,7 +70,11 @@ async def get_latest_versions(
     async with httpx2.AsyncClient(timeout=10.0) as client:
         tasks = [fetch_version(client, req.name) for req in requirements]
         results = await asyncio.gather(*tasks, return_exceptions=True)
-        return dict(zip([req.name for req in requirements], results, strict=False))
+        # a failed request (e.g. timeout) means no latest version, like a package not found
+        return {
+            req.name: None if isinstance(result, BaseException) else result
+            for req, result in zip(requirements, results, strict=False)
+        }
 
 
 def get_dependencies() -> Dependencies:
@@ -82,30 +82,32 @@ def get_dependencies() -> Dependencies:
     from afterpython.tools.pyproject import read_pyproject
 
     doc: TOMLDocument = read_pyproject()
-    dependencies = {
-        "dependencies": list(doc["project"].get("dependencies", [])),
+    build_system = dict(doc.get("build-system", {}))
+    # only keep the "requires" key
+    if "requires" in build_system:
+        build_system = {"requires": build_system["requires"]}
+    dependency_strings: dict[str, dict[str, list[str]]] = {
+        # add "fake_category" to "dependencies" to have the same structure as "optional-dependencies" and "dependency-groups"
+        "dependencies": {"fake_category": list(doc["project"].get("dependencies", []))},
         "optional-dependencies": dict(doc["project"].get("optional-dependencies", {})),
         "dependency-groups": dict(doc.get("dependency-groups", {})),
-        "build-system": dict(doc.get("build-system", {})),
+        "build-system": build_system,
     }
-    # add "fake_category" to "dependencies" to have the same structure as "optional-dependencies" and "dependency-groups"
-    dependencies["dependencies"] = {"fake_category": dependencies["dependencies"]}
-    # only keep the "requires" key
-    if "requires" in dependencies["build-system"]:
-        dependencies["build-system"] = {
-            "requires": dependencies["build-system"]["requires"]
-        }
 
     # convert all dependency strings to type "Requirement"
-    for dep_type in dependencies:
-        for category, deps in dependencies[dep_type].items():
-            dependencies[dep_type][category] = [Requirement(dep) for dep in deps]
+    requirements: dict[str, dict[str, list[Requirement]]] = {
+        dep_type: {
+            category: [Requirement(dep) for dep in deps]
+            for category, deps in categories.items()
+        }
+        for dep_type, categories in dependency_strings.items()
+    }
 
     # flatten the dependencies to a list of type "Requirement"
     all_reqs = [
         req
-        for deps_dict in dependencies.values()
-        for req_list in deps_dict.values()
+        for reqs_dict in requirements.values()
+        for req_list in reqs_dict.values()
         for req in req_list
     ]
 
@@ -113,18 +115,20 @@ def get_dependencies() -> Dependencies:
     latest_versions = asyncio.run(get_latest_versions(all_reqs))
 
     # convert the requirements to type "Dependency"
-    for dep_type in dependencies:
-        for category, requirements in dependencies[dep_type].items():
-            dependencies[dep_type][category] = [
+    return {
+        dep_type: {
+            category: [
                 Dependency(
                     **parse_min_max_versions_from_requirement(req),
                     requirement=req,
                     latest_version=latest_versions.get(req.name),
                 )
-                for req in requirements
+                for req in reqs
             ]
-
-    return dependencies
+            for category, reqs in categories.items()
+        }
+        for dep_type, categories in requirements.items()
+    }
 
 
 def update_dependencies(dependencies: Dependencies):
@@ -150,17 +154,18 @@ def update_dependencies(dependencies: Dependencies):
                 req: Requirement = dep.requirement
                 min_ver = str(dep.min_version) if dep.min_version else None
                 max_ver = str(dep.max_version) if dep.max_version else None
-                latest_ver = str(dep.latest_version) if dep.latest_version else None
+                latest_version = dep.latest_version
                 if (
                     req.name in package
                     and min_ver
-                    and latest_ver
+                    and latest_version is not None
                     and min_ver in package
                 ):
+                    latest_ver = str(latest_version)
                     doc_deps[i] = package
                     # Update this first because latest_ver may equal max_ver.
-                    if max_ver and dep.latest_version not in req.specifier:
-                        next_max_ver = str(dep.latest_version.next_breaking())
+                    if max_ver and latest_version not in req.specifier:
+                        next_max_ver = str(latest_version.next_breaking())
                         doc_deps[i] = doc_deps[i].replace(max_ver, next_max_ver, 1)
                     doc_deps[i] = doc_deps[i].replace(min_ver, latest_ver, 1)
 

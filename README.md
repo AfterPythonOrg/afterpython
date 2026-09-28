@@ -25,6 +25,7 @@
 [project-website-template]: https://github.com/AfterPythonOrg/project-website-template
 [uv]: https://docs.astral.sh/uv/
 [ruff]: https://docs.astral.sh/ruff/
+[ty]: https://docs.astral.sh/ty/
 
 
 ## Problem
@@ -92,5 +93,5 @@ ap tui
 - [ruff]
 - [pagefind]
 - [WebLLM]
-<!-- - ty -->
+- [ty]
 <!-- - [pixi] -->

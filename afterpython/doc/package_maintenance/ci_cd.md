@@ -7,7 +7,8 @@ Currently, `afterpython` only supports GitHub Actions for CI/CD pipelines.
 Inside `.github/workflows/`, you'll find the following workflows:
 
 ### `ci.yml`
-Runs linting and formatting with ruff, runs tests with pytest and builds the package and verifies it can be installed with `uv build`.
+Runs linting and formatting with ruff, type checking with ty (`ap check`), runs tests with pytest and builds the package and verifies it can be installed with `uv build`.
+The ruff and ty checks only run if you set up `afterpython/ruff.toml` and `afterpython/ty.toml` respectively.
 
 ### `release.yml` (optional)
 Releases your package to [PyPI] and GitHub.
@@ -37,7 +38,7 @@ To create default branch protection rules:
 	- No Branch Deletion
         - Protects the main branch from being deleted.
 	- CI Status Checks (before the branch can be updated)
-        - Requires all configured CI checks to pass before any update (push or PR merge) is allowed.
+        - Requires the CI jobs `lint`, `test`, `build` and `typecheck` to pass before any update (push or PR merge) is allowed.
 
 You can view them in **GitHub → Settings → Rules → Rulesets**
 

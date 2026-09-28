@@ -210,3 +210,6 @@ tests/data/
 !afterpython/_website/src/lib/
 
 afterpython/_website.backup/
+
+# zed settings
+**/.zed/

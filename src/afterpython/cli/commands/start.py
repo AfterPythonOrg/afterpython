@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from afterpython._typing import NodeEnv
@@ -10,7 +10,7 @@ import subprocess
 import click
 from click.exceptions import Exit
 
-command_kwargs = {
+command_kwargs: dict[str, Any] = {
     "add_help_option": False,  # disable click's --help option so that myst start --help can work
     "context_settings": dict(
         ignore_unknown_options=True,
@@ -97,9 +97,11 @@ def _run(ctx):
     # Get the name of the function that called _run
     import inspect
 
-    caller_frame = inspect.currentframe().f_back
+    frame = inspect.currentframe()
+    # always set on CPython, only typed as optional
+    assert frame is not None and frame.f_back is not None
     command_name = (
-        caller_frame.f_code.co_name
+        frame.f_back.f_code.co_name
     )  # e.g. doc, blog, tutorial, example, guide
 
     # Create a new context for start that includes extra args for `myst start`

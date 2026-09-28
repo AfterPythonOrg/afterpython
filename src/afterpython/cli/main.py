@@ -19,6 +19,7 @@ from afterpython.cli.commands.format import format
 from afterpython.cli.commands.init import init
 from afterpython.cli.commands.init_branch_rules import init_branch_rules
 from afterpython.cli.commands.install import install
+from afterpython.cli.commands.lint import lint
 from afterpython.cli.commands.lock import lock
 from afterpython.cli.commands.prek import prek
 from afterpython.cli.commands.preview import preview
@@ -106,8 +107,8 @@ afterpython_group.add_command(init)
 afterpython_group.add_command(build)
 afterpython_group.add_command(dev)
 afterpython_group.add_command(update)
+afterpython_group.add_command(lint)
 afterpython_group.add_command(check)
-afterpython_group.add_command(check, name="lint")
 afterpython_group.add_command(format)
 afterpython_group.add_command(sync)
 afterpython_group.add_command(start)

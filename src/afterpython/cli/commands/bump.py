@@ -34,6 +34,7 @@ def _uv_version_args(
         kind, number = version.pre
         return [str(Version(f"{version.base_version}{kind}{number}"))]
     # e.g. 0.1.0a1 -> 0.1.0a2, 0.1.0rc0 -> 0.1.0rc1
+    assert version.pre is not None  # not stable and not dev, so it's a pre-release
     return ["--bump", PRE_KINDS[version.pre[0]]]
 
 

@@ -45,6 +45,7 @@ dependencies = [
     "pdoc>=16.0.0",
     "ruff>=0.16.9",
     "prek>=0.5.4",
+    "ty>=0.0.84",
 ]
 
 [project.optional-dependencies]
@@ -59,9 +60,6 @@ documentation = "https://afterpython.afterpython.org/doc"
 ap = "afterpython.main:run_cli"
 pcu = "afterpython.main:run_pcu"
 
-# [tool.uv]
-# override-dependencies = ["platformdirs>=4.5.0", "nodeenv>=1.9.1"]
-
 [build-system]
 requires = ["uv_build>=0.12.19,<0.13.0"]
 build-backend = "uv_build"
@@ -72,12 +70,6 @@ build-backend = "uv_build"
 [tool.uv.build-backend]
 module-name = "afterpython"
 module-root = "src"
-
-# [tool.uv.sources]
-# afterpython = { path = ".", editable = true }
-
-[tool.pyright]
-typeCheckingMode = "basic"
 
 [tool.ruff]
 extend = "afterpython/ruff.toml"

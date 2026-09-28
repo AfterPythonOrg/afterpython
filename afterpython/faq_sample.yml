@@ -14,7 +14,7 @@
 - question: What does `ap init` set up for me?
   answer: |
     `ap init` configures:
-    - Pre-commit hooks (ruff, mypy)
+    - Pre-commit hooks (ruff, ty)
     - Conventional commit message checks (commit types in `afterpython.toml`)
     - Semantic-release for versioning
     - The project website scaffold under `afterpython/`

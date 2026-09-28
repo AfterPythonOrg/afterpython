@@ -1,6 +1,7 @@
 [mystmd]: https://mystmd.org
 [pre-commit]: https://github.com/pre-commit/pre-commit
 [ruff]: https://github.com/astral-sh/ruff
+[ty]: https://github.com/astral-sh/ty
 
 # Concepts
 
@@ -16,6 +17,7 @@ The `afterpython/` folder serves as a centralized location for both your project
 
 **Configuration files:**
 - `ruff.toml` for [ruff]
+- `ty.toml` for [ty]
 - `.pre-commit-config.yaml` for [pre-commit]
 - `authors.yml` for [mystmd]
 - `afterpython.toml` for `afterpython` itself (e.g. allowed commit types)
@@ -25,7 +27,7 @@ The `afterpython/` folder serves as a centralized location for both your project
 This structure serves two goals:
 
 1. **Declutter the root directory** - Keeps maintenance-related configuration files separate from package code, making the project structure cleaner
-2. **Provide sane defaults** - Comes pre-configured with sensible defaults for common maintenance tools like [pre-commit] and [ruff], so you can start using them immediately
+2. **Provide sane defaults** - Comes pre-configured with sensible defaults for common maintenance tools like [pre-commit], [ruff] and [ty], so you can start using them immediately
 
 
 ---
