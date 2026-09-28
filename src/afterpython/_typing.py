@@ -1,4 +1,4 @@
-from typing import Literal, TypeAlias
+from typing import Literal
 
-NodeEnv: TypeAlias = dict[str, str]
+type NodeEnv = dict[str, str]
 tContentType = Literal["doc", "blog", "tutorial", "example", "guide"]

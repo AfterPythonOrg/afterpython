@@ -9,7 +9,7 @@
 src = ["..", "../src"]
 
 line-length = 88
-target-version = "py311"
+target-version = "py312"
 
 [lint]
 # ruff default rules:

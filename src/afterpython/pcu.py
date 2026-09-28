@@ -4,7 +4,7 @@ pcu = "pip check updates", similar to ncu (npm check updates in Node.js)
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, NamedTuple, TypeAlias, TypedDict
+from typing import TYPE_CHECKING, NamedTuple, TypedDict
 
 if TYPE_CHECKING:
     from tomlkit.toml_document import TOMLDocument
@@ -23,10 +23,10 @@ class Dependency(NamedTuple):
     latest_version: Version | None = None
 
 
-DependencyName: TypeAlias = str
-ExtrasName: TypeAlias = str
-GroupName: TypeAlias = str
-FakeCategoryName: TypeAlias = str
+type DependencyName = str
+type ExtrasName = str
+type GroupName = str
+type FakeCategoryName = str
 Dependencies = TypedDict(
     "Dependencies",
     {
