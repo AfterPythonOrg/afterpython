@@ -142,7 +142,17 @@ def init(ctx, yes, skip_website: bool):
 
         init_pyproject()
 
-        init_afterpython()
+        # only asked when afterpython.toml is created, it's ignored otherwise
+        commit_types = (
+            yes
+            or (afterpython_path / "afterpython.toml").exists()
+            or click.confirm(
+                "\nCheck commit messages against conventional commit types "
+                "(e.g. 'feat: add X', types listed in afterpython.toml)?",
+                default=True,
+            )
+        )
+        init_afterpython(commit_types=commit_types)
 
         if not skip_website:
             # check=True so a failure inside `ap init website` aborts the parent

@@ -67,7 +67,10 @@ def _subject(message: str) -> str:
 )
 @click.pass_context
 def commit_msg(ctx, message_file: Path, template: bool):
-    """Check a commit message against [commit.types] in afterpython.toml (used by the ap-commit hook)"""
+    """Check a commit message against [commit.types] in afterpython.toml (used by the ap-commit hook)
+
+    Without (or with an empty) [commit.types], any message is accepted.
+    """
     from afterpython._io.toml import _from_tomlkit
     from afterpython.tools._afterpython import read_afterpython
 
@@ -81,12 +84,9 @@ def commit_msg(ctx, message_file: Path, template: bool):
             _add_template(message_file, commit_types)
         return
 
+    # opted out: no (or an empty) [commit.types] section means no check
     if not commit_types:
-        click.echo(
-            "❌ No commit types found, add a [commit.types] section to afterpython/afterpython.toml",
-            err=True,
-        )
-        ctx.exit(1)
+        return
 
     subject = _subject(message_file.read_text(encoding="utf-8"))
     # empty messages are rejected by git itself

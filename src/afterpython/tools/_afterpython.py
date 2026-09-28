@@ -106,12 +106,37 @@ def update_afterpython(data_update: dict):
     write_toml(afterpython_toml_path, existing_data)
 
 
-def init_afterpython():
-    """Initialize afterpython.toml"""
+def _comment_out_commit_types(text: str) -> str:
+    """Comment out the [commit.types] section, so the ap-commit hook doesn't check commit messages"""
+    lines = text.splitlines()
+    start = lines.index("[commit.types]")
+    end = next(
+        (i for i in range(start + 1, len(lines)) if lines[i].startswith("[")),
+        len(lines),
+    )
+    lines[start:end] = [
+        "# uncomment to check commit messages against these types",
+        *(f"# {line}" if line.strip() else line for line in lines[start:end]),
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def init_afterpython(commit_types: bool = True):
+    """Initialize afterpython.toml
+
+    Args:
+        commit_types: if False, [commit.types] is commented out (commit messages are not checked)
+    """
     afterpython_toml_path = ap.paths.afterpython_path / "afterpython.toml"
     if afterpython_toml_path.exists():
         print(f"afterpython.toml already exists at {afterpython_toml_path}")
         return
     afterpython_template_path = ap.paths.templates_path / "afterpython-template.toml"
-    shutil.copy(afterpython_template_path, afterpython_toml_path)
+    if commit_types:
+        shutil.copy(afterpython_template_path, afterpython_toml_path)
+    else:
+        text = afterpython_template_path.read_text(encoding="utf-8")
+        afterpython_toml_path.write_text(
+            _comment_out_commit_types(text), encoding="utf-8"
+        )
     print(f"Created {afterpython_toml_path}")

@@ -76,16 +76,17 @@ def test_error_lists_allowed_types(tmp_path):
         assert t in result.output and desc in result.output
 
 
-def test_missing_commit_types(tmp_path, monkeypatch):
+@pytest.mark.parametrize("toml", ["", "[commit.types]\n"])
+def test_no_commit_types_skips_check(tmp_path, monkeypatch, toml):
     import tomlkit
 
     monkeypatch.setattr(
         "afterpython.tools._afterpython.read_afterpython",
-        lambda: tomlkit.document(),
+        lambda: tomlkit.parse(toml),
     )
-    result = run(tmp_path, "feat: add X")
-    assert result.exit_code == 1
-    assert "[commit.types]" in result.output
+    result = run(tmp_path, "anything goes")
+    assert result.exit_code == 0, result.output
+    assert result.output == ""
 
 
 GIT_DEFAULT_MESSAGE = (

@@ -45,6 +45,11 @@ wip = "Work in progress"
 ```
 To allow a new type, add a line, e.g. `deps = "Dependency updates"`; to disallow one, remove its line. The descriptions are shown in the commit message template and in the error message when a commit is rejected.
 
+:::{note} Opting out
+Commit messages are only checked when `[commit.types]` has at least one type.
+To opt out, remove the section or leave it empty. If you opted out during `ap init`, the section is commented out, uncomment it to opt in.
+:::
+
 ### Bypassing Checks
 - `SKIP=ap-commit git commit` — skip the commit message check
 - `git commit --no-verify` — skip all pre-commit and commit message hooks
