@@ -77,9 +77,10 @@ def dependencies(upgrade: bool, all_: bool, exclude: tuple[str, ...]):
                     msg += f" ({category_name})"
                 click.echo(msg)
     if not has_at_least_one_update:
-        click.echo(f"\n{click.style('No dependencies to update.', bold=True)}")
-        return
-    if has_at_least_one_update and upgrade:
+        click.echo(
+            f"\n{click.style('No pyproject.toml dependencies to update.', bold=True)}"
+        )
+    elif upgrade:
         if excluded:
             for dep_type in dependencies:
                 for category, deps in dependencies[dep_type].items():
