@@ -37,7 +37,7 @@ dependencies = [
     "httpx2>=2.13.1",
     "tomlkit>=0.15.1",
     "ruamel-yaml>=0.19.1",
-    "gitpython>=3.1.62",
+    "gitpython>=3.2.0",
     "python-dotenv>=1.2.3",
     "pyproject-metadata>=0.12.1",
     "jupytext>=1.19.5",
@@ -61,7 +61,7 @@ ap = "afterpython.main:run_cli"
 pcu = "afterpython.main:run_pcu"
 
 [build-system]
-requires = ["uv_build>=0.12.19,<0.13.0"]
+requires = ["uv_build>=0.12.21,<0.13.0"]
 build-backend = "uv_build"
 
 [tool.uv]

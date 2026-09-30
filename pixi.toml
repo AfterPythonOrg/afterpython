@@ -24,7 +24,7 @@ py313 = ["py313", "test", "optional"]
 py314 = ["py314", "test", "optional"]
 
 [dependencies]
-gh = ">=2.101.0"
+gh = ">=2.102.0"
 
 # `pixi config set pinning-strategy latest-up` removes the upper bound on the versions of the dependencies
 [pypi-dependencies]
@@ -33,7 +33,7 @@ trogon = ">=0.6.0"
 httpx2 = ">=2.13.1"
 tomlkit = ">=0.15.1"
 ruamel-yaml = ">=0.19.1"
-gitpython = ">=3.1.62"
+gitpython = ">=3.2.0"
 python-dotenv = ">=1.2.3"
 pyproject-metadata = ">=0.12.1"
 jupytext = ">=1.19.5"
