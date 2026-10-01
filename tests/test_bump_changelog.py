@@ -186,3 +186,30 @@ def test_changelog_has_no_links_without_github_remote(repo, monkeypatch):
     changelog = (repo.user_path / "CHANGELOG.md").read_text()
     assert "## [0.1.2] - " in changelog
     assert "- Fix Y (#7)" in changelog
+
+
+def test_changelog_ends_with_single_newline(repo):
+    _commit(repo, "feat: add X")
+    _run_bump()
+    _commit(repo, "feat: add Y")
+    _run_bump()
+    changelog = (repo.user_path / "CHANGELOG.md").read_text()
+    assert changelog.endswith("\n") and not changelog.endswith("\n\n")
+
+
+def test_rollback_unstages_new_changelog_changed_by_hook(repo):
+    _commit(repo, "feat: add X")
+    # a hook that changes the staged CHANGELOG.md and fails, like end-of-file-fixer
+    hook = repo.user_path / ".git" / "hooks" / "pre-commit"
+    hook.write_text("#!/bin/sh\necho fixed >> CHANGELOG.md\nexit 1\n")
+    hook.chmod(0o755)
+    result = CliRunner().invoke(bump, [])
+    assert result.exit_code != 0
+    status = subprocess.run(
+        ["git", "status", "--porcelain"],
+        cwd=repo.user_path,
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout
+    assert status == ""

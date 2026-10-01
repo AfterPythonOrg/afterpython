@@ -61,7 +61,8 @@ def _restore(files: list[str], new_files: list[str]):
 
     _git("restore", "--source=HEAD", "--staged", "--worktree", "--", *files)
     for file in new_files:
-        _git("rm", "--cached", "--quiet", "--ignore-unmatch", "--", file)
+        # --force, a hook (e.g. end-of-file-fixer) may have changed the file after it was staged
+        _git("rm", "--cached", "--force", "--quiet", "--ignore-unmatch", "--", file)
         (ap.paths.user_path / file).unlink(missing_ok=True)
     click.echo(f"↩️  Restored {', '.join(files + new_files)}", err=True)
 
@@ -101,6 +102,10 @@ def _write_changelog(tag: str):
     )
     if result.returncode != 0:
         raise click.ClickException(f"git-cliff failed:\n{result.stderr.strip()}")
+    # the blank line after each release also ends up at the end of the file,
+    # end it with a single newline as end-of-file-fixer wants
+    path = ap.paths.user_path / CHANGELOG
+    path.write_text(path.read_text().rstrip("\n") + "\n")
 
 
 def _is_interactive() -> bool:
