@@ -11,6 +11,7 @@ from afterpython import __version__
 from afterpython.cli.commands.add import add
 from afterpython.cli.commands.build import build
 from afterpython.cli.commands.bump import bump
+from afterpython.cli.commands.changelog import changelog
 from afterpython.cli.commands.check import check
 from afterpython.cli.commands.clean import clean
 from afterpython.cli.commands.commit_msg import commit_msg
@@ -125,6 +126,7 @@ afterpython_group.add_command(prek)
 afterpython_group.add_command(prek, name="pc")
 afterpython_group.add_command(commit_msg)
 afterpython_group.add_command(bump)
+afterpython_group.add_command(changelog)
 afterpython_group.add_command(release)
 afterpython_group.add_command(init_branch_rules)
 afterpython_group.add_command(add)

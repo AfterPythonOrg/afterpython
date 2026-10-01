@@ -26,7 +26,7 @@
 [uv]: https://docs.astral.sh/uv/
 [ruff]: https://docs.astral.sh/ruff/
 [ty]: https://docs.astral.sh/ty/
-
+[git-cliff]: https://git-cliff.org/
 
 ## Problem
 Going from **writing Python code to publishing and maintaining a package** is **time-consuming**.
@@ -91,7 +91,8 @@ ap tui
 - [pdoc]
 - [uv]
 - [ruff]
+- [ty]
 - [pagefind]
 - [WebLLM]
-- [ty]
+- [git-cliff]
 <!-- - [pixi] -->

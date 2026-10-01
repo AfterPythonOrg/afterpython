@@ -23,6 +23,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0  # full history and tags, for git-cliff's release notes
 
       - name: Install uv
         uses: astral-sh/setup-uv@v10.2.0
@@ -61,11 +63,45 @@ jobs:
             echo "prerelease=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: Determine release notes range
+        id: notes_range
+        if: hashFiles('afterpython/cliff.toml') != ''
+        run: |
+          if [ "${{ steps.check_prerelease.outputs.prerelease }}" = "true" ]; then
+            # pre-release: what's new since the previous tag of any kind (e.g. rc0 -> rc1)
+            PREVIOUS="$(git describe --tags --abbrev=0 --match 'v*' "$GITHUB_REF_NAME^" 2>/dev/null || true)"
+            ARGS=""
+          else
+            # stable: everything since the previous stable tag, pre-release tags in between are ignored
+            # (the same section `ap bump` wrote to CHANGELOG.md)
+            PREVIOUS="$(git describe --tags --abbrev=0 --match 'v*' \
+              --exclude '*a[0-9]*' --exclude '*b[0-9]*' --exclude '*rc[0-9]*' --exclude '*dev[0-9]*' \
+              "$GITHUB_REF_NAME^" 2>/dev/null || true)"
+            ARGS="--ignore-tags '(a|b|rc|dev)[0-9]+'"
+          fi
+          # without a previous tag, the whole history up to this tag is this release
+          if [ -n "$PREVIOUS" ]; then
+            ARGS="$ARGS $PREVIOUS..$GITHUB_REF_NAME"
+          fi
+          echo "args=$ARGS" >> $GITHUB_OUTPUT
+
+      - name: Generate release notes
+        id: git-cliff
+        if: hashFiles('afterpython/cliff.toml') != ''
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: afterpython/cliff.toml
+          args: --strip header ${{ steps.notes_range.outputs.args }}
+        env:
+          # the tag is checked out without a branch, so git-cliff needs the repo for its links
+          GITHUB_REPO: ${{ github.repository }}
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ github.ref_name }}
           name: ${{ github.ref_name }}
+          body: ${{ steps.git-cliff.outputs.content }}  # empty without afterpython/cliff.toml
           generate_release_notes: false
           prerelease: ${{ steps.check_prerelease.outputs.prerelease }}
           files: dist/*  # Attach built packages (wheel + sdist)

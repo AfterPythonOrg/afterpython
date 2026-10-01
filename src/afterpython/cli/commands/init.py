@@ -106,6 +106,42 @@ def init_ty():
     click.echo(f"Created {ty_toml_path}")
 
 
+def _find_cliff_config_conflicts() -> list[str]:
+    """Find git-cliff configs at the project root that afterpython would silently ignore
+    (it passes --config afterpython/cliff.toml), while plain `git cliff` still uses them."""
+    from afterpython.tools.pyproject import read_pyproject
+
+    conflicts = []
+    if (ap.paths.user_path / "cliff.toml").exists():
+        conflicts.append("cliff.toml")
+    if "git-cliff" in read_pyproject().get("tool", {}):
+        conflicts.append("[tool.git-cliff] in pyproject.toml")
+    return conflicts
+
+
+def init_cliff():
+    if conflicts := _find_cliff_config_conflicts():
+        click.echo(
+            click.style(
+                f"Skipped git-cliff setup: found existing git-cliff config ({', '.join(conflicts)}).\n",
+                fg="yellow",
+                bold=True,
+            )
+            + "afterpython keeps all git-cliff settings in afterpython/cliff.toml, "
+            "which it passes to git-cliff with --config.\n"
+            "To fix: remove the config(s) above (keep a copy of any settings you want), "
+            "run `ap init cliff`, then add your settings to afterpython/cliff.toml."
+        )
+        return
+
+    cliff_toml_path = ap.paths.afterpython_path / "cliff.toml"
+    if cliff_toml_path.exists():
+        click.echo(f"git-cliff configuration file {cliff_toml_path} already exists")
+        return
+    shutil.copy(ap.paths.templates_path / "cliff-template.toml", cliff_toml_path)
+    click.echo(f"Created {cliff_toml_path}")
+
+
 def init_faq():
     faq_path = ap.paths.afterpython_path / "faq.yml"
     if faq_path.exists():
@@ -223,6 +259,12 @@ def init(ctx, yes, skip_website: bool):
         sync_hooks()
 
         if yes or click.confirm(
+            f"\nCreate cliff.toml in {afterpython_path} (changelog generation with git-cliff)?",
+            default=True,
+        ):
+            init_cliff()
+
+        if yes or click.confirm(
             "\nCreate release workflow in .github/workflows/release.yml?",
             default=True,
         ):
@@ -265,6 +307,16 @@ def init_ty_subcommand():
 
     init_ty()
     sync_hooks()
+
+
+@init.command("cliff")
+def init_cliff_subcommand():
+    """Initialize git-cliff config (afterpython/cliff.toml, used for changelog generation)
+
+    Use this to re-run the git-cliff setup, e.g. after removing a conflicting
+    git-cliff config that made `ap init` skip it.
+    """
+    init_cliff()
 
 
 @init.command("website")

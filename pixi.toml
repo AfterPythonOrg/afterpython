@@ -42,6 +42,7 @@ pdoc = ">=16.0.0"
 ruff = ">=0.16.9"
 prek = ">=0.5.4"
 ty = ">=0.0.84"
+git-cliff = ">=2.14.2"
 
 [feature.optional.pypi-dependencies]
 marimo = { version = ">=0.25.0", extras = ["recommended", "lsp"] }
