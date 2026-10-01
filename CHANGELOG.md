@@ -15,7 +15,7 @@
 - Both ap-commit hooks now put the project's .venv on PATH themselves and call ap directly
 - Ruff now uses afterpython/ruff.toml for the whole project, not only files inside afterpython/
 - `pcu -u --all` upgrades pixi and prek even when pyproject.toml is up to date
-- Ap bump leaves CHANGELOG.md ending in one newline and unstages it on rollback
+- `ap bump` leaves CHANGELOG.md ending in one newline and unstages it on rollback
 
 ### 📚 Documentation
 
