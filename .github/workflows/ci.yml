@@ -66,7 +66,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.12', '3.13', '3.14']
+        python-version: ['3.13', '3.14']
       fail-fast: false
 
     env:
@@ -106,7 +106,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        environment: ['py312', 'py313', 'py314']
+        environment: ['py313', 'py314']
       fail-fast: false
 
     steps:
