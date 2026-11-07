@@ -169,14 +169,62 @@ def init_py_typed():
     click.echo(f"Created {py_typed_path}")
 
 
-def _preflight_init(skip_website: bool) -> None:
+def _preflight_init(website: bool) -> None:
     """Validate external prerequisites before any filesystem writes, so a
     failure aborts cleanly instead of leaving a half-initialized project."""
-    if not skip_website:
+    if website:
         from afterpython.tools.myst import ensure_pnpm_11
         from afterpython.utils import find_node_env
 
         ensure_pnpm_11(find_node_env())
+
+
+def _select_steps(yes: bool, skip_website: bool, ask_commit_types: bool) -> set[str]:
+    """Ask which optional setup steps to run, as one checkbox list (all checked by default).
+
+    Without a terminal (CI, piped input) or with --yes, nothing is asked and the defaults are used.
+    """
+    import sys
+
+    import questionary
+
+    # (step, label, checked by default)
+    options = [
+        (
+            "website",
+            "Project website (MyST, template, deploy workflow)",
+            not skip_website,
+        )
+    ]
+    # only relevant when afterpython.toml is created, it's ignored otherwise
+    if ask_commit_types:
+        options.append(
+            (
+                "commit_types",
+                "Commit message check (conventional commit types, e.g. 'feat: add X')",
+                True,
+            )
+        )
+    options += [
+        ("prek", "Pre-commit hooks (prek)", True),
+        ("ruff", "ruff: lint & format", True),
+        ("ty", "ty: type checking (`ap check`)", True),
+        ("cliff", "git-cliff: changelog", True),
+        ("release", "Release workflow (.github/workflows/release.yml)", True),
+        ("dependabot", "Dependabot (auto-update GitHub Actions versions)", True),
+    ]
+
+    if yes or not (sys.stdin.isatty() and sys.stdout.isatty()):
+        return {step for step, _, checked in options if checked}
+
+    choices = [
+        questionary.Choice(label, value=step, checked=checked)
+        for step, label, checked in options
+    ]
+    selected = questionary.checkbox("Select what to set up", choices=choices).ask()
+    if selected is None:  # Ctrl-C, before anything was written
+        raise click.Abort()
+    return set(selected)
 
 
 @click.group(invoke_without_command=True)
@@ -184,7 +232,7 @@ def _preflight_init(skip_website: bool) -> None:
     "--yes",
     "-y",
     is_flag=True,
-    help="Automatically answer yes to all prompts",
+    help="Set up everything without asking",
 )
 @click.option(
     "--skip-website",
@@ -205,32 +253,27 @@ def init(ctx, yes, skip_website: bool):
     from afterpython.tools.prek import init_prek, sync_hooks
     from afterpython.tools.pyproject import init_pyproject
 
-    _preflight_init(skip_website)
-
     paths = ctx.obj["paths"]
-    click.echo("Initializing afterpython...")
     afterpython_path = paths.afterpython_path
     static_path = paths.static_path
 
+    steps = _select_steps(
+        yes,
+        skip_website,
+        ask_commit_types=not (afterpython_path / "afterpython.toml").exists(),
+    )
+    _preflight_init(website="website" in steps)
+
+    click.echo("Initializing afterpython...")
     try:
         afterpython_path.mkdir(parents=True, exist_ok=True)
         static_path.mkdir(parents=True, exist_ok=True)
 
         init_pyproject()
 
-        # only asked when afterpython.toml is created, it's ignored otherwise
-        commit_types = (
-            yes
-            or (afterpython_path / "afterpython.toml").exists()
-            or click.confirm(
-                "\nCheck commit messages against conventional commit types "
-                "(e.g. 'feat: add X', types listed in afterpython.toml)?",
-                default=True,
-            )
-        )
-        init_afterpython(commit_types=commit_types)
+        init_afterpython(commit_types="commit_types" in steps)
 
-        if not skip_website:
+        if "website" in steps:
             # check=True so a failure inside `ap init website` aborts the parent
             # run instead of silently continuing to write more files.
             subprocess.run(["ap", "init", "website"], check=True)
@@ -239,42 +282,20 @@ def init(ctx, yes, skip_website: bool):
 
         create_workflow("ci")
 
-        if yes or click.confirm(
-            f"\nCreate .pre-commit-config.yaml in {afterpython_path}?", default=True
-        ):
+        if "prek" in steps:
             init_prek()
-
-        if yes or click.confirm(
-            f"\nCreate ruff.toml in {afterpython_path} (and point pyproject.toml's [tool.ruff] to it)?",
-            default=True,
-        ):
+        if "ruff" in steps:
             init_ruff()
-
-        if yes or click.confirm(
-            f"\nCreate ty.toml in {afterpython_path} (type checking with `ap check`)?",
-            default=True,
-        ):
+        if "ty" in steps:
             init_ty()
-        # whatever the answers: keep ruff/ty hooks only for the tools that were set up
+        # whatever was selected: keep ruff/ty hooks only for the tools that were set up
         sync_hooks()
 
-        if yes or click.confirm(
-            f"\nCreate cliff.toml in {afterpython_path} (changelog generation with git-cliff)?",
-            default=True,
-        ):
+        if "cliff" in steps:
             init_cliff()
-
-        if yes or click.confirm(
-            "\nCreate release workflow in .github/workflows/release.yml?",
-            default=True,
-        ):
+        if "release" in steps:
             create_workflow("release")
-
-        if yes or click.confirm(
-            "\nCreate Dependabot configuration (.github/dependabot.yml) "
-            "to auto-update GitHub Actions versions?",
-            default=True,
-        ):
+        if "dependabot" in steps:
             create_dependabot()
     except BaseException:
         if afterpython_path.exists():
