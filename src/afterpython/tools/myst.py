@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
     from pathlib import Path
 
     from afterpython._typing import NodeEnv, tContentType
@@ -202,10 +203,14 @@ def ensure_pnpm_12(node_env: NodeEnv) -> None:
     raise RuntimeError("\n".join(msg))
 
 
-def init_myst():
+def init_myst(content_types: Iterable[tContentType] | None = None):
     """
     Initialize MyST Markdown (mystmd) and myst.yml files in
     doc/, blog/, tutorial/, example/, guide/ directories with sensible defaults
+
+    Args:
+        content_types: content types to initialize; defaults to all of them.
+            A directory that already has a myst.yml is left untouched.
     """
     from afterpython.const import CONTENT_TYPES
     from afterpython.utils import find_node_env
@@ -213,8 +218,12 @@ def init_myst():
     # find any existing node.js version and use it, if no, install the Node.js version specified in NODEENV_VERSION
     node_env: NodeEnv = find_node_env()
     ensure_pnpm_12(node_env)
-    for content_type in CONTENT_TYPES:
+    initialized = False
+    for content_type in sorted(content_types or CONTENT_TYPES):
         path = ap.paths.afterpython_path / content_type
+        if (path / "myst.yml").exists():
+            print(f"Skipping {path.name}/ (myst.yml already exists)")
+            continue
         print(f"Initializing MyST Markdown (mystmd) in {path.name}/ directory ...")
         path.mkdir(parents=True, exist_ok=True)
         subprocess.run(
@@ -246,4 +255,6 @@ def init_myst():
             "site": site_defaults,
         }
         update_myst_yml(myst_yml_defaults, path, add_comments=True)
-    subprocess.run(["ap", "sync"])
+        initialized = True
+    if initialized:
+        subprocess.run(["ap", "sync"])

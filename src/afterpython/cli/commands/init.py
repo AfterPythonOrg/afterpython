@@ -363,3 +363,44 @@ def init_website_subcommand():
     # of a broken website install.
     subprocess.run(["ap", "update", "website"], check=True)
     create_workflow("deploy")
+
+
+@init.command("content")
+@click.option("--all", is_flag=True, help="Initialize all content types")
+@click.option("--doc", is_flag=True, help="Initialize afterpython/doc/")
+@click.option("--blog", is_flag=True, help="Initialize afterpython/blog/")
+@click.option("--tutorial", is_flag=True, help="Initialize afterpython/tutorial/")
+@click.option("--example", is_flag=True, help="Initialize afterpython/example/")
+@click.option("--guide", is_flag=True, help="Initialize afterpython/guide/")
+def init_content_subcommand(
+    all: bool, doc: bool, blog: bool, tutorial: bool, example: bool, guide: bool
+):
+    """Initialize content directories (MyST config) without touching the website
+
+    Content types that already have a myst.yml are skipped.
+
+    Examples:
+      ap init content --blog             # afterpython/blog/
+      ap init content --blog --tutorial  # afterpython/blog/ and afterpython/tutorial/
+      ap init content --all              # every content type that is missing
+    """
+    from afterpython._typing import tContentType
+    from afterpython.const import CONTENT_TYPES
+    from afterpython.tools.myst import init_myst
+
+    flags: dict[tContentType, bool] = {
+        "doc": doc,
+        "blog": blog,
+        "tutorial": tutorial,
+        "example": example,
+        "guide": guide,
+    }
+    if all:
+        content_types = CONTENT_TYPES
+    else:
+        content_types = {content_type for content_type, flag in flags.items() if flag}
+    if not content_types:
+        raise click.UsageError(
+            "Specify one or more of --doc/--blog/--tutorial/--example/--guide, or --all"
+        )
+    init_myst(content_types)
