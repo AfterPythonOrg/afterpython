@@ -27,29 +27,29 @@ classifiers = [
     "Typing :: Typed",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
-    # "Programming Language :: Python :: 3.15",
+    "Programming Language :: Python :: 3.15",
 ]
 requires-python = ">=3.13"
 dependencies = [
-    "click>=8.5.0",
+    "click>=8.5.1",
     "trogon>=0.6.0",
-    "httpx2>=2.13.1",
-    "tomlkit>=0.15.1",
+    "httpx2>=2.16.0",
+    "tomlkit>=0.15.2",
     "ruamel-yaml>=0.19.1",
-    "gitpython>=3.2.0",
-    "python-dotenv>=1.2.3",
+    "gitpython>=3.2.1",
+    "python-dotenv>=1.2.4",
     "pyproject-metadata>=0.12.1",
-    "jupytext>=1.19.5",
-    "mystmd>=1.11.0",
+    "jupytext>=1.19.6",
+    "mystmd>=1.12.0",
     "pdoc>=16.0.0",
-    "ruff>=0.16.9",
-    "prek>=0.5.4",
-    "ty>=0.0.84",
+    "ruff>=0.17.4",
+    "prek>=0.5.10",
+    "ty>=0.0.99",
     "git-cliff>=2.14.2",
 ]
 
 [project.optional-dependencies]
-marimo = ["marimo[recommended,lsp]>=0.25.0"]
+marimo = ["marimo[recommended,lsp]>=0.25.2"]
 
 [project.urls]
 homepage = "https://afterpython.afterpython.org"
@@ -61,7 +61,7 @@ ap = "afterpython.main:run_cli"
 pcu = "afterpython.main:run_pcu"
 
 [build-system]
-requires = ["uv_build>=0.12.21,<0.13.0"]
+requires = ["uv_build>=0.13.7,<0.14.0"]
 build-backend = "uv_build"
 
 [tool.uv]

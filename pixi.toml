@@ -4,8 +4,9 @@ channels = ["conda-forge"]
 name = "afterpython"
 platforms = ["win-64", "linux-64", "osx-arm64", "osx-64"]
 # NOTE: should match with setup-pixi in ci.yml
-requires-pixi = ">=0.81.0,<0.82.0"
-# exclude-newer = "14d"
+requires-pixi = ">=0.84.1"
+# FIXME: set it back to "14 days" when the package is stable
+exclude-newer = "0d"
 
 [tasks]
 
@@ -13,47 +14,48 @@ requires-pixi = ">=0.81.0,<0.82.0"
 depends-on = [
   { task = "test", environment = "py313" },
   { task = "test", environment = "py314" },
-  # { task = "test", environment = "py315" },
+  { task = "test", environment = "py315" },
 ]
 
 [environments]
 default = ["py313", "dev", "test", "optional"]
 py313 = ["py313", "test", "optional"]
 py314 = ["py314", "test", "optional"]
+py315 = ["py315", "test", "optional"]
 
 [dependencies]
 gh = ">=2.102.0"
 
 # `pixi config set pinning-strategy latest-up` removes the upper bound on the versions of the dependencies
 [pypi-dependencies]
-click = ">=8.5.0"
+click = ">=8.5.1"
 trogon = ">=0.6.0"
-httpx2 = ">=2.13.1"
-tomlkit = ">=0.15.1"
+httpx2 = ">=2.16.0"
+tomlkit = ">=0.15.2"
 ruamel-yaml = ">=0.19.1"
-gitpython = ">=3.2.0"
-python-dotenv = ">=1.2.3"
+gitpython = ">=3.2.1"
+python-dotenv = ">=1.2.4"
 pyproject-metadata = ">=0.12.1"
-jupytext = ">=1.19.5"
-mystmd = ">=1.11.0"
+jupytext = ">=1.19.6"
+mystmd = ">=1.12.0"
 pdoc = ">=16.0.0"
-ruff = ">=0.16.9"
-prek = ">=0.5.4"
-ty = ">=0.0.84"
+ruff = ">=0.17.4"
+prek = ">=0.5.10"
+ty = ">=0.0.99"
 git-cliff = ">=2.14.2"
 
 [feature.optional.pypi-dependencies]
-marimo = { version = ">=0.25.0", extras = ["recommended", "lsp"] }
+marimo = { version = ">=0.25.2", extras = ["recommended", "lsp"] }
 
 [feature.dev.pypi-dependencies]
 afterpython = { path = ".", editable = true }
-notebook = ">=7.6.3"
+notebook = ">=7.6.5"
 
 [feature.test.pypi-dependencies]
 afterpython = { path = ".", editable = true }
 pytest = ">=9.1.1"
 pytest-cov = ">=7.1.0"
-pytest-mock = ">=3.16.0"
+pytest-mock = ">=3.17.0"
 pytest-xdist = ">=3.8.0"
 [feature.test.tasks]
 test = "pytest -v -n auto"
@@ -64,5 +66,5 @@ python = "3.13.*"
 [feature.py314.dependencies]
 python = "3.14.*"
 
-# [feature.py315.dependencies]
-# python = "3.15.*"
+[feature.py315.dependencies]
+python = "3.15.*"

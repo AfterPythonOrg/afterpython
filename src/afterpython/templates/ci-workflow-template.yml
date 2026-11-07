@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v10.2.0
+        uses: astral-sh/setup-uv@v10.3.3
 
       - name: Run ruff
         # fails if ruff-check finds issues or ruff-format would change a file
@@ -66,7 +66,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.13', '3.14']
+        python-version: ['3.13', '3.14', '3.15']
       fail-fast: false
 
     env:
@@ -78,7 +78,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v10.2.0
+        uses: astral-sh/setup-uv@v10.3.3
 
       - name: Install dependencies
         # the package + all [dependency-groups] (e.g. test, dev), at the versions in uv.lock
@@ -106,7 +106,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        environment: ['py313', 'py314']
+        environment: ['py313', 'py314', 'py315']
       fail-fast: false
 
     steps:
@@ -114,9 +114,9 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Set up pixi
-        uses: prefix-dev/setup-pixi@v0.10.2
+        uses: prefix-dev/setup-pixi@v0.11.3
         with:
-          pixi-version: v0.81.0
+          pixi-version: v0.84.1
           cache: true
           # install (and cache) only the environment this matrix run tests
           environments: ${{ matrix.environment }}
@@ -169,7 +169,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v10.2.0
+        uses: astral-sh/setup-uv@v10.3.3
 
       - name: Build package
         # --no-sources: build like it will be published, ignoring [tool.uv.sources] (local paths, git)
@@ -228,7 +228,7 @@ jobs:
 
       - name: Install uv
         if: steps.ty.outputs.enabled == 'true' && hashFiles('pixi.toml') == ''
-        uses: astral-sh/setup-uv@v10.2.0
+        uses: astral-sh/setup-uv@v10.3.3
 
       - name: Run ty (uv)
         # the package + all [dependency-groups] (incl. afterpython itself), at the versions in uv.lock
@@ -239,9 +239,9 @@ jobs:
 
       - name: Set up pixi
         if: steps.ty.outputs.enabled == 'true' && hashFiles('pixi.toml') != ''
-        uses: prefix-dev/setup-pixi@v0.10.2
+        uses: prefix-dev/setup-pixi@v0.11.3
         with:
-          pixi-version: v0.81.0
+          pixi-version: v0.84.1
           cache: true
           environments: default
 
