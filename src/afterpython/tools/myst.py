@@ -151,11 +151,12 @@ def _write_index_file(content_type: tContentType):
     return index_file
 
 
-def ensure_pnpm_11(node_env: NodeEnv) -> None:
-    """Ensure pnpm 11.x is available on `node_env`'s PATH. No-op if already satisfied.
+def ensure_pnpm_12(node_env: NodeEnv) -> None:
+    """Ensure pnpm 12.x is available on `node_env`'s PATH. No-op if already satisfied.
 
-    Pinned to major 11 because an unpinned `npm install -g pnpm` previously did
-    a silent 9→10 jump that broke `ap init` via ERR_PNPM_IGNORED_BUILDS. We
+    Pinned to the website template's pnpm major (devEngines in its package.json)
+    because an unpinned `npm install -g pnpm` previously did a silent 9→10 jump
+    that broke `ap init` via ERR_PNPM_IGNORED_BUILDS. We
     pre-check the installed version so we don't redundantly invoke `npm install
     -g`, which fails with EEXIST when pnpm was installed by a different package
     manager (e.g. Homebrew) that owns the shim filenames npm wants to write.
@@ -171,13 +172,13 @@ def ensure_pnpm_11(node_env: NodeEnv) -> None:
         )
         if result.returncode == 0:
             current = result.stdout.strip()
-            if current.startswith("11."):
+            if current.startswith("12."):
                 return
     except FileNotFoundError:
         pass
 
     install = subprocess.run(
-        ["npm", "install", "-g", "pnpm@11"],
+        ["npm", "install", "-g", "pnpm@12"],
         env=node_env,
         capture_output=True,
         text=True,
@@ -186,14 +187,14 @@ def ensure_pnpm_11(node_env: NodeEnv) -> None:
     if install.returncode == 0:
         return
 
-    msg = ["Failed to install pnpm@11 via npm."]
+    msg = ["Failed to install pnpm@12 via npm."]
     if current:
         msg.append(f"Detected existing pnpm version: {current}")
     msg.append(
         "If pnpm is already installed via another package manager "
         "(e.g. Homebrew: `brew install pnpm`), npm refuses to overwrite "
         "its shims. Please either:\n"
-        "  - upgrade your existing pnpm to major version 11, or\n"
+        "  - upgrade your existing pnpm to major version 12, or\n"
         "  - uninstall it and let afterpython manage pnpm via npm."
     )
     if install.stderr:
@@ -211,7 +212,7 @@ def init_myst():
 
     # find any existing node.js version and use it, if no, install the Node.js version specified in NODEENV_VERSION
     node_env: NodeEnv = find_node_env()
-    ensure_pnpm_11(node_env)
+    ensure_pnpm_12(node_env)
     for content_type in CONTENT_TYPES:
         path = ap.paths.afterpython_path / content_type
         print(f"Initializing MyST Markdown (mystmd) in {path.name}/ directory ...")

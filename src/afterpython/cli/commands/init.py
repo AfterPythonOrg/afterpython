@@ -173,10 +173,10 @@ def _preflight_init(website: bool) -> None:
     """Validate external prerequisites before any filesystem writes, so a
     failure aborts cleanly instead of leaving a half-initialized project."""
     if website:
-        from afterpython.tools.myst import ensure_pnpm_11
+        from afterpython.tools.myst import ensure_pnpm_12
         from afterpython.utils import find_node_env
 
-        ensure_pnpm_11(find_node_env())
+        ensure_pnpm_12(find_node_env())
 
 
 def _select_steps(yes: bool, skip_website: bool, ask_commit_types: bool) -> set[str]:
@@ -348,12 +348,12 @@ def init_website_subcommand():
     the website to an existing AfterPython project.
     """
     from afterpython.tools.github_actions import create_workflow
-    from afterpython.tools.myst import ensure_pnpm_11, init_myst
+    from afterpython.tools.myst import ensure_pnpm_12, init_myst
     from afterpython.utils import find_node_env
 
     # Pre-flight: same rationale as `ap init` — guard the standalone entry too,
     # since this subcommand can be invoked directly via `ap init website`.
-    ensure_pnpm_11(find_node_env())
+    ensure_pnpm_12(find_node_env())
 
     init_faq()
     init_myst()
