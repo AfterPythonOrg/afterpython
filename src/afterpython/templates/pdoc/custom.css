@@ -1,0 +1,27 @@
+/* Dark mode for what theme.css can't reach. Colors from Bootstrap 5.3's dark mode,
+   like pdoc's light ones are from its light mode. */
+
+/* code blocks match inline code instead of github-dark's own background */
+html.dark .pdoc .pdoc-code {
+    background: var(--code);
+}
+
+html.dark .pdoc .decorator-deprecated {
+    color: #ea868f;
+}
+
+{#- the icons have their light color baked in, swap it for the dark text color -#}
+{% macro alert(kind, icon, light, color, background, border) %}
+html.dark .pdoc .alert.{{ kind }} {
+    color: {{ color }};
+    background-color: {{ background }};
+    border-color: {{ border }};
+    background-image: url("data:image/svg+xml,{% filter urlencode %}{% filter replace(light, color) %}{% include 'resources/' ~ icon ~ '.svg' %}{% endfilter %}{% endfilter %}");
+}
+{% endmacro %}
+{{ alert("note", "info-circle-fill", "#084298", "#6ea8fe", "#031633", "#084298") }}
+{{ alert("tip", "lightbulb", "#0a3622", "#75b798", "#051b11", "#0f5132") }}
+{{ alert("important", "exclamation-square-fill", "#055160", "#6edff6", "#032830", "#087990") }}
+{{ alert("warning", "exclamation-triangle-fill", "#664d03", "#ffda6a", "#332701", "#997404") }}
+{{ alert("caution", "exclamation-octagon-fill", "#842029", "#ea868f", "#2c0b0e", "#842029") }}
+{{ alert("danger", "lightning-fill", "#842029", "#ea868f", "#2c0b0e", "#842029") }}

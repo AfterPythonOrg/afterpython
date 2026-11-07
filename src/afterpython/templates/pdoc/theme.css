@@ -1,0 +1,44 @@
+/* pdoc's default color scheme, plus a dark one used when <html> has the "dark" class */
+:root {
+    --pdoc-background: #fff;
+}
+
+.pdoc {
+    --text: #212529;
+    --muted: #6c757d;
+    --link: #3660a5;
+    --link-hover: #1659c5;
+    --code: #f8f8f8;
+    --active: #fff598;
+
+    --accent: #eee;
+    --accent2: #c1c1c1;
+
+    --nav-hover: rgba(255, 255, 255, 0.5);
+    --name: #0066BB;
+    --def: #008800;
+    --annotation: #007020;
+}
+
+/* dark grays match the project website's dark mode */
+html.dark {
+    --pdoc-background: #121212;
+    color-scheme: dark;  /* dark scrollbars and search input */
+}
+
+html.dark .pdoc {
+    --text: #e5e5e5;
+    --muted: #94a3b8;
+    --link: #58a6ff;
+    --link-hover: #79b8ff;
+    --code: #1e1e1e;
+    --active: #555;
+
+    --accent: #1e1e1e;
+    --accent2: #383838;
+
+    --nav-hover: rgba(0, 0, 0, 0.3);
+    --name: #77c1ff;
+    --def: #0cdd0c;
+    --annotation: #00c037;
+}

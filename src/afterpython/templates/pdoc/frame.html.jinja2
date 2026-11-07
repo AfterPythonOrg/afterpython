@@ -1,6 +1,20 @@
 {% extends "default/frame.html.jinja2" %}
-{# Override pdoc's default 35vh logo height — too dominant in the sidebar. #}
 {% block head %}
+    {# Same as the project website's app.html: follow the theme chosen on the website
+       (same origin, so its localStorage is shared), else the OS setting.
+       Dark colors are in theme.css, syntax-highlighting.css and custom.css. #}
+    <script>
+        (function () {
+            const query = window.matchMedia('(prefers-color-scheme: dark)');
+            const apply = (dark) => document.documentElement.classList.toggle('dark', dark);
+            const stored = localStorage.getItem('theme');
+            apply(stored ? stored === 'dark' : query.matches);
+            query.addEventListener('change', (e) => {
+                if (!localStorage.getItem('theme')) apply(e.matches);
+            });
+        })();
+    </script>
+    {# Override pdoc's default 35vh logo height — too dominant in the sidebar. #}
     <style>
         nav.pdoc img.logo { max-height: 5rem; margin-bottom: 1.5rem; }
     </style>

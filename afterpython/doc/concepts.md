@@ -50,6 +50,7 @@ announcement = ""
 readme_py = "wasm"  # marimo html export format: "wasm" or "static"
 execute_readme_py = false  # execute README.py cells at build time and embed outputs as a preview (wasm mode only)
 api_reference = false  # set to true to enable the pdoc-generated API reference
+api_reference_docformat = "google"  # docstring format for pdoc: "google", "numpy", "restructuredtext" or "markdown"
 ```
 
 ---

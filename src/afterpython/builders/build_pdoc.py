@@ -19,9 +19,15 @@ def build_pdoc(base_path: str) -> None:
     project logo appears in the top-left of every API page and links
     back to the project website root (matches MyST's UX).
     """
+    from afterpython._io.toml import _from_tomlkit
+    from afterpython.tools._afterpython import read_afterpython
+
     package_dir = find_package_directory()
     output_dir = ap.paths.build_path / "api_reference"
     template_dir = ap.paths.templates_path / "pdoc"
+    # e.g. "google"; unset leaves it to pdoc (a module's __docformat__, else restructuredtext)
+    website = _from_tomlkit(read_afterpython().get("website", {}))
+    docformat = website.get("api_reference_docformat")
 
     click.echo("Building api_reference/...")
 
@@ -45,6 +51,7 @@ def build_pdoc(base_path: str) -> None:
             f"{base_path}/",
             "--template-directory",
             str(template_dir),
+            *(["--docformat", str(docformat)] if docformat else []),
             str(package_dir),
         ],
         env=env,
