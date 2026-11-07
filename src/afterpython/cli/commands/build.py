@@ -17,6 +17,7 @@ from click.exceptions import Exit
 
 import afterpython as ap
 from afterpython.builders import (
+    build_comments_json,
     build_content_json,
     build_faq_json,
     build_jupyter_notebooks,
@@ -137,6 +138,7 @@ def prebuild():
     create_placeholder_index_md_files()
     build_metadata()
     build_faq_json()
+    build_comments_json()
     build_marimo_readme(mode=_get_readme_py_mode())
     build_markdown()
     build_jupyter_notebooks()

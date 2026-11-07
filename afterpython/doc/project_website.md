@@ -7,6 +7,7 @@
 [Svelte]: https://svelte.dev/
 [NodeJS]: https://nodejs.org
 [pnpm]: https://www.npmjs.com/package/pnpm
+[giscus]: https://giscus.app
 
 # Project Website
 
@@ -217,6 +218,27 @@ api_reference = true
 ```
 
 Once enabled, every `ap build` will run pdoc against your package and the "API Reference" link will appear in the navbar automatically. The pages are also indexed by the site-wide search.
+
+### Comments
+Blog posts, tutorials, examples and guides get a comment section at the bottom, powered by [giscus]. Comments are stored in your repository's GitHub Discussions, and visitors sign in with GitHub to comment.
+
+It is on by default. To make it work, do this once for your repository:
+
+1. Enable **Discussions** in the repository's **Settings → General → Features**.
+2. Install the [giscus app](https://github.com/apps/giscus) on the repository.
+
+```toml
+[website.comments]
+enabled = true
+# Discussions category for comments. Announcement format means only maintainers can start discussions there; visitors can only reply.
+category = "Announcements"
+```
+
+`ap build` reads the repository from `[project.urls] repository` in `pyproject.toml` (or the git remote). If giscus isn't set up yet, the build prints a warning with the steps above and leaves the comment section out; it never fails the build.
+
+Each page gets its own discussion, titled with the page path (e.g. `blog/my-post`), created when the first comment is posted.
+
+To turn comments off, set `enabled = false`.
 
 ### 🚧 AI chatbot using [WebLLM]
 

@@ -15,6 +15,11 @@ execute_readme_py = false  # execute README.py cells at build time and embed out
 api_reference = false  # set to true to enable the pdoc-generated API reference
 # api_reference_docformat = "google"  # docstring format for pdoc: "google", "numpy", "restructuredtext" or "markdown"
 
+[website.comments]  # giscus comment section on blog posts, tutorials, examples and guides
+enabled = true
+# Discussions category for comments. Announcement format means only maintainers can start discussions there; visitors can only reply.
+category = "Announcements"
+
 # [website.blog]
 # thumbnail = "blog_default_thumbnail.png"  # inside blog/static/ folder, default thumbnail for blog posts
 # featured_post = "blog1.md"

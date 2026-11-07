@@ -1,4 +1,5 @@
 from afterpython.builders.build_pdoc import build_pdoc
+from afterpython.builders.comments_json import build_comments_json
 from afterpython.builders.content_json import build_content_json
 from afterpython.builders.faq_json import build_faq_json
 from afterpython.builders.index_md import (
@@ -13,6 +14,7 @@ from afterpython.builders.metadata import build_metadata
 from afterpython.builders.url_md import build_url_md
 
 __all__ = (
+    "build_comments_json",
     "build_content_json",
     "build_faq_json",
     "build_jupyter_notebooks",
