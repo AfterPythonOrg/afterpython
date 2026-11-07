@@ -25,3 +25,13 @@ html.dark .pdoc .alert.{{ kind }} {
 {{ alert("warning", "exclamation-triangle-fill", "#664d03", "#ffda6a", "#332701", "#997404") }}
 {{ alert("caution", "exclamation-octagon-fill", "#842029", "#ea868f", "#2c0b0e", "#842029") }}
 {{ alert("danger", "lightning-fill", "#842029", "#ea868f", "#2c0b0e", "#842029") }}
+
+{#- pdoc indents every non-top-level nav link by one --indent, so a nested class's
+    members (e.g. Feed.Requests.download) line up with the outer class's own members
+    (Feed.download) and read as duplicates. Indent one more step per nesting level. -#}
+nav.pdoc li li li a {
+    padding-left: calc(var(--pad) + 2 * var(--indent));
+}
+nav.pdoc li li li li a {
+    padding-left: calc(var(--pad) + 3 * var(--indent));
+}
