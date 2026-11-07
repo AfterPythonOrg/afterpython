@@ -1,3 +1,26 @@
+## [0.4.1](https://github.com/AfterPythonOrg/afterpython/compare/v0.4.0...v0.4.1) - 2026-11-07
+
+### 💥 Breaking Changes
+
+- Drop Python 3.12 support
+
+### 🚀 Features
+
+- Dark theme and docstring format option for the pdoc API reference
+- Interactive checkbox for ap init setup steps
+- Giscus comment section for content pages via [website.comments]
+- Default blog myst.yml to article-theme
+- Ap init content to initialize individual content types
+
+### 🐛 Bug Fixes
+
+- Indent nested class members in the pdoc API reference sidebar
+
+### 📚 Documentation
+
+- Format ap bump as code in the 0.4.0 changelog
+- Comment out DeepWiki badge in README
+
 ## [0.4.0] - 2026-10-01
 
 ### 💥 Breaking Changes
