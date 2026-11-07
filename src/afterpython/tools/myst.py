@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -225,6 +225,16 @@ def init_myst():
             env=node_env,
             check=True,
         )
+        site_defaults: dict[str, Any] = {
+            "options": {
+                "analytics_google": "{{ GOOGLE_ANALYTICS_ID }}",
+                # "twitter": "",
+            },
+        }
+        # `myst init` defaults every project to book-theme; blog posts are
+        # standalone articles, so article-theme fits them better.
+        if content_type == "blog":
+            site_defaults["template"] = "article-theme"
         myst_yml_defaults = {
             "extends": "../authors.yml",
             "project": {
@@ -233,12 +243,7 @@ def init_myst():
                 if content_type != "doc"
                 else "Documentation",
             },
-            "site": {
-                "options": {
-                    "analytics_google": "{{ GOOGLE_ANALYTICS_ID }}",
-                    # "twitter": "",
-                },
-            },
+            "site": site_defaults,
         }
         update_myst_yml(myst_yml_defaults, path, add_comments=True)
     subprocess.run(["ap", "sync"])
