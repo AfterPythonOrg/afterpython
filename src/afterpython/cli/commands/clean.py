@@ -42,9 +42,15 @@ def clean(ctx, all: bool):
     paths = ctx.obj["paths"]
     node_env: NodeEnv = find_node_env()
 
+    from afterpython.builders.marimo_content import remove_generated_notebooks
+
     # Clean MyST builds for each content type
     for content_type in CONTENT_TYPES:
         content_path = paths.afterpython_path / content_type
+
+        # .ipynb files generated from marimo notebooks are build artifacts too
+        if removed := remove_generated_notebooks(content_path):
+            click.echo(f"  Removed {removed} generated notebook(s) in {content_type}/")
 
         # Skip if no content exists
         if not has_content_for_myst(content_path):

@@ -230,8 +230,20 @@ def dev(
         )
         enabled_content_types = {ct for ct, flag in content_flags.items() if flag}
 
+    stop_watching = threading.Event()
+
     try:
-        prebuild()
+        prebuild(dev_build=True)
+
+        # re-export marimo notebooks on save for the content types being served
+        if enabled_content_types:
+            from afterpython.builders.marimo_content import watch_marimo_content
+
+            threading.Thread(
+                target=watch_marimo_content,
+                args=(enabled_content_types, stop_watching),
+                daemon=True,
+            ).start()
 
         # Clear .env.development before writing new ports
         env_file = paths.website_path / ".env.development"
@@ -313,4 +325,5 @@ def dev(
         # Handle Ctrl+C during subprocess.run
         pass
     finally:
+        stop_watching.set()
         cleanup_processes()

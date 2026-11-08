@@ -264,9 +264,20 @@ def build_jupyter_notebooks():
             # Track if notebook was modified
             modified = False
 
-            # Add molab badge if enabled
+            # Add molab badge if enabled. A notebook generated from a marimo .py
+            # isn't committed, so the badge must open the .py instead.
             if add_molab_badge and github_url:
-                _add_molab_badge_to_notebook(notebook, github_url, content_path)
+                generated_from = (
+                    notebook.get("metadata", {})
+                    .get("afterpython", {})
+                    .get("generated_from")
+                )
+                molab_path = (
+                    content_path.with_name(generated_from)
+                    if generated_from
+                    else content_path
+                )
+                _add_molab_badge_to_notebook(notebook, github_url, molab_path)
                 modified = True
 
             # Add thumbnail to frontmatter

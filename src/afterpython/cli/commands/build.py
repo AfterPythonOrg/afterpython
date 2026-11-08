@@ -22,6 +22,7 @@ from afterpython.builders import (
     build_faq_json,
     build_jupyter_notebooks,
     build_llms_txt,
+    build_marimo_content,
     build_marimo_readme,
     build_markdown,
     build_metadata,
@@ -84,7 +85,7 @@ def _read_api_reference() -> bool:
     return bool(website.get("api_reference", False))
 
 
-def prebuild():
+def prebuild(dev_build: bool = False):
     def _check_initialized():
         # Check if 'ap init' has been run
         afterpython_toml = ap.paths.afterpython_path / "afterpython.toml"
@@ -141,6 +142,10 @@ def prebuild():
     build_comments_json()
     build_marimo_readme(mode=_get_readme_py_mode())
     build_markdown()
+    # before build_jupyter_notebooks() so generated notebooks get the same
+    # thumbnail/molab post-processing as hand-written ones. Production builds
+    # always re-run notebooks (outputs can change without the .py changing).
+    build_marimo_content(use_cache=dev_build)
     build_jupyter_notebooks()
 
 
