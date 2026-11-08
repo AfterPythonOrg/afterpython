@@ -1,3 +1,17 @@
+## [0.4.2](https://github.com/AfterPythonOrg/afterpython/compare/v0.4.1...v0.4.2) - 2026-11-08
+
+### 🚀 Features
+
+- Build marimo notebooks in content folders
+
+### 🐛 Bug Fixes
+
+- Issues found dogfooding marimo content on pytrade
+
+### 📚 Documentation
+
+- Document writing content in marimo notebooks
+
 ## [0.4.1](https://github.com/AfterPythonOrg/afterpython/compare/v0.4.0...v0.4.1) - 2026-11-07
 
 ### 💥 Breaking Changes
