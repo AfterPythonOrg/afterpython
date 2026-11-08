@@ -14,6 +14,7 @@
 [MyST]: https://mystmd.org
 [MyST Markdown]: https://mystmd.org/spec/
 [Jupyter Notebook]: https://jupyter.org
+[marimo]: https://marimo.io
 [pre-commit]: https://pre-commit.com
 [pagefind]: https://pagefind.app
 [SemVer]: https://semver.org
@@ -41,7 +42,7 @@ First-time maintainers must learn multiple tools and concepts, e.g. [MyST], [Sem
 
 
 ## Core Features
-- [x] Write content directly in [MyST Markdown] or [Jupyter Notebook]
+- [x] Write content directly in [MyST Markdown], [Jupyter Notebook] or [marimo] notebooks, with reproducible outputs for marimo
 - [x] Go from writing to **website deployment in minutes** — no need to learn any of the underlying tools
 - [x] Centralize all your content in a modern, **unified project website** — from documentation to blog posts
 - [x] Zero-config orchestration — Pre-configured modern tooling with sane defaults (see [Tech Stack](#tech-stack)), so you can start maintaining packages immediately **without learning each tool**

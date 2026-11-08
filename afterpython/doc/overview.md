@@ -1,6 +1,7 @@
 [MyST]: https://mystmd.org
 [MyST Markdown]: https://mystmd.org/spec/
 [Jupyter Notebook]: https://jupyter.org
+[marimo]: https://marimo.io
 [pre-commit]: https://pre-commit.com
 [pagefind]: https://pagefind.app
 [SemVer]: https://semver.org
@@ -21,7 +22,7 @@
 
 ---
 ## Why use `afterpython`
-- Write content directly in [MyST Markdown] or [Jupyter Notebook]
+- Write content directly in [MyST Markdown], [Jupyter Notebook] or [marimo] notebooks, with reproducible outputs for marimo
 - Go from writing to **website deployment in minutes** — no need to learn any of the underlying tools
 - Centralize all your content in a modern, **unified project website** — from documentation to blog posts
 - Zero-config orchestration — Pre-configured modern tooling with sane defaults (see [](overview.md#tech-stack)), so you can start maintaining packages immediately **without learning each tool**

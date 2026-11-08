@@ -44,6 +44,100 @@ If the [environment variable](references/environment_variables.md) `AP_MOLAB_BAD
 
 
 ---
+## Marimo Notebook
+You can also write content as [Marimo] notebooks (`.py` files). MyST can't read marimo notebooks directly, so during `ap build` and `ap dev`, `afterpython` converts each one to a Jupyter Notebook (`.ipynb`) next to it, and MyST renders that.
+
+Each notebook **runs in its own environment**, built from the dependencies declared at the top of the file ([PEP 723](https://peps.python.org/pep-0723/)). Its outputs on the website are therefore **reproducible**: they don't depend on which machine or environment runs `ap build`.
+
+:::{note} Requirements
+marimo is an optional dependency of `afterpython`. Install it with `uv add --dev "afterpython[marimo]"`. [uv](https://docs.astral.sh/uv/) is also required, because it creates each notebook's environment.
+:::
+
+### Writing a Notebook
+Create or open a notebook with marimo's `--sandbox` flag, so the packages you install while writing are added to the notebook's dependencies automatically:
+
+```bash
+marimo edit --sandbox afterpython/tutorial/getting_started.py
+```
+
+Write text in `mo.md(...)` cells. They become regular Markdown cells, so all MyST syntax works in them (directives, roles, math, cross-references):
+
+````python
+# /// script
+# requires-python = ">=3.12"
+# dependencies = ["marimo", "polars"]
+# ///
+import marimo
+
+app = marimo.App()
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    ---
+    title: Getting Started
+    date: 2026-11-01
+    tags: [polars]
+    ---
+
+    :::{note}
+    This is a MyST admonition inside a marimo notebook.
+    :::
+    """)
+    return
+
+
+@app.cell
+def _():
+    import marimo as mo
+    import polars as pl
+
+    return mo, pl
+
+
+@app.cell
+def _(pl):
+    pl.DataFrame({"x": [1, 2, 3]})
+    return
+````
+
+### Rules
+- **If you use frontmatter, it goes in the first cell.** Frontmatter (`title`, `date`, `authors`, `tags`, `thumbnail`, ...) is optional: without it, the page title comes from the first `# Heading`. But blog posts usually need it, since the listing page shows each post's date, authors, tags and thumbnail. MyST only reads frontmatter from a notebook's first cell, so the `mo.md(...)` cell that holds it must be the first cell in the file, **above the `import marimo as mo` cell** that marimo creates by default. This is fine in marimo, which runs cells in dependency order, not file order. If the frontmatter cell is anywhere else, the build stops with an error.
+- **One notebook type per content folder.** A content folder (e.g. `afterpython/tutorial/`) contains either marimo notebooks or Jupyter Notebooks, not both (`.md` files are fine in either). Mixing them stops the build. To switch a folder to marimo, convert its notebooks with `marimo convert notebook.ipynb -o notebook.py`.
+- **Errors fail the build.** If a cell raises an error while the notebook runs, the build stops with the error, rather than publishing a page that shows a traceback.
+- **Pages are static.** Outputs such as tables, plots and printed text are shown on the website, but interactive marimo widgets (`mo.ui.*`) don't work.
+
+### Using Your Own Package
+Notebooks often import the package they document. Because each notebook has its own environment, it must declare your package as a dependency. Point it at your local code so the notebook always uses your latest changes:
+
+```python
+# /// script
+# requires-python = ">=3.12"
+# dependencies = ["marimo", "your_package"]
+#
+# [tool.uv.sources]
+# your_package = { path = "../..", editable = true }
+# ///
+```
+
+`path` is relative to the notebook and points to your project root, which is `../..` for a notebook at `afterpython/tutorial/getting_started.py`. If you forget this, the build error shows the exact lines to add.
+
+### Generated Notebooks
+- The generated `.ipynb` files are build outputs. Don't edit them, as they are overwritten on every build. The `.py` file is the only source.
+- They aren't committed. `afterpython` adds `*.ipynb` and `__marimo__/` (marimo's cache) to the content folder's `.gitignore`, and removes those lines when the folder no longer has marimo notebooks.
+- If your `myst.yml` lists files in `toc`, reference the generated notebook, e.g. `- file: getting_started.ipynb`.
+- `ap clean` deletes them.
+- `--execute` (in `ap build --execute` and `ap dev --execute`) only applies to Jupyter Notebooks. Marimo notebooks always run in their own environment.
+- With `AP_MOLAB_BADGE=1`, the molab badge on a marimo notebook's page opens the `.py` file.
+
+### Previewing with `ap dev`
+The recommended workflow is to finish writing a notebook in `marimo edit --sandbox`, which already shows live outputs, and then run `ap dev` (e.g. `ap dev --tutorial`) to see it as a website page. `ap dev` only re-runs notebooks that changed since the last run.
+
+You can also keep `ap dev` running while you edit: saving a `.py` file re-runs that notebook and updates its page. Since every save runs the whole notebook, this can be slow for long-running notebooks, and `ap dev` prints a warning when a re-run takes more than 10 seconds.
+
+
+---
 ## myst.yml
 `myst.yml` is a configuration file for MyST, and since `afterpython` uses MyST to build content, each directory (`doc/`, `blog/`, `tutorial/`, `example/`, and `guide/`) has its own `myst.yml` configuration file. This allows you to customize MyST's behavior per directory.
 
