@@ -242,3 +242,27 @@ def test_notebook_without_generated_with_is_detected(tutorial):
         MARIMO_PY.replace('__generated_with = "0.25.2"\n', "")
     )
     assert mc._prepare_folder(tutorial) == [tutorial / "a.py"]
+
+
+_H1 = "# My Title\n\nBody.\n"
+
+
+@pytest.mark.parametrize(
+    ("cells", "warns"),
+    [
+        ([_code(), _md(_H1)], True),  # marimo's default: import cell first
+        ([_md(_H1), _code()], False),
+        ([_md("---\ndate: 2026-11-01\n---\n\n" + _H1), _code()], False),
+        ([_md("---\ndate: 2026-11-01\n---\n"), _md(_H1, "x"), _code()], False),
+        ([_md("---\ntitle: Set\n---\n"), _code(), _md(_H1, "x")], False),
+        ([_code(), _md("## Only a subheading\n")], False),
+    ],
+)
+def test_warns_when_title_heading_not_first(
+    tutorial, fake_export, capsys, cells, warns
+):
+    fake_export["nb"] = _nb(*cells)
+    source = tutorial / "a.py"
+    source.write_text(MARIMO_PY)
+    mc.convert_marimo_notebook(source, tutorial, "0.25.2")
+    assert ("shows the title twice" in capsys.readouterr().out) is warns

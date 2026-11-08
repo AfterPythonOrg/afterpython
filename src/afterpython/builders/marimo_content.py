@@ -204,12 +204,16 @@ def _as_lines(source: str | list[str]) -> list[str]:
     return text.splitlines(keepends=True)
 
 
+_FRONTMATTER_RE = re.compile(r"^---\s*\n(.*?)\n---\s*(\n|$)", re.DOTALL)
+_H1_RE = re.compile(r"^# \S", re.MULTILINE)
+
+
 def _parse_frontmatter(cell: dict) -> dict | None:
     """The YAML mapping if a markdown cell is a `---`-fenced frontmatter block."""
     if cell.get("cell_type") != "markdown":
         return None
     text = "".join(cell.get("source", [])).strip()
-    match = re.match(r"^---\s*\n(.*?)\n---\s*(\n|$)", text, re.DOTALL)
+    match = _FRONTMATTER_RE.match(text)
     if not match:
         return None
     try:
@@ -229,6 +233,43 @@ def _check_frontmatter_first(notebook: dict, source: Path):
                 "cell of the notebook, MyST ignores it anywhere else.\n"
                 "  Move that mo.md(...) cell to the top of the file."
             )
+
+
+def _warn_heading_not_first(notebook: dict, source: Path):
+    """Without a frontmatter `title`, MyST takes the title from a leading
+    `# Heading` and removes it from the body. If anything comes before the
+    heading (marimo's default import cell, typically), the title is still right
+    but the heading also stays in the body, so the page shows it twice."""
+    cells = notebook["cells"]
+    frontmatter = _parse_frontmatter(cells[0]) if cells else None
+    if frontmatter and frontmatter.get("title"):
+        return
+
+    def _body(cell: dict) -> str:
+        text = "".join(cell.get("source", [])).strip()
+        if cell.get("cell_type") == "markdown":
+            text = _FRONTMATTER_RE.sub("", text, count=1).strip()
+        return text
+
+    # the first cell with content, skipping a frontmatter-only cell
+    lead = next((cell for cell in cells if _body(cell)), None)
+    if lead and lead.get("cell_type") == "markdown" and _body(lead).startswith("# "):
+        return
+    has_h1 = any(
+        cell.get("cell_type") == "markdown" and _H1_RE.search(_body(cell))
+        for cell in cells
+    )
+    if has_h1:
+        click.echo(
+            click.style(
+                f"⚠ {source}: the page title comes from its first # heading, "
+                "but that heading isn't in the first cell, so the page shows the "
+                "title twice.\n"
+                "  Move that mo.md(...) cell to the top of the file, or set "
+                "`title` in the frontmatter.",
+                fg="yellow",
+            )
+        )
 
 
 def _project_import_name() -> str | None:
@@ -299,6 +340,7 @@ def _postprocess(
         cell["source"] = _as_lines(cell.get("source", ""))
     _check_no_errors(notebook, source)
     _check_frontmatter_first(notebook, source)
+    _warn_heading_not_first(notebook, source)
     # outputs come from the sandbox, `myst build --execute` must not redo them
     _add_fields_to_frontmatter(notebook, {"execute": "{skip: true}"})
     _rewrite_cell_ids(notebook, _cell_id_prefix(source, content_path))
