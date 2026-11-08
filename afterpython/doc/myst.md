@@ -123,6 +123,8 @@ Notebooks often import the package they document. Because each notebook has its 
 
 `path` is relative to the notebook and points to your project root, which is `../..` for a notebook at `afterpython/tutorial/getting_started.py`. If you forget this, the build error shows the exact lines to add.
 
+The notebook's environment installs your package **with all of its dependencies**, so it can be large (if your package depends on `afterpython`, for example, all of `afterpython` is installed too). The first run takes a while, and later runs reuse uv's cache.
+
 ### Generated Notebooks
 - The generated `.ipynb` files are build outputs. Don't edit them, as they are overwritten on every build. The `.py` file is the only source.
 - They aren't committed. `afterpython` adds `*.ipynb` and `__marimo__/` (marimo's cache) to the content folder's `.gitignore`, and removes those lines when the folder no longer has marimo notebooks.

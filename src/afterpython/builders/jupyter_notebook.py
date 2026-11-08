@@ -17,7 +17,7 @@ def _read_notebook(notebook_path: Path, content_path: Path) -> dict | None:
         Notebook dict if valid, None if invalid or error occurred
     """
     try:
-        with open(notebook_path) as f:
+        with open(notebook_path, encoding="utf-8") as f:
             notebook = json.load(f)
     except json.JSONDecodeError:
         click.echo(f"✗ Skipping {content_path} - invalid or empty JSON")
@@ -36,8 +36,11 @@ def _read_notebook(notebook_path: Path, content_path: Path) -> dict | None:
 
 def _write_notebook(notebook: dict, notebook_path: Path):
     """Write a notebook dict to file."""
-    with open(notebook_path, "w") as f:
-        json.dump(notebook, f, indent=1)
+    # match Jupyter's own formatting (unescaped unicode, trailing newline) so
+    # rewriting a committed notebook doesn't produce a noisy diff
+    with open(notebook_path, "w", encoding="utf-8") as f:
+        json.dump(notebook, f, indent=1, ensure_ascii=False)
+        f.write("\n")
 
 
 def _has_frontmatter(notebook: dict) -> bool:
@@ -243,8 +246,10 @@ def build_jupyter_notebooks():
 
         # Iterate over all .ipynb files once
         for notebook_path in path.rglob("*.ipynb"):
-            # Skip files in _build directory
-            if "_build" in notebook_path.parts:
+            # Skip MyST output and hidden tool dirs (.ipynb_checkpoints/,
+            # .virtual_documents/), which aren't content
+            rel_parts = notebook_path.relative_to(path).parts
+            if "_build" in rel_parts or any(p.startswith(".") for p in rel_parts):
                 continue
 
             # Get path relative to afterpython/

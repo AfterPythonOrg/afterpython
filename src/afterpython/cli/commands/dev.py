@@ -327,3 +327,8 @@ def dev(
     finally:
         stop_watching.set()
         cleanup_processes()
+        # runs on shutdown: postbuild() keeps the placeholder index.md files
+        # during the session (MyST servers watch myst.yml); clean them up now
+        from afterpython.builders import delete_placeholder_index_md_files
+
+        delete_placeholder_index_md_files()

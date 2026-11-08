@@ -90,7 +90,9 @@ class AliasGroup(click.Group):
 @click.version_option(version=__version__)
 def afterpython_group(ctx):
     """afterpython's CLI"""
-    load_dotenv(find_dotenv())  # Load environment variables from .env file
+    # usecwd: search from the user's project, not from this file's location
+    # (with an editable install that would find afterpython's own .env)
+    load_dotenv(find_dotenv(usecwd=True))
     ctx.ensure_object(dict)
     ctx.obj["paths"] = ap.paths
 

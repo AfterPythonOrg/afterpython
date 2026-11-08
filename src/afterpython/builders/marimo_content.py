@@ -341,12 +341,19 @@ def convert_marimo_notebook(
             ],
             check=False,
         )
-        if result.returncode != 0 or not tmp_output.exists():
+        # marimo (>=0.25) exits 1 when a cell fails but still writes the
+        # notebook, so read it whenever it exists: _postprocess reports the
+        # actual cell error, which is far more useful than the exit code
+        if not tmp_output.exists():
             raise click.ClickException(f"marimo export failed for {source}")
         notebook = json.loads(tmp_output.read_text(encoding="utf-8"))
 
     notebook = _postprocess(notebook, source, content_path, marimo_version)
-    output.write_text(json.dumps(notebook, indent=1) + "\n", encoding="utf-8")
+    if result.returncode != 0:
+        raise click.ClickException(f"marimo export failed for {source}")
+    output.write_text(
+        json.dumps(notebook, indent=1, ensure_ascii=False) + "\n", encoding="utf-8"
+    )
     return True
 
 

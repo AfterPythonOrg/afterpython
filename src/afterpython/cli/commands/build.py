@@ -178,7 +178,12 @@ def postbuild(dev_build: bool = False):
             print(f"Moved: {source} to {destination}")
 
     build_content_json()
-    delete_placeholder_index_md_files()
+    # In dev, `myst start` is still running and watches myst.yml: removing the
+    # placeholder from the TOC now would make the first real page the index,
+    # so every later rebuild lands in index.json. `ap dev` deletes the
+    # placeholders when its servers stop instead.
+    if not dev_build:
+        delete_placeholder_index_md_files()
 
     website_static = ap.paths.website_path / "static"
     website_static.mkdir(parents=True, exist_ok=True)
@@ -274,62 +279,69 @@ def build(ctx: click.Context, execute: bool):
         return
 
     paths = ctx.obj["paths"]
-    prebuild()
+    # prebuild() creates placeholder index.md files and edits myst.yml TOCs;
+    # remove them even if a later step fails (e.g. a marimo notebook errors)
+    try:
+        prebuild()
 
-    # Determine BASE_PATH based on website URL configuration. Computed
-    # before build_pdoc() so it can wire pdoc's logo-link back to the
-    # project website root.
-    base_path = determine_base_path()
-    if base_path:
-        click.echo(f"Using BASE_PATH: {base_path}")
-    else:
-        click.echo("Using BASE_PATH: (empty - custom domain)")
+        # Determine BASE_PATH based on website URL configuration. Computed
+        # before build_pdoc() so it can wire pdoc's logo-link back to the
+        # project website root.
+        base_path = determine_base_path()
+        if base_path:
+            click.echo(f"Using BASE_PATH: {base_path}")
+        else:
+            click.echo("Using BASE_PATH: (empty - custom domain)")
 
-    if _read_api_reference():
-        build_pdoc(base_path=base_path)
+        if _read_api_reference():
+            build_pdoc(base_path=base_path)
 
-    node_env: NodeEnv = find_node_env()
+        node_env: NodeEnv = find_node_env()
 
-    # myst's production build
-    for content_type in CONTENT_TYPES:
-        content_path = ap.paths.afterpython_path / content_type
-        myst_yml_path = content_path / "myst.yml"
+        # myst's production build
+        for content_type in CONTENT_TYPES:
+            content_path = ap.paths.afterpython_path / content_type
+            myst_yml_path = content_path / "myst.yml"
 
-        if not content_path.exists():
-            click.echo(f"{content_path} does not exist, skip building {content_type}/")
-            continue
+            if not content_path.exists():
+                click.echo(
+                    f"{content_path} does not exist, skip building {content_type}/"
+                )
+                continue
 
-        if not myst_yml_path.exists():
-            click.echo(
-                f"No myst.yml found in {content_path}, skip building {content_type}/"
+            if not myst_yml_path.exists():
+                click.echo(
+                    f"No myst.yml found in {content_path}, skip building {content_type}/"
+                )
+                continue
+
+            if not has_content_for_myst(content_path):
+                click.echo(f"Skipping {content_type}/ (no content files found)")
+                continue
+
+            click.echo(f"Building {content_type}/...")
+            # NOTE: needs to set BASE_URL (used by MyST) so that the project website can link to the content pages correctly at e.g. localhost:5173/doc
+            base_url = f"{base_path}/{content_type}"
+            build_env = {**node_env, "BASE_URL": base_url, "BASE_PATH": base_path}
+            result = subprocess.run(
+                [
+                    "myst",
+                    "build",
+                    "--html",
+                    *(["--execute"] if execute else []),
+                    *ctx.args,
+                ],
+                cwd=content_path,
+                env=build_env,
+                check=False,
             )
-            continue
 
-        if not has_content_for_myst(content_path):
-            click.echo(f"Skipping {content_type}/ (no content files found)")
-            continue
+            if result.returncode != 0:
+                raise Exit(result.returncode)
 
-        click.echo(f"Building {content_type}/...")
-        # NOTE: needs to set BASE_URL (used by MyST) so that the project website can link to the content pages correctly at e.g. localhost:5173/doc
-        base_url = f"{base_path}/{content_type}"
-        build_env = {**node_env, "BASE_URL": base_url, "BASE_PATH": base_path}
-        result = subprocess.run(
-            [
-                "myst",
-                "build",
-                "--html",
-                *(["--execute"] if execute else []),
-                *ctx.args,
-            ],
-            cwd=content_path,
-            env=build_env,
-            check=False,
-        )
-
-        if result.returncode != 0:
-            raise Exit(result.returncode)
-
-    postbuild(dev_build=False)
+        postbuild(dev_build=False)
+    finally:
+        delete_placeholder_index_md_files()
 
     click.echo("Building project website...")
     website_env = {**node_env, "BASE_PATH": base_path}

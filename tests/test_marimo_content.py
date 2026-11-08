@@ -52,15 +52,16 @@ def tutorial(project):
 @pytest.fixture
 def fake_export(monkeypatch):
     """Fake `marimo export ipynb`: write the notebook in `exported` to `-o`."""
-    exported = {"nb": _nb(_md(FRONTMATTER), _code())}
+    exported: dict = {"nb": _nb(_md(FRONTMATTER), _code()), "returncode": 0}
     calls = []
 
     def fake_run(cmd, **kwargs):
         calls.append(cmd)
         out = cmd[cmd.index("-o") + 1]
-        with open(out, "w") as f:
-            json.dump(exported["nb"], f)
-        return subprocess.CompletedProcess(cmd, returncode=0)
+        if exported["nb"] is not None:
+            with open(out, "w") as f:
+                json.dump(exported["nb"], f)
+        return subprocess.CompletedProcess(cmd, returncode=int(exported["returncode"]))
 
     monkeypatch.setattr(mc.subprocess, "run", fake_run)
     monkeypatch.setattr(mc, "_marimo_version", lambda: "0.25.2")
@@ -204,3 +205,40 @@ def test_remove_generated_notebooks_keeps_handwritten(tutorial):
     (tutorial / "mine.ipynb").write_text(json.dumps(_nb()))
     assert mc.remove_generated_notebooks(tutorial) == 1
     assert sorted(p.name for p in tutorial.glob("*.ipynb")) == ["mine.ipynb"]
+
+
+def test_cell_error_reported_when_marimo_exits_nonzero(tutorial, fake_export):
+    # marimo >=0.25 exits 1 on a cell error but still writes the notebook
+    error = {
+        "output_type": "error",
+        "ename": "ModuleNotFoundError",
+        "evalue": "No module named 'demo'",
+        "traceback": [],
+    }
+    fake_export["nb"] = _nb(_code(outputs=[error]))
+    fake_export["returncode"] = 1
+    source = tutorial / "a.py"
+    source.write_text(MARIMO_PY)
+    with pytest.raises(click.ClickException) as exc_info:
+        mc.convert_marimo_notebook(source, tutorial, "0.25.2")
+    message = exc_info.value.format_message()
+    assert "No module named 'demo'" in message
+    assert "tool.uv.sources" in message
+
+
+@pytest.mark.parametrize("notebook", [None, _nb(_md(FRONTMATTER), _code())])
+def test_nonzero_exit_without_cell_errors_fails(tutorial, fake_export, notebook):
+    fake_export["nb"] = notebook
+    fake_export["returncode"] = 1
+    source = tutorial / "a.py"
+    source.write_text(MARIMO_PY)
+    with pytest.raises(click.ClickException, match="marimo export failed"):
+        mc.convert_marimo_notebook(source, tutorial, "0.25.2")
+    assert not (tutorial / "a.ipynb").exists()
+
+
+def test_notebook_without_generated_with_is_detected(tutorial):
+    (tutorial / "a.py").write_text(
+        MARIMO_PY.replace('__generated_with = "0.25.2"\n', "")
+    )
+    assert mc._prepare_folder(tutorial) == [tutorial / "a.py"]

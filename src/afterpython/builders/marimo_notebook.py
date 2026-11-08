@@ -28,18 +28,19 @@ def _create_molab_url(github_url: str, content_path: Path) -> str:
 def is_marimo_notebook(path: Path) -> bool:
     """Check if a Python file is a marimo notebook.
 
-    Looks for marimo's two reliable signature lines (`__generated_with` and
-    `marimo.App(`) — both are emitted by marimo for any notebook file, and
-    a plain script that just `import`s marimo won't match.
+    Looks for `marimo.App(`, which every notebook needs and a plain script
+    that just `import`s marimo won't have. `__generated_with` isn't required:
+    marimo writes it, but hand-written notebooks (e.g. copied from the docs)
+    often lack it and marimo runs them fine.
     """
     if not path.exists() or not path.is_file():
         return False
     try:
-        # marimo's signature is at the top of the file, no need to read all
-        head = path.read_text(encoding="utf-8", errors="ignore")[:2048]
+        # whole file: a long PEP 723 header can push `marimo.App(` far down
+        text = path.read_text(encoding="utf-8", errors="ignore")
     except OSError:
         return False
-    return "__generated_with" in head and "marimo.App(" in head
+    return "marimo.App(" in text
 
 
 def _export_marimo(
