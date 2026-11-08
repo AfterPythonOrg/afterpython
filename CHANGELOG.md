@@ -1,3 +1,9 @@
+## [0.4.3](https://github.com/AfterPythonOrg/afterpython/compare/v0.4.2...v0.4.3) - 2026-11-08
+
+### 🚀 Features
+
+- Warn when a marimo notebook's title heading isn't first
+
 ## [0.4.2](https://github.com/AfterPythonOrg/afterpython/compare/v0.4.1...v0.4.2) - 2026-11-08
 
 ### 🚀 Features
