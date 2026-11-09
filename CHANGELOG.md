@@ -1,3 +1,13 @@
+## [0.4.4](https://github.com/AfterPythonOrg/afterpython/compare/v0.4.3...v0.4.4) - 2026-11-09
+
+### 🐛 Bug Fixes
+
+- Print skipped ruff/ty/git-cliff setup notices at the end of ap init
+
+### ⚙️ Miscellaneous Tasks
+
+- Link .venv to pixi's default environment on activation
+
 ## [0.4.3](https://github.com/AfterPythonOrg/afterpython/compare/v0.4.2...v0.4.3) - 2026-11-08
 
 ### 🚀 Features
