@@ -25,13 +25,14 @@ def _find_ruff_config_conflicts() -> list[str]:
     return conflicts
 
 
-def init_ruff():
+def init_ruff() -> str | None:
+    """Returns a skip notice when an existing config made it skip the setup, else None."""
     import tomlkit
 
     from afterpython.tools.pyproject import read_pyproject, write_pyproject
 
     if conflicts := _find_ruff_config_conflicts():
-        click.echo(
+        return (
             click.style(
                 f"Skipped ruff setup: found existing ruff config ({', '.join(conflicts)}).\n",
                 fg="yellow",
@@ -45,7 +46,6 @@ def init_ruff():
             "To fix: remove the config(s) above (keep a copy of any settings you want), "
             "run `ap init ruff`, then add your settings to afterpython/ruff.toml."
         )
-        return
 
     ruff_toml_path = ap.paths.afterpython_path / "ruff.toml"
     if ruff_toml_path.exists():
@@ -57,7 +57,7 @@ def init_ruff():
 
     data = read_pyproject()
     if "ruff" in data.get("tool", {}):
-        return  # already points to afterpython/ruff.toml (checked above)
+        return None  # already points to afterpython/ruff.toml (checked above)
     if "tool" not in data:
         data["tool"] = tomlkit.table(is_super_table=True)
     ruff_table = tomlkit.table()
@@ -65,6 +65,7 @@ def init_ruff():
     data["tool"]["ruff"] = ruff_table
     write_pyproject(data)
     click.echo(f'Added [tool.ruff] extend = "{RUFF_EXTEND}" to pyproject.toml')
+    return None
 
 
 def _find_ty_config_conflicts() -> list[str]:
@@ -80,9 +81,10 @@ def _find_ty_config_conflicts() -> list[str]:
     return conflicts
 
 
-def init_ty():
+def init_ty() -> str | None:
+    """Returns a skip notice when an existing config made it skip the setup, else None."""
     if conflicts := _find_ty_config_conflicts():
-        click.echo(
+        return (
             click.style(
                 f"Skipped ty setup: found existing ty config ({', '.join(conflicts)}).\n",
                 fg="yellow",
@@ -96,14 +98,14 @@ def init_ty():
             "To fix: remove the config(s) above (keep a copy of any settings you want), "
             "run `ap init ty`, then add your settings to afterpython/ty.toml."
         )
-        return
 
     ty_toml_path = ap.paths.afterpython_path / "ty.toml"
     if ty_toml_path.exists():
         click.echo(f"ty configuration file {ty_toml_path} already exists")
-        return
+        return None
     shutil.copy(ap.paths.templates_path / "ty-template.toml", ty_toml_path)
     click.echo(f"Created {ty_toml_path}")
+    return None
 
 
 def _find_cliff_config_conflicts() -> list[str]:
@@ -119,9 +121,10 @@ def _find_cliff_config_conflicts() -> list[str]:
     return conflicts
 
 
-def init_cliff():
+def init_cliff() -> str | None:
+    """Returns a skip notice when an existing config made it skip the setup, else None."""
     if conflicts := _find_cliff_config_conflicts():
-        click.echo(
+        return (
             click.style(
                 f"Skipped git-cliff setup: found existing git-cliff config ({', '.join(conflicts)}).\n",
                 fg="yellow",
@@ -132,14 +135,14 @@ def init_cliff():
             "To fix: remove the config(s) above (keep a copy of any settings you want), "
             "run `ap init cliff`, then add your settings to afterpython/cliff.toml."
         )
-        return
 
     cliff_toml_path = ap.paths.afterpython_path / "cliff.toml"
     if cliff_toml_path.exists():
         click.echo(f"git-cliff configuration file {cliff_toml_path} already exists")
-        return
+        return None
     shutil.copy(ap.paths.templates_path / "cliff-template.toml", cliff_toml_path)
     click.echo(f"Created {cliff_toml_path}")
+    return None
 
 
 def init_faq():
@@ -265,6 +268,8 @@ def init(ctx, yes, skip_website: bool):
     _preflight_init(website="website" in steps)
 
     click.echo("Initializing afterpython...")
+    # printed after everything else, so they're in the last lines of the (long) output
+    skip_notices: list[str] = []
     try:
         afterpython_path.mkdir(parents=True, exist_ok=True)
         static_path.mkdir(parents=True, exist_ok=True)
@@ -284,15 +289,15 @@ def init(ctx, yes, skip_website: bool):
 
         if "prek" in steps:
             init_prek()
-        if "ruff" in steps:
-            init_ruff()
-        if "ty" in steps:
-            init_ty()
+        if "ruff" in steps and (notice := init_ruff()):
+            skip_notices.append(notice)
+        if "ty" in steps and (notice := init_ty()):
+            skip_notices.append(notice)
         # whatever was selected: keep ruff/ty hooks only for the tools that were set up
         sync_hooks()
 
-        if "cliff" in steps:
-            init_cliff()
+        if "cliff" in steps and (notice := init_cliff()):
+            skip_notices.append(notice)
         if "release" in steps:
             create_workflow("release")
         if "dependabot" in steps:
@@ -302,6 +307,10 @@ def init(ctx, yes, skip_website: bool):
             click.echo(f"ap init failed — removing {afterpython_path}", err=True)
             shutil.rmtree(afterpython_path, ignore_errors=True)
         raise
+
+    for notice in skip_notices:
+        click.echo()
+        click.echo(notice)
 
 
 @init.command("ruff")
@@ -313,7 +322,8 @@ def init_ruff_subcommand():
     """
     from afterpython.tools.prek import sync_hooks
 
-    init_ruff()
+    if notice := init_ruff():
+        click.echo(notice)
     sync_hooks()
 
 
@@ -326,7 +336,8 @@ def init_ty_subcommand():
     """
     from afterpython.tools.prek import sync_hooks
 
-    init_ty()
+    if notice := init_ty():
+        click.echo(notice)
     sync_hooks()
 
 
@@ -337,7 +348,8 @@ def init_cliff_subcommand():
     Use this to re-run the git-cliff setup, e.g. after removing a conflicting
     git-cliff config that made `ap init` skip it.
     """
-    init_cliff()
+    if notice := init_cliff():
+        click.echo(notice)
 
 
 @init.command("website")

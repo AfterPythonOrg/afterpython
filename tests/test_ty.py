@@ -20,15 +20,15 @@ def test_init_ty_keeps_existing_config(project):
 
 
 @pytest.mark.parametrize("conflict", ["ty.toml", "[tool.ty]"])
-def test_init_ty_skips_on_existing_ty_config(project, conflict, capsys):
+def test_init_ty_skips_on_existing_ty_config(project, conflict):
     if conflict == "ty.toml":
         (project.user_path / "ty.toml").write_text("")
     else:
         with open(project.pyproject_path, "a") as f:
             f.write("\n[tool.ty]\n")
-    init_ty()
+    notice = init_ty()
     assert not (project.afterpython_path / "ty.toml").exists()
-    assert "Skipped ty setup" in capsys.readouterr().out
+    assert notice is not None and "Skipped ty setup" in notice
 
 
 @pytest.fixture

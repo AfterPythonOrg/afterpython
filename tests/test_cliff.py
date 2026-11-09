@@ -21,15 +21,15 @@ def test_init_cliff_keeps_existing_config(project):
 
 
 @pytest.mark.parametrize("conflict", ["cliff.toml", "[tool.git-cliff]"])
-def test_init_cliff_skips_on_existing_cliff_config(project, conflict, capsys):
+def test_init_cliff_skips_on_existing_cliff_config(project, conflict):
     if conflict == "cliff.toml":
         (project.user_path / "cliff.toml").write_text("")
     else:
         with open(project.pyproject_path, "a") as f:
             f.write("\n[tool.git-cliff]\n")
-    init_cliff()
+    notice = init_cliff()
     assert not (project.afterpython_path / "cliff.toml").exists()
-    assert "Skipped git-cliff setup" in capsys.readouterr().out
+    assert notice is not None and "Skipped git-cliff setup" in notice
 
 
 @pytest.fixture
