@@ -336,6 +336,8 @@ def ensure_website_gitignore_rules() -> None:
 
     Adds the following rules if they don't exist:
     - **/_build/ (ignore all build directories)
+    - **/__marimo__/ (marimo's session cache, written next to notebooks by
+      `marimo export`, e.g. when building afterpython/README.py)
     - !afterpython/_website/src/lib/ (un-ignore website source for customization)
     - afterpython/_website.backup/ (ignore backup created by ap update website)
     """
@@ -346,6 +348,7 @@ def ensure_website_gitignore_rules() -> None:
     # Rules that should be present
     required_rules = [
         "**/_build/",
+        "**/__marimo__/",
         "!afterpython/_website/src/lib/",
         "afterpython/_website.backup/",
     ]
