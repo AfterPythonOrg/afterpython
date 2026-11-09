@@ -1,3 +1,9 @@
+## [0.4.5](https://github.com/AfterPythonOrg/afterpython/compare/v0.4.4...v0.4.5) - 2026-11-09
+
+### 🐛 Bug Fixes
+
+- Only run the ty hook when python files are staged
+
 ## [0.4.4](https://github.com/AfterPythonOrg/afterpython/compare/v0.4.3...v0.4.4) - 2026-11-09
 
 ### 🐛 Bug Fixes
