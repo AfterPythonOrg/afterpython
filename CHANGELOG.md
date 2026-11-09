@@ -1,3 +1,9 @@
+## [0.4.6](https://github.com/AfterPythonOrg/afterpython/compare/v0.4.5...v0.4.6) - 2026-11-09
+
+### 🐛 Bug Fixes
+
+- Gitignore marimo's __marimo__/ session cache at the project root
+
 ## [0.4.5](https://github.com/AfterPythonOrg/afterpython/compare/v0.4.4...v0.4.5) - 2026-11-09
 
 ### 🐛 Bug Fixes
