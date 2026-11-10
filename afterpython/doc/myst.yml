@@ -61,7 +61,7 @@ site:
     logo_dark: ../static/logo.svg
     logo_text: afterpython
     logo_url: https://afterpython.afterpython.org
-    analytics_google: "{{ GOOGLE_ANALYTICS_ID }}"
+    analytics_google: ""
   title: afterpython's Doc
   # nav:
   # - title: AfterPython.Org

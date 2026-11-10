@@ -5,6 +5,8 @@ url = "https://afterpython.org"  # used in myst.yml's venue.url
 
 [website]
 url = "https://afterpython.afterpython.org"
+title = ""  # homepage <title>, put your main search keywords here, e.g. "pytrade - Python Trading Resources & Tutorials"
+google_analytics_id = ""  # e.g. "G-XXXXXXXXXX"; empty disables Google Analytics on doc/blog/... pages
 favicon = "favicon.svg"
 logo = "logo.svg"
 logo_dark = "logo.svg"

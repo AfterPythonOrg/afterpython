@@ -41,6 +41,8 @@ url = "https://your-company.com"
 
 [website]
 url = "https://your-project-website.com"
+title = ""  # homepage <title>, e.g. "pytrade - Python Trading Resources & Tutorials"
+google_analytics_id = ""  # e.g. "G-XXXXXXXXXX"
 favicon = "favicon.svg"
 logo = "logo.svg"
 logo_dark = "logo.svg"

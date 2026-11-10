@@ -26,6 +26,7 @@ from afterpython.builders import (
     build_markdown,
     build_metadata,
     build_pdoc,
+    build_seo,
     build_url_md,
     create_placeholder_index_md_files,
     delete_placeholder_index_md_files,
@@ -340,3 +341,6 @@ def build(ctx: click.Context, execute: bool):
     )
     if result.returncode != 0:
         raise Exit(result.returncode)
+
+    # on the final HTML, so it covers both SvelteKit and MyST pages
+    build_seo(base_path=base_path)

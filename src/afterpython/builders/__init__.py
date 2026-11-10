@@ -12,6 +12,7 @@ from afterpython.builders.marimo_content import build_marimo_content
 from afterpython.builders.marimo_notebook import build_marimo_readme
 from afterpython.builders.markdown import build_markdown
 from afterpython.builders.metadata import build_metadata
+from afterpython.builders.seo import build_seo
 from afterpython.builders.url_md import build_url_md
 
 __all__ = (
@@ -25,6 +26,7 @@ __all__ = (
     "build_markdown",
     "build_metadata",
     "build_pdoc",
+    "build_seo",
     "build_url_md",
     "create_placeholder_index_md_files",
     "delete_placeholder_index_md_files",

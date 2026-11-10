@@ -55,6 +55,9 @@ def build_metadata():
 
     afterpython = read_afterpython()
     website = _from_tomlkit(afterpython.get("website", {}))
+    # homepage <title>, e.g. "PyTrade - Python Trading Resources & Tutorials";
+    # empty means the frontend falls back to its own default
+    metadata_json["site_title"] = str(website.get("title", "")).strip()
     metadata_json["announcement"] = str(website.get("announcement", "")).strip()
     metadata_json["readme_py"] = _resolve_readme_py(website)
     # Logos are served from the site root in _website/ (assets copied from

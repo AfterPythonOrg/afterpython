@@ -67,6 +67,10 @@ def sync():
     company_name = str(_from_tomlkit(afterpython.get("company", {})).get("name", ""))
     company_url = str(_from_tomlkit(afterpython.get("company", {})).get("url", ""))
     website_url = str(_from_tomlkit(afterpython.get("website", {})).get("url", ""))
+    # empty string disables analytics: MyST only emits gtag for a truthy id
+    google_analytics_id = str(
+        _from_tomlkit(afterpython.get("website", {})).get("google_analytics_id", "")
+    ).strip()
     try:
         website_favicon = normalize_static_path(
             str(_from_tomlkit(afterpython.get("website", {})).get("favicon", ""))
@@ -151,6 +155,7 @@ def sync():
                     else "",
                     "logo_text": project_name,
                     "logo_url": website_url,
+                    "analytics_google": google_analytics_id,
                 },
                 # FIXME: disable nav bar for now until myst fixes the issue with the nav bar
                 # the current issue is they prepend the BASE_URL to the nav bar links even they are external

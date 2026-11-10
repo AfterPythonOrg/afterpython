@@ -234,12 +234,9 @@ def init_myst(content_types: Iterable[tContentType] | None = None):
             env=node_env,
             check=True,
         )
-        site_defaults: dict[str, Any] = {
-            "options": {
-                "analytics_google": "{{ GOOGLE_ANALYTICS_ID }}",
-                # "twitter": "",
-            },
-        }
+        # analytics_google is filled in by `ap sync` from
+        # [website].google_analytics_id in afterpython.toml
+        site_defaults: dict[str, Any] = {"options": {}}
         # keep `myst init`'s book-theme for every content type, blog included:
         # article-theme v2.0.0 (2026-11-10) fails `myst build --html` with
         # 'No route matches URL "/_public/..."'
