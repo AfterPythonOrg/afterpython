@@ -1,3 +1,10 @@
+## [0.4.9](https://github.com/AfterPythonOrg/afterpython/compare/v0.4.8...v0.4.9) - 2026-11-10
+
+### 🐛 Bug Fixes
+
+- Keep the clicked FAQ question highlighted in the sidebar
+- Default the blog site to book-theme
+
 ## [0.4.8](https://github.com/AfterPythonOrg/afterpython/compare/v0.4.7...v0.4.8) - 2026-11-10
 
 ### 🚀 Features
