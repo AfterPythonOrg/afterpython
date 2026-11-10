@@ -20,6 +20,7 @@ def build_pdoc(base_path: str) -> None:
     back to the project website root (matches MyST's UX).
     """
     from afterpython._io.toml import _from_tomlkit
+    from afterpython.builders.metadata import _resolve_logo_path
     from afterpython.tools._afterpython import read_afterpython
 
     package_dir = find_package_directory()
@@ -37,16 +38,21 @@ def build_pdoc(base_path: str) -> None:
     # user's own package, whose import-time behavior the user already trusts.
     env = {**os.environ, "PDOC_ALLOW_EXEC": "1"}
 
-    # logo.svg is a project-website-template convention (always present in
-    # `_website/static/`); served at `{base_path}/logo.svg` once the site
-    # is built. logo-link points back to the project website root.
+    # Logos come from afterpython.toml (afterpython/static/ is served at the
+    # site root); logo.svg is the project-website-template's fallback.
+    # pdoc's --logo takes one image, so the dark one goes through an env var
+    # that module.html.jinja2 reads (pdoc exposes os.environ to templates as
+    # `env`). logo-link points back to the project website root.
+    logo = _resolve_logo_path(website.get("logo", "")) or "/logo.svg"
+    logo_dark = _resolve_logo_path(website.get("logo_dark", ""))
+    env["AP_PDOC_LOGO_DARK"] = f"{base_path}{logo_dark}" if logo_dark else ""
     result = subprocess.run(
         [
             "pdoc",
             "-o",
             str(output_dir),
             "--logo",
-            f"{base_path}/logo.svg",
+            f"{base_path}{logo}",
             "--logo-link",
             f"{base_path}/",
             "--template-directory",

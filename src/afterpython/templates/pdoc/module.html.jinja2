@@ -1,0 +1,13 @@
+{% extends "default/module.html.jinja2" %}
+{# Same as pdoc's nav_title, plus the dark logo (if set in afterpython.toml),
+   shown instead of the light one in dark mode by frame.html.jinja2's style. #}
+{% block nav_title %}
+    {% if logo %}
+        {% if logo_link %}<a href="{{ logo_link }}">{% endif %}
+        <img src="{{ logo }}" class="logo{% if env.AP_PDOC_LOGO_DARK %} logo-light{% endif %}" alt="project logo"/>
+        {% if env.AP_PDOC_LOGO_DARK %}
+            <img src="{{ env.AP_PDOC_LOGO_DARK }}" class="logo logo-dark" alt="project logo"/>
+        {% endif %}
+        {% if logo_link %}</a>{% endif %}
+    {% endif %}
+{% endblock %}

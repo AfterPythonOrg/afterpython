@@ -14,8 +14,11 @@
             });
         })();
     </script>
-    {# Override pdoc's default 35vh logo height — too dominant in the sidebar. #}
+    {# Override pdoc's default 35vh logo height — too dominant in the sidebar.
+       The dark logo (see module.html.jinja2) replaces the light one in dark mode. #}
     <style>
-        nav.pdoc img.logo { max-height: 5rem; margin-bottom: 1.5rem; }
+        nav.pdoc img.logo { max-height: 3rem; margin-bottom: 1.5rem; }
+        nav.pdoc img.logo-dark, html.dark nav.pdoc img.logo-light { display: none; }
+        html.dark nav.pdoc img.logo-dark { display: block; }
     </style>
 {% endblock %}
