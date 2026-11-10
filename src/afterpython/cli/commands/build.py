@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from pathlib import Path
-    from typing import Literal
 
     from afterpython._typing import NodeEnv
 
@@ -117,21 +116,6 @@ def prebuild(dev_build: bool = False):
                 shutil.rmtree(path)
         build_path.mkdir(parents=True, exist_ok=True)
 
-    def _get_readme_py_mode() -> Literal["wasm", "static"]:
-        """Read `[website].readme_py` from afterpython.toml. Defaults to "wasm".
-
-        Falls back to "wasm" silently for unknown values rather than failing the
-        build — the metadata.json resolver does the same, keeping the two views
-        consistent.
-        """
-        from afterpython._io.toml import _from_tomlkit
-        from afterpython.tools._afterpython import read_afterpython
-
-        afterpython = read_afterpython()
-        website = _from_tomlkit(afterpython.get("website", {}))
-        mode = str(website.get("readme_py", "wasm"))
-        return mode if mode in ("wasm", "static") else "wasm"
-
     _check_initialized()
     _clean_up_builds()
 
@@ -140,7 +124,7 @@ def prebuild(dev_build: bool = False):
     build_metadata()
     build_faq_json()
     build_comments_json()
-    build_marimo_readme(mode=_get_readme_py_mode())
+    build_marimo_readme()
     build_markdown()
     # before build_jupyter_notebooks() so generated notebooks get the same
     # thumbnail/molab post-processing as hand-written ones. Production builds

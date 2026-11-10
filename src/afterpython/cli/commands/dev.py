@@ -304,6 +304,16 @@ def dev(
 
         postbuild(dev_build=True)
 
+        # rebuild faq.json, metadata.json, blog.json etc. when their sources
+        # change; started after postbuild() so its first snapshot is current
+        from afterpython.builders.site_data import watch_site_data
+
+        threading.Thread(
+            target=watch_site_data,
+            args=(enabled_content_types, stop_watching),
+            daemon=True,
+        ).start()
+
         if not no_website:
             node_env: NodeEnv = find_node_env()
             click.echo("Running the web dev server...")
@@ -316,11 +326,10 @@ def dev(
             click.echo(
                 "Skipping website dev server (--no-website flag). Run 'pnpm dev' manually in afterpython/_website/ with your custom options."
             )
-            if myst_processes:
-                # Keep the process running to maintain MyST servers
-                click.echo("Press Ctrl+C to stop MyST servers...")
-                while True:
-                    time.sleep(1)
+            # Keep running to maintain the MyST servers and the site data watcher
+            click.echo("Press Ctrl+C to stop...")
+            while True:
+                time.sleep(1)
     except KeyboardInterrupt:
         # Handle Ctrl+C during subprocess.run
         pass

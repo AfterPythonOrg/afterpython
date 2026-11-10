@@ -157,11 +157,14 @@ def build_marimo_notebook(
     _inject_molab_badge(output_html, molab_url)
 
 
-def build_marimo_readme(mode: MarimoExportMode = "wasm"):
+def build_marimo_readme(mode: MarimoExportMode | None = None):
     """Build afterpython/README.py to _build/readme_py/readme_py.html.
 
     Skips silently if README.py is absent or isn't a marimo notebook so users
     who keep only README.md aren't penalized.
+
+    `mode` defaults to `[website].readme_py` in afterpython.toml ("wasm" when
+    unset or unknown, the same fallback the metadata.json resolver uses).
     """
     from afterpython._io.toml import _from_tomlkit
     from afterpython.tools._afterpython import read_afterpython
@@ -172,5 +175,8 @@ def build_marimo_readme(mode: MarimoExportMode = "wasm"):
     output_html = ap.paths.build_path / "readme_py" / "readme_py.html"
     content_path = Path("README.py")
     website = _from_tomlkit(read_afterpython().get("website", {}))
+    if mode is None:
+        configured = str(website.get("readme_py", "wasm"))
+        mode = "static" if configured == "static" else "wasm"
     execute = bool(website.get("execute_readme_py", False))
     build_marimo_notebook(readme_path, output_html, content_path, mode, execute=execute)

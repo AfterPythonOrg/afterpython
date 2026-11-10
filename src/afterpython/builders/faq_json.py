@@ -7,8 +7,6 @@ import click
 import afterpython as ap
 from afterpython._io.yaml import read_yaml
 
-build_path = ap.paths.build_path
-
 
 def build_faq_json():
     """Build faq.json from the user's afterpython/faq.yml.
@@ -40,5 +38,5 @@ def build_faq_json():
         for item in raw
     ]
 
-    with open(build_path / "faq.json", "w") as f:
+    with open(ap.paths.build_path / "faq.json", "w") as f:
         json.dump(items, f, indent=2)
