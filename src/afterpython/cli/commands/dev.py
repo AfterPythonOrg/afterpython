@@ -138,6 +138,11 @@ def _wait_for_myst_server(
     is_flag=True,
     help="Skip running the website dev server (pnpm dev). Useful when you want to run pnpm dev manually with custom options.",
 )
+@click.option(
+    "--no-readme-py",
+    is_flag=True,
+    help="Skip exporting the marimo afterpython/README.py at startup; the home page keeps the previous export. It is still re-exported when README.py changes.",
+)
 def dev(
     ctx,
     all: bool,
@@ -148,6 +153,7 @@ def dev(
     guide: bool,
     execute: bool,
     no_website: bool,
+    no_readme_py: bool,
 ):
     """Run the development server for the project website.
 
@@ -167,6 +173,8 @@ def dev(
 
     Use --no-website to skip the automatic 'pnpm dev' command, allowing you to run it manually
     with custom Vite options in the afterpython/_website directory.
+
+    Use --no-readme-py to skip the (slow) marimo README.py export at startup.
     """
 
     from afterpython.utils import handle_passthrough_help, is_website_initialized
@@ -233,7 +241,7 @@ def dev(
     stop_watching = threading.Event()
 
     try:
-        prebuild(dev_build=True)
+        prebuild(dev_build=True, build_readme_py=not no_readme_py)
 
         # re-export marimo notebooks on save for the content types being served
         if enabled_content_types:

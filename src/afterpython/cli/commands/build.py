@@ -84,7 +84,7 @@ def _read_api_reference() -> bool:
     return bool(website.get("api_reference", False))
 
 
-def prebuild(dev_build: bool = False):
+def prebuild(dev_build: bool = False, build_readme_py: bool = True):
     def _check_initialized():
         # Check if 'ap init' has been run
         afterpython_toml = ap.paths.afterpython_path / "afterpython.toml"
@@ -124,7 +124,12 @@ def prebuild(dev_build: bool = False):
     build_metadata()
     build_faq_json()
     build_comments_json()
-    build_marimo_readme()
+    if build_readme_py:
+        build_marimo_readme()
+    else:
+        # _clean_up_builds() leaves _website/static/readme_py/ alone, so the
+        # home page keeps showing the previous export
+        click.echo("Skipping README.py (--no-readme-py flag)")
     build_markdown()
     # before build_jupyter_notebooks() so generated notebooks get the same
     # thumbnail/molab post-processing as hand-written ones. Production builds
