@@ -3,7 +3,6 @@ import subprocess
 import pytest
 from click.testing import CliRunner
 
-from afterpython._io.yaml import read_yaml
 from afterpython.cli.commands.init import init_content_subcommand
 
 MYST_INIT_YML = """\
@@ -39,14 +38,6 @@ def test_init_content_only_creates_selected_types(project, myst_calls):
     assert created == ["blog", "tutorial"]
     assert myst_calls.count(["myst", "init"]) == 2
     assert myst_calls[-1] == ["ap", "sync"]
-
-
-def test_init_content_blog_uses_article_theme(project, myst_calls):
-    CliRunner().invoke(init_content_subcommand, ["--blog", "--doc"])
-    blog = read_yaml(project.afterpython_path / "blog" / "myst.yml")
-    doc = read_yaml(project.afterpython_path / "doc" / "myst.yml")
-    assert blog["site"]["template"] == "article-theme"
-    assert doc["site"]["template"] == "book-theme"
 
 
 def test_init_content_all_skips_existing(project, myst_calls):

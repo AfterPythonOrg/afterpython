@@ -240,10 +240,9 @@ def init_myst(content_types: Iterable[tContentType] | None = None):
                 # "twitter": "",
             },
         }
-        # `myst init` defaults every project to book-theme; blog posts are
-        # standalone articles, so article-theme fits them better.
-        if content_type == "blog":
-            site_defaults["template"] = "article-theme"
+        # keep `myst init`'s book-theme for every content type, blog included:
+        # article-theme v2.0.0 (2026-11-10) fails `myst build --html` with
+        # 'No route matches URL "/_public/..."'
         myst_yml_defaults = {
             "extends": "../authors.yml",
             "project": {
