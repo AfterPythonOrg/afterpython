@@ -1,3 +1,9 @@
+## [0.4.7](https://github.com/AfterPythonOrg/afterpython/compare/v0.4.6...v0.4.7) - 2026-11-10
+
+### 🐛 Bug Fixes
+
+- Shrink the pdoc logo and support a dark logo in the API reference
+
 ## [0.4.6](https://github.com/AfterPythonOrg/afterpython/compare/v0.4.5...v0.4.6) - 2026-11-09
 
 ### 🐛 Bug Fixes
