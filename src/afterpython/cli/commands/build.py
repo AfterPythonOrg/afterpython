@@ -103,8 +103,9 @@ def prebuild(dev_build: bool = False, build_readme_py: bool = True):
         content_build_paths = [
             website_static_path / content_type for content_type in CONTENT_TYPES
         ]
-        # Also wipe the API reference static dir so a `--skip-api` build doesn't
-        # leave stale pages from a prior run live on the deployed site.
+        # Also wipe the API reference static dir so a build with
+        # `api_reference = false` doesn't leave stale pages from a prior run
+        # live on the deployed site.
         api_static_path = website_static_path / "api_reference"
         for path in [
             build_path,

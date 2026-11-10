@@ -66,5 +66,6 @@ def build_pdoc(base_path: str) -> None:
     if result.returncode != 0:
         raise click.ClickException(
             f"pdoc failed with exit code {result.returncode}. "
-            f"Re-run `ap build --skip-api` to skip API reference generation."
+            "To skip API reference generation, set `api_reference = false` "
+            "under [website] in afterpython.toml."
         )
