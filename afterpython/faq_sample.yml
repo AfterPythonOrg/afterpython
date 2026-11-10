@@ -1,53 +1,136 @@
-# Exercises:
-# - Plain text, inline code, bold/italic, links, lists, multi-line code blocks
-# - Items with and without `category`
-# - Multiple items sharing a category (to test grouping)
-# - First-appearance category ordering: "Getting Started" -> "Usage" -> "Troubleshooting"
+# Variations covered:
+# - uncategorized items before, between and after categories
+# - a category used twice non-consecutively (shows up as two groups)
+# - short one-line answers and long multi-paragraph ones
+# - inline code in questions, bold/italic, internal and external links
+# - bullet and numbered lists, code blocks, a table, a blockquote
+# - a very long question (wraps in the heading and the sidebar)
 
 - question: What is AfterPython?
-  answer: AfterPython is a CLI that automates Python project maintenance and generates a project website from your `afterpython/` content folder.
+  answer: |
+    AfterPython is a CLI (`ap`) that takes care of the tedious parts of maintaining a Python package: linting and formatting hooks, commit conventions, versioning and releases. It also generates a **project website** from the content in your `afterpython/` folder.
 
-- question: How do I install it?
-  answer: Run `pip install afterpython`, then `ap init` inside your project root. See the **[quickstart](/doc/quickstart)** for the full walkthrough.
-  category: Getting Started
+- question: Is it free?
+  answer: Yes. AfterPython is open source and free to use.
+
+- question: Which Python versions are supported?
+  answer: Python **3.13** and newer.
+  category: Getting started
+
+- question: How do I add AfterPython to an existing project?
+  answer: |
+    From your project root (the folder with `pyproject.toml`):
+
+    ```bash
+    uv add --dev afterpython
+    ap init
+    ```
+
+    `ap init` creates the `afterpython/` folder, installs the pre-commit hooks and sets up the website template. Nothing in your package source is touched.
+  category: Getting started
 
 - question: What does `ap init` set up for me?
   answer: |
-    `ap init` configures:
-    - Pre-commit hooks (ruff, ty)
-    - Conventional commit message checks (commit types in `afterpython.toml`)
-    - Semantic-release for versioning
-    - The project website scaffold under `afterpython/`
-  category: Getting Started
+    - **Pre-commit hooks**: ruff (lint + format) and ty (type checking)
+    - **Commit message checks** for conventional commits
+    - **Versioning and changelog** config (`cliff.toml`)
+    - **The project website** under `afterpython/_website/`
 
-- question: How do I run the dev server?
+    Every tool keeps its own config file in `afterpython/`, so you can tune any of them later without learning them up front.
+  category: Getting started
+
+- question: Do I need a GitHub repository?
+  answer: No. Everything works locally. You only need a remote for `ap release` and for deploying the website to GitHub Pages.
+
+- question: Where do I put my content?
   answer: |
-    Use `ap dev` from your project root:
+    Each content type has its own folder under `afterpython/`:
 
-    ```bash
-    cd my-project
-    ap dev
+    | Folder | Shows up as |
+    | --- | --- |
+    | `doc/` | Documentation |
+    | `blog/` | Blog posts |
+    | `tutorial/` | Tutorials |
+    | `example/` | Examples |
+    | `guide/` | Guides |
+
+    Empty folders are skipped, so only the sections you write appear on the website.
+  category: Writing content
+
+- question: Can I write content in Jupyter or marimo notebooks?
+  answer: |
+    Yes. Write in whichever you prefer:
+
+    - **MyST Markdown** (`.md`)
+    - **Jupyter notebooks** (`.ipynb`)
+    - **marimo notebooks** (`.py`), which need the `marimo` extra: `uv add --dev "afterpython[marimo]"`
+
+    Use `ap dev --execute` to run Jupyter notebooks when building, so their outputs are fresh.
+  category: Writing content
+
+- question: How do I add questions to this FAQ page?
+  answer: |
+    Edit `afterpython/faq.yml`. Each item has a `question`, an `answer` (markdown) and an optional `category`:
+
+    ```yaml
+    - question: Is it free?
+      answer: Yes.
+      category: General
     ```
 
-    This boots the SvelteKit template at `http://localhost:5173`.
-  category: Usage
+    While `ap dev` is running, saving the file updates the page in your browser.
+  category: Writing content
 
-- question: Can I write content in Jupyter notebooks?
-  answer: Yes — `.ipynb` files in `afterpython/tutorials/` or `afterpython/blog/` are auto-converted. *Marimo* notebooks and **MyST Markdown** are also supported.
-  category: Usage
-
-- question: "Why does `ap build` fail with: `No pyproject.toml found`?"
+- question: How do I preview the website while I write?
   answer: |
-    AfterPython locates the project root by walking up from your current directory looking for `pyproject.toml`. Make sure:
+    Run `ap dev`. On its own it serves just the website; add flags to also serve content:
 
-    1. You're inside a Python project
-    2. `pyproject.toml` exists at or above your `cwd`
-    3. You haven't accidentally `cd`'d into a sibling directory
+    ```bash
+    ap dev            # website only
+    ap dev --doc      # website + documentation
+    ap dev --all      # website + every content type
+    ```
+
+    Pages reload automatically when you save.
+  category: Website
+
+- question: How do I customize the website's look?
+  answer: |
+    The website is a SvelteKit app in `afterpython/_website/`, styled with [Tailwind CSS](https://tailwindcss.com/docs). Change the theme colours in `src/app.css`, or edit any component in `src/lib/components/`.
+
+    > The website folder is yours once it's created. AfterPython only writes the data files in `static/`, so your edits are never overwritten.
+  category: Website
+
+- question: How do I release a new version?
+  answer: |
+    1. `ap bump` bumps the version, commits it and tags it.
+    2. `ap release` pushes the branch and the tag.
+    3. CI builds and publishes the package.
+
+    Use `ap changelog` first to preview what will go into the changelog.
+  category: Releases
+
+- question: Can I write my own commit types, like `perf:` or `deps:`?
+  answer: Yes. Add them to the commit types in `afterpython.toml`, and the commit message check will accept them.
+  category: Releases
+
+- question: I ran `ap dev` but my latest blog post doesn't show up on the home page, even though I can open it directly. What's going on and how do I fix it?
+  answer: |
+    The post's page comes straight from MyST, but the **list of posts** is a separate data file built from MyST's output. Check that:
+
+    1. the post is in `afterpython/blog/` and listed in `afterpython/blog/myst.yml`
+    2. you started the blog server too: `ap dev --blog` (or `--all`)
+
+    If it still doesn't appear, restart `ap dev` and check the terminal for build errors.
   category: Troubleshooting
 
-- question: Does this work without a GitHub repository?
-  answer: Yes. The website builds fine locally; only `ap release` and GitHub Pages deploys require a remote.
+- question: "`ap build` says it can't find `pyproject.toml`"
+  answer: Run it from your project root, or any folder inside the project. AfterPython looks for `pyproject.toml` in the current folder and its parents.
+  category: Troubleshooting
 
-- question: How do I customize the website's styling?
-  answer: |
-    The frontend is a SvelteKit app under `afterpython/_website/`. Edit `src/app.css` or any component in `src/lib/components/`. The template uses **Tailwind CSS v4** — see the [Tailwind docs](https://tailwindcss.com/docs).
+- question: Is there a way to type-check without running all the hooks?
+  answer: Yes, `ap check` runs ty on its own. Likewise `ap lint` runs ruff's linter and `ap format` its formatter.
+  category: Getting started
+
+- question: Where can I ask questions that aren't answered here?
+  answer: Open a discussion on [GitHub Discussions](https://github.com/AfterPythonOrg/afterpython/discussions). Bug reports go in GitHub *Issues*.
