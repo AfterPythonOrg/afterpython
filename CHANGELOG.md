@@ -1,3 +1,14 @@
+## [0.4.8](https://github.com/AfterPythonOrg/afterpython/compare/v0.4.7...v0.4.8) - 2026-11-10
+
+### 🚀 Features
+
+- Rebuild website data files on change during ap dev
+- Add ap dev --no-readme-py to skip the marimo README.py export
+
+### ⚙️ Miscellaneous Tasks
+
+- Sync the website with project-website-template 0.4.2 (FAQ redesign)
+
 ## [0.4.7](https://github.com/AfterPythonOrg/afterpython/compare/v0.4.6...v0.4.7) - 2026-11-10
 
 ### 🐛 Bug Fixes
