@@ -1,3 +1,18 @@
+## [0.5.0](https://github.com/AfterPythonOrg/afterpython/compare/v0.4.9...v0.5.0) - 2026-11-10
+
+### 🚀 Features
+
+- Generate sitemap.xml and canonical tags for the built website
+- Use the configurable homepage title and redirect-free website links
+
+### 🐛 Bug Fixes
+
+- Point the pdoc failure hint at api_reference = false
+
+### ⚙️ Miscellaneous Tasks
+
+- Use the authors key in authors.yml
+
 ## [0.4.9](https://github.com/AfterPythonOrg/afterpython/compare/v0.4.8...v0.4.9) - 2026-11-10
 
 ### 🐛 Bug Fixes
