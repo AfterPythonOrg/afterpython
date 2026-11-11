@@ -36,7 +36,16 @@ You can add tags to notebook cells to control their behavior. For example, you c
 
 ### Molab Badge
 
-If the [environment variable](references/environment_variables.md) `AP_MOLAB_BADGE` is set to `1`, `afterpython` automatically adds [molab] badges to Jupyter Notebooks during the build process.
+To add a [molab] badge to a notebook, set `molab_badge: true` in its frontmatter (the first cell):
+
+```yaml
+---
+title: My Notebook
+molab_badge: true
+---
+```
+
+`afterpython` then adds an "Open in molab" badge below the frontmatter during the build process. The badge links to the notebook in your GitHub repository, so it only works once the notebook is pushed, and `[project.urls].repository` must be set in `pyproject.toml`.
 
 :::{note}
 [molab] is a cloud service by [Marimo] that supports running Jupyter Notebooks in the cloud. The badge lets users open your notebooks and run them in the cloud for free.
@@ -102,6 +111,8 @@ def _(pl):
     return
 ````
 
+A `mo.md(...)` cell whose text is built from Python, e.g. `mo.md(f"Downloaded {df.height} rows")`, can't become a static Markdown cell. Hide its code with `@app.cell(hide_code=True)`, and `afterpython` turns its output into a regular Markdown cell. If its code is visible, the text shows as raw Markdown on the page.
+
 ### Rules
 - **If you use frontmatter, it goes in the first cell.** Frontmatter (`title`, `date`, `authors`, `tags`, `thumbnail`, ...) is optional: without it, the page title comes from the first `# Heading`. But blog posts usually need it, since the listing page shows each post's date, authors, tags and thumbnail. MyST only reads frontmatter from a notebook's first cell, so the `mo.md(...)` cell that holds it must be the first cell in the file, **above the `import marimo as mo` cell** that marimo creates by default. This is fine in marimo, which runs cells in dependency order, not file order. If the frontmatter cell is anywhere else, the build stops with an error.
 - **Without a frontmatter `title`, the `# Heading` goes first instead.** The page title then comes from your first `# Heading`, and MyST removes that heading from the page body. That only works when the heading is the first content, i.e. its `mo.md(...)` cell is the first cell (or comes right after a frontmatter cell). If the import cell comes first, the title is still right but the heading also stays in the body, so the page shows the title twice. The build warns about this.
@@ -132,7 +143,7 @@ The notebook's environment installs your package **with all of its dependencies*
 - If your `myst.yml` lists files in `toc`, reference the generated notebook, e.g. `- file: getting_started.ipynb`.
 - `ap clean` deletes them.
 - `--execute` (in `ap build --execute` and `ap dev --execute`) only applies to Jupyter Notebooks. Marimo notebooks always run in their own environment.
-- With `AP_MOLAB_BADGE=1`, the molab badge on a marimo notebook's page opens the `.py` file.
+- For a marimo notebook, put the frontmatter (including `molab_badge: true`) in a `mo.md(...)` cell at the top of the file. Its molab badge opens the `.py` file.
 
 ### Previewing with `ap dev`
 The recommended workflow is to finish writing a notebook in `marimo edit --sandbox`, which already shows live outputs, and then run `ap dev` (e.g. `ap dev --tutorial`) to see it as a website page. `ap dev` only re-runs notebooks that changed since the last run.

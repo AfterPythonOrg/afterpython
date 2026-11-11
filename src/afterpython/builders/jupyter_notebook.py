@@ -1,8 +1,10 @@
 import json
-import os
+import re
 from pathlib import Path
 
 import click
+from ruamel.yaml import YAML
+from ruamel.yaml.error import YAMLError
 
 import afterpython as ap
 from afterpython.builders.marimo_notebook import _create_molab_url, _get_molab_badge
@@ -178,6 +180,43 @@ def _add_thumbnail_to_notebook(
     return True
 
 
+def _wants_molab_badge(notebook: dict) -> bool:
+    """True if the notebook's frontmatter sets `molab_badge: true`, or a
+    generated notebook already had it moved into its metadata."""
+    if notebook.get("metadata", {}).get("afterpython", {}).get("molab_badge"):
+        return True
+    content = _read_frontmatter(notebook)
+    if content is None:
+        return False
+    match = re.match(r"^---\s*\n(.*?)\n---", content, re.DOTALL)
+    if not match:
+        return False
+    try:
+        data = YAML(typ="safe").load(match.group(1))
+    except YAMLError:
+        return False
+    return isinstance(data, dict) and data.get("molab_badge") is True
+
+
+def _remove_frontmatter_key(notebook: dict, key: str):
+    content = _read_frontmatter(notebook)
+    if content is None:
+        return
+    lines = [line for line in content.split("\n") if not line.startswith(f"{key}:")]
+    _write_frontmatter(notebook, "\n".join(lines))
+
+
+def _remove_molab_badge_from_notebook(notebook: dict) -> bool:
+    """Remove a badge cell left by an earlier build, e.g. after `molab_badge`
+    was turned off in a committed notebook. Returns True if one was removed."""
+    cells = notebook["cells"]
+    kept = [cell for cell in cells if cell.get("id") != "molab-badge-cell"]
+    if len(kept) == len(cells):
+        return False
+    notebook["cells"] = kept
+    return True
+
+
 def _add_molab_badge_to_notebook(notebook: dict, github_url: str, content_path: Path):
     """Add a molab badge markdown cell to a single notebook.
 
@@ -224,20 +263,8 @@ def build_jupyter_notebooks():
     """Build Jupyter notebooks for all content types"""
     from afterpython.tools._afterpython import get_default_thumbnail
 
-    # Check if molab badge feature is enabled
-    add_molab_badge = os.getenv("AP_MOLAB_BADGE", "0") == "1"
-
-    # Get GitHub URL once if needed for molab badges
-    github_url = None
-    if add_molab_badge:
-        metadata = read_metadata()
-        if "repository" in metadata.urls:
-            github_url = metadata.urls["repository"]
-        else:
-            click.echo(
-                "⚠ Repository URL not found in [project.urls] in pyproject.toml, skipping molab badge"
-            )
-            add_molab_badge = False
+    metadata = read_metadata()
+    github_url = metadata.urls.get("repository")
 
     for content_type in CONTENT_TYPES:
         click.echo(f"Building Jupyter notebooks for {content_type}/...")
@@ -269,9 +296,15 @@ def build_jupyter_notebooks():
             # Track if notebook was modified
             modified = False
 
-            # Add molab badge if enabled. A notebook generated from a marimo .py
-            # isn't committed, so the badge must open the .py instead.
-            if add_molab_badge and github_url:
+            # Add a molab badge if the notebook opts in with `molab_badge: true`
+            # in its frontmatter. A notebook generated from a marimo .py isn't
+            # committed, so the badge must open the .py instead.
+            wants_badge = _wants_molab_badge(notebook)
+            if wants_badge and not github_url:
+                click.echo(
+                    f"⚠ Repository URL not found in [project.urls] in pyproject.toml, skipping molab badge in {content_path}"
+                )
+            if wants_badge and github_url:
                 generated_from = (
                     notebook.get("metadata", {})
                     .get("afterpython", {})
@@ -283,6 +316,16 @@ def build_jupyter_notebooks():
                     else content_path
                 )
                 _add_molab_badge_to_notebook(notebook, github_url, molab_path)
+                modified = True
+            # MyST warns about unknown frontmatter keys. A generated notebook is
+            # a build output, so move the key into its metadata, where a cached
+            # rebuild still finds it; a hand-written notebook is the source and
+            # must keep it.
+            afterpython_metadata = notebook.get("metadata", {}).get("afterpython")
+            if wants_badge and afterpython_metadata is not None:
+                afterpython_metadata["molab_badge"] = True
+                _remove_frontmatter_key(notebook, "molab_badge")
+            elif _remove_molab_badge_from_notebook(notebook):
                 modified = True
 
             # Add thumbnail to frontmatter

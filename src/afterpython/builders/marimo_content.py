@@ -333,12 +333,42 @@ def _rewrite_cell_ids(notebook: dict, prefix: str):
         cell["id"] = cell_id
 
 
+def _markdown_output_to_markdown_cell(notebook: dict):
+    """A static `mo.md("...")` cell exports as a markdown cell, but a dynamic one
+    (e.g. an f-string) stays a code cell with a `text/markdown` output, and MyST
+    renders that output as raw text instead of markdown. When the code is hidden,
+    only the output is shown anyway, so turn the cell into a markdown cell with
+    the output as its source."""
+    for index, cell in enumerate(notebook["cells"]):
+        if cell.get("cell_type") != "code":
+            continue
+        hide_code = (
+            cell.get("metadata", {})
+            .get("marimo", {})
+            .get("config", {})
+            .get("hide_code", False)
+        )
+        outputs = cell.get("outputs", [])
+        if not hide_code or len(outputs) != 1:
+            continue
+        data = outputs[0].get("data", {})
+        if "text/markdown" not in data or set(data) - {"text/markdown", "text/plain"}:
+            continue
+        notebook["cells"][index] = {
+            "cell_type": "markdown",
+            "id": cell.get("id", ""),
+            "metadata": {},
+            "source": _as_lines(data["text/markdown"]),
+        }
+
+
 def _postprocess(
     notebook: dict, source: Path, content_path: Path, marimo_version: str
 ) -> dict:
     for cell in notebook["cells"]:
         cell["source"] = _as_lines(cell.get("source", ""))
     _check_no_errors(notebook, source)
+    _markdown_output_to_markdown_cell(notebook)
     _check_frontmatter_first(notebook, source)
     _warn_heading_not_first(notebook, source)
     # outputs come from the sandbox, `myst build --execute` must not redo them
