@@ -1,3 +1,25 @@
+## [0.5.1](https://github.com/AfterPythonOrg/afterpython/compare/v0.5.0...v0.5.1) - 2026-11-11
+
+### 🚀 Features
+
+- Per-notebook molab badge and dynamic mo.md in marimo content
+
+### 🐛 Bug Fixes
+
+- Read pyproject.toml only when a notebook wants a molab badge
+
+### 📚 Documentation
+
+- Clarify that [website].thumbnail is not a content default
+
+### 🎨 Styling
+
+- *(website)* Add contrast to post cards and pluralize listing titles
+
+### ⚙️ Miscellaneous Tasks
+
+- Sync the website with project-website-template 0.5.0
+
 ## [0.5.0](https://github.com/AfterPythonOrg/afterpython/compare/v0.4.9...v0.5.0) - 2026-11-10
 
 ### 🚀 Features
