@@ -191,14 +191,13 @@ def postbuild(dev_build: bool = False):
                 website_static / content_type,
                 is_copy=True,
             )
-        # for dev build, copy the files (mainly images, e.g. thumbnails) in site/public/ to afterpython/_website/static/{content_type}/build
-        else:
-            _move_files(
-                afterpython_content_build / "site" / "public",
-                # add build/ to mimic the structure of the production build
-                website_static / content_type / "build",
-                is_copy=True,
-            )
+        # for both builds, copy the files (mainly images, e.g. thumbnails) in site/public/ to afterpython/_website/static/{content_type}/build,
+        # where convert_paths() points the listings' thumbnails. The html export keeps its own copies in _public/, which its pages use
+        _move_files(
+            afterpython_content_build / "site" / "public",
+            website_static / content_type / "build",
+            is_copy=True,
+        )
 
     # Copy all files (e.g. metadata.json, blog.json etc.) from afterpython/_build to afterpython/_website/static/
     _move_files(
