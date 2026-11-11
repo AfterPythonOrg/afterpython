@@ -24,7 +24,6 @@ def get_default_thumbnail(
 
     Reads default thumbnail configuration from afterpython.toml:
     - Content type specific thumbnail: [website.{content_type}.thumbnail]
-    - Website-wide default thumbnail: [website.thumbnail]
     - Falls back to empty string if no default is configured
 
     Args:
@@ -39,6 +38,7 @@ def get_default_thumbnail(
 
     afterpython = read_afterpython()
     try:
+        # DEPRECATED: [website].thumbnail is not a default for content types
         # website_default_thumbnail = normalize_static_path(
         #     str(_from_tomlkit(afterpython.get("website", {})).get("thumbnail", ""))
         # )
@@ -62,7 +62,7 @@ def get_default_thumbnail(
 
     if content_type_default_thumbnail:
         return f"{static_prefix}static{content_type_default_thumbnail}"
-    # use "thumbnail" set in afterpython.toml [website]
+    # DEPRECATED: use "thumbnail" set in afterpython.toml [website]
     # elif website_default_thumbnail:
     # Website-wide static is one level up from content_type folder
     # return f"{static_prefix}../static{website_default_thumbnail}"
