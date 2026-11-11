@@ -263,8 +263,9 @@ def build_jupyter_notebooks():
     """Build Jupyter notebooks for all content types"""
     from afterpython.tools._afterpython import get_default_thumbnail
 
-    metadata = read_metadata()
-    github_url = metadata.urls.get("repository")
+    # read pyproject.toml only once a notebook wants a badge
+    github_url = None
+    github_url_read = False
 
     for content_type in CONTENT_TYPES:
         click.echo(f"Building Jupyter notebooks for {content_type}/...")
@@ -300,6 +301,9 @@ def build_jupyter_notebooks():
             # in its frontmatter. A notebook generated from a marimo .py isn't
             # committed, so the badge must open the .py instead.
             wants_badge = _wants_molab_badge(notebook)
+            if wants_badge and not github_url_read:
+                github_url = read_metadata().urls.get("repository")
+                github_url_read = True
             if wants_badge and not github_url:
                 click.echo(
                     f"⚠ Repository URL not found in [project.urls] in pyproject.toml, skipping molab badge in {content_path}"
