@@ -10,6 +10,9 @@ generator:
 - internal links rewritten to that canonical form, so `/doc/quickstart` (301 on
   GitHub Pages) becomes `/doc/quickstart/`
 - `noindex` on the SPA fallback (200.html) and 404.html
+- absolute `og:image`/`twitter:image` URLs, plus a large-image `twitter:card`
+  when missing, so link previews (X, Slack, LinkedIn) show the thumbnail:
+  crawlers ignore relative image paths like `/thumbnail.png`
 - sitemap.xml listing every indexable page, plus a robots.txt pointing to it
 """
 
@@ -20,6 +23,7 @@ import posixpath
 import re
 from functools import partial
 from pathlib import Path, PurePosixPath
+from urllib.parse import urljoin
 from xml.sax.saxutils import escape
 
 import click
@@ -40,6 +44,13 @@ _META_REFRESH = re.compile(r"<meta[^>]*http-equiv=[\"']?refresh", re.IGNORECASE)
 _HREF = re.compile(
     r"""(\shref=)(["'])(?![a-zA-Z][\w+.-]*:|#)([^"']+)\2""", re.IGNORECASE
 )
+# content of an og:image / twitter:image meta tag (property/name before content,
+# as both SvelteKit and MyST write it)
+_SOCIAL_IMAGE = re.compile(
+    r"""(<meta[^>]*?(?:property|name)=["']?(?:og|twitter):image["']?[^>]*?\scontent=)(["'])([^"']+)\2""",
+    re.IGNORECASE,
+)
+_TWITTER_CARD = re.compile(r"<meta[^>]*name=[\"']?twitter:card", re.IGNORECASE)
 
 
 def _canonical_path(rel: PurePosixPath) -> str:
@@ -109,6 +120,13 @@ def _rewrite_href(
     return f"{prefix}{quote}{new_path}{sep}{rest}{quote}"
 
 
+def _absolute_image(match: re.Match, page_url: str) -> str:
+    """Resolve an og:image/twitter:image URL against the page's own URL."""
+    prefix, quote, url = match.group(1), match.group(2), match.group(3)
+    absolute = urljoin(page_url, html.unescape(url))
+    return f"{prefix}{quote}{html.escape(absolute)}{quote}"
+
+
 def _split_url(url: str) -> tuple[str, str, str]:
     """Split '/a/b?x#y' into ('/a/b', '?', 'x#y')."""
     for i, ch in enumerate(url):
@@ -173,6 +191,15 @@ def build_seo(base_path: str = ""):
             ),
             text,
         )
+        # link previews need absolute image URLs; already absolute ones pass through
+        page_url = site_root + base_path + page_path
+        text = _SOCIAL_IMAGE.sub(partial(_absolute_image, page_url=page_url), text)
+        # MyST pages only have og:image: without a card type X shows no image
+        head = _HEAD_OPEN.search(text)
+        if head and _SOCIAL_IMAGE.search(text) and not _TWITTER_CARD.search(text):
+            tag = '<meta name="twitter:card" content="summary_large_image">'
+            text = text[: head.end()] + tag + text[head.end() :]
+
         # a shadowed x/index.html points at its x.html twin
         canonical_url = (
             site_root + base_path + canonical_by_path.get(page_path, page_path)
