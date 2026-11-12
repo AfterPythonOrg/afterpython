@@ -1,3 +1,10 @@
+## [0.5.3](https://github.com/AfterPythonOrg/afterpython/compare/v0.5.2...v0.5.3) - 2026-11-12
+
+### 🐛 Bug Fixes
+
+- *(website)* Use absolute paths so post links don't 404 on client-side navigation
+- *(seo)* Absolute og:image URLs and a twitter:card so link previews show the thumbnail
+
 ## [0.5.2](https://github.com/AfterPythonOrg/afterpython/compare/v0.5.1...v0.5.2) - 2026-11-11
 
 ### 🐛 Bug Fixes
